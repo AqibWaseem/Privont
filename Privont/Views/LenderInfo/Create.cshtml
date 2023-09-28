@@ -1,0 +1,424 @@
+﻿@model Privont.Models.LenderInfo
+
+@{
+    ViewBag.Title = "Lender Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+
+    .ui-autocomplete {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        z-index: 1100;
+        float: left;
+        display: none;
+        min-width: 160px;
+        _width: 160px;
+        padding: 4px 0;
+        margin: 2px 0 0 0;
+        list-style: none;
+        background-color: #ffffff;
+        border-color: #ccc;
+        border-color: rgba(0, 0, 0, 0.2);
+        border-style: solid;
+        border-width: 1px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+        *border-right-width: 2px;
+        *border-bottom-width: 2px;
+        max-height: 200px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+
+        .ui-autocomplete .ui-menu-item > a.ui-corner-all {
+            display: block;
+            padding: 3px 15px;
+            clear: both;
+            font-weight: normal;
+            line-height: 18px;
+            color: #555555;
+            white-space: nowrap
+        }
+
+            .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-hover, .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-active {
+                color: #ffffff;
+                text-decoration: none;
+                background-color: #0088cc;
+                border-radius: 0px;
+                -webkit-border-radius: 0px;
+                -moz-border-radius: 0px;
+                background-image: none
+            }
+</style>
+
+@using (Html.BeginForm("Create", "LenderInfo", FormMethod.Post, new { }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.LenderId)
+    <div class="content-wrapper">
+        <div class="container-full">
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="row">
+                    <div class="col-lg-2 col-12"></div>
+                    <div class="col-lg-8 col-12">
+                        <div class="box">
+                            <div class="box-header with-border">
+                                <h4 class="box-title">Lender Information <small>(@((Model.LenderId == 0 ? "New" : "Edit")))</small></h4>
+                            </div>
+                            <!-- /.box-header -->
+                            <form class="form">
+                                <div class="box-body">
+                                    <h2 class="text-danger">@ViewBag.Message</h2>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("First Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("Last Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <hr style="border-top:2px solid black;width:80%;margin:auto;" />
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.Label("License No", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.LicenseNo, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.LicenseNo, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.Label("Office No", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.OfficeNo, new { htmlAttributes = new { @class = "form-control", type = "number", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.OfficeNo, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.Label("Website", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Website, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Website, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.Label("Email Address", htmlAttributes: new { @class = "control-label" })
+                                                <div class="inline" style="display: flex;">
+                                                    @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control", type = "email" } })
+                                                    @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+                                                    <button class="btn btn-primary btn-sm" type="button" onclick="Verify()">Verify</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.Label("Contact No 1", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Contact1, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+                                                @Html.ValidationMessageFor(model => model.Contact1, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                @Html.Label("Contact No 2", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Contact2, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+                                                @Html.ValidationMessageFor(model => model.Contact2, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                @Html.Label("Organziation", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-fill" style="padding: 0px 5px;">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                                @Html.DropDownListFor(model => model.OrganizationID, (SelectList)ViewBag.Organization, "Select Organization", htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%" })
+                                                @Html.ValidationMessageFor(model => model.OrganizationID, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 col-12">
+                                            <div class="form-group">
+                                                @Html.Label("Zip Code", htmlAttributes: new { @class = "control-label" })
+                                                <input type="text" class="form-control" required = "required" id="ZipCode" name="ZipCode">
+                                                @Html.EditorFor(model => model.ZipCodeID, new { htmlAttributes = new { @class = "form-control", @type = "number", style = "display:none;" } })
+                                                @*<input type="text" class="form-control" id="txtcode" name="txtcode">*@
+                                                @Html.ValidationMessageFor(model => model.ZipCodeID, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("Street No", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.StreetNo, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.StreetNo, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("Street name", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.StreetName, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.StreetName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <hr style="border-top:2px solid black;width:80%;margin:auto;" />
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("User Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                @Html.Label("Password", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @type = "password", required = "required" } })
+                                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <hr style="border-top:2px solid black;width:80%;margin:auto;" />
+                                    <br />
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                @Html.Label("Remarks", htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /.box-body -->
+                                <div class="box-footer pull-right">
+                                    <button type="submit" class="m-1 btn btn-primary pull-right">
+                                        @((Model.LenderId == 0 ? "Save" : "Update"))
+                                    </button>
+                                    <button onclick="window.location.href='/LenderInfo/Index'" type="button" class="m-1 btn btn-warning pull-right me-1">
+                                        Back
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.box -->
+                    </div>
+                    <div class="col-lg-2 col-12"></div>
+                </div>
+
+                <!-- /.row -->
+            </section>
+            <!-- /.content -->
+        </div>
+    </div>
+}
+
+
+<!-- /.content-wrapper -->
+<!-- Modal -->
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Organization <small>(New)</small></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="control-label">Organization Name</label>
+                            <input type="text" class="form-control" id="OrganizationName" placeholder="Organization Name">
+                            <span class="text-danger" style="display:none" id="organizationwarning">Please enter Organization Name</span>
+                            <span class="text-danger" style="display:none" id="organizationexistingwarning">Organization Name Already Exist</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary float-end" onclick="OrganizationSave()">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+
+    $(document).ready(function () {
+        // Find the <a> element with href="#finish"
+        $('a[href="#finish"]').click(function (event) {
+            console.log("Link with href='#finish' clicked!");
+            $("#btnfinished").click();
+            // You can perform additional actions here
+        });
+        $("#ZipCode").val(@Model.ZipCode);
+    });
+    $('a[href="#finish"]').click(function (event) {
+        console.log("Link with href='#finish' clicked!");
+        $("#btnfinished").click();
+        // You can perform additional actions here
+    });
+
+    function OrganizationSave(objectre) {
+        var OrganizationName = $("#OrganizationName").val();
+        if (OrganizationName == "") {
+            $("#organizationwarning").show();
+            return;
+        }
+        $("#organizationwarning").hide();
+        $("#contactwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/LenderInfo/CreateOrganizationInfo",
+            data: JSON.stringify({ OrganizationName }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = r.split(',');
+                if (data[0] == "1") {
+                    $("#organizationexistingwarning").show();
+                    return;
+                }
+                $('#OrganizationID').append('<option value="' + data[1] + '">' + OrganizationName + '</option>');
+                $('#OrganizationID').val(data[1]);
+                $("#OrganizationName").val("");
+                $('#modal-fill').modal('hide');
+            },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+        function Verify() {
+            var Email = $("#EmailAddress").val();
+            var Firstname = $("#FirstName").val();
+            var Lastname = $("#LastName").val();
+            var Type = 2;
+            var userID = $("#LenderId").val();
+
+            if (Firstname == "" || Firstname == null) {
+                Swal.fire(
+                    '',
+                    'Please Enter First Name',
+                    'error'
+                );
+                return;
+            }
+            if (Lastname == "" || Lastname == null) {
+                Swal.fire(
+                    '',
+                    'Please Enter Last Name',
+                    'error'
+                );
+                return;
+            }
+            if (Email == "" || Email == null) {
+                Swal.fire(
+                    '',
+                    'Please Enter Email',
+                    'error'
+                );
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/GeneralApis/VerifyEmail",
+                data: JSON.stringify({ Email, Firstname, Lastname, Type, userID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (r) {
+                    var data = r.split(',');
+                    if (data[0] == "true") {
+                        Swal.fire(
+                            'Success',
+                            'Verification Code Send to Your Email.Please Check Your Inbox',
+                            'success'
+                        );
+                    }
+                    $("#LenderId").val(data[1]);
+                },
+                error: function (x, e) {
+                    Swal.fire("", "Saving Error");
+                },
+                async: false
+            });
+        }
+    $("#ZipCode").autocomplete({
+        source: function (request, response) {
+            // Fetch data
+            $.ajax({
+                url: "/RealEstateAgentInfo/GetZipCode",
+                type: 'post',
+                dataType: "json",
+                async: true,
+                data: {
+
+                    ProductTitle: request.term
+                },
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    response($.map(data, function (item) {
+                        return { label: item.label, value: item.value };
+                    }))
+                }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            //alert(ui.item.label); // display the selected text
+            //alert(ui.item.value); // save selected id to input
+            //Add to table
+            $("#ZipCode").val(ui.item.label);
+            $("#ZipCodeID").val(ui.item.value);
+            return false;
+        },
+        focus: function (event, ui) {
+            // alert("Focus" + ui.item.ProductID);
+            //alert("Focus" + ui.item.label + "-" + ui.item.value);
+
+            return false;
+        },
+    }).keyup(function (e) {
+        if (e.which === 13) {
+            $(".ui-menu-item").hide();
+        }
+    });
+</script>

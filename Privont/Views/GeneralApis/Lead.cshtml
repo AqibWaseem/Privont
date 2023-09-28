@@ -1,0 +1,144 @@
+﻿@model Privont.Models.LeadInfo
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../images/favicon.ico">
+    <title>Privont - Lead Info</title>
+
+    <!-- Vendors Style-->
+    <link href="~/Browser_Components/css/vendors_css.css" rel="stylesheet" />
+    <!-- Style-->
+    <link href="~/Browser_Components/css/style.css" rel="stylesheet" />
+    <link href="~/Browser_Components/css/skin_color.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body class="layout-top-nav light-skin theme-primary fixed">
+
+    <div class="wrapper">
+        <div id="loader"></div>
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.LeadID)
+            @Html.HiddenFor(model => model.UserID)
+            @Html.HiddenFor(model => model.UserType)
+            <div class="content-wrapper">
+                <div class="container-full">
+                    <!-- Content Header (Page header) -->
+                    <!-- Main content -->
+                    <section class="content">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-12"></div>
+                            <div class="col-lg-9 col-12">
+                                <div class="box">
+                                    <div style="display: flex; justify-content: center; align-items: center; padding-top:10px; ">
+                                        <img style="width:50%; text-align:center" src="~/images/Privont-Logo_Black.png" />
+                                    </div>
+                                    <div class="box-header with-border">
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <form class="form">
+                                        <div class="box-body">
+                                            <h2 class="text-success text-lg-center">Do You Want to Get Claim Against Your Lead From Lender?</h2>
+                                            <br />
+                                            <hr style="border-top:2px solid #484747; width: 80%; margin: auto;" />
+                                        </div>
+                                        <!-- /.box-body -->
+                                        <div class="box-footer pull-right">
+                                            <button type="button" onclick="SaveRecord(1)" class="m-1 btn btn-success pull-right">
+                                                Yes
+                                            </button>
+                                            <button type="button" onclick="SaveRecord(2)" class="m-1 btn btn-danger pull-right">
+                                                No
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                            <div class="col-lg-2 col-12"></div>
+                        </div>
+
+                        <!-- /.row -->
+                    </section>
+                    <!-- /.content -->
+                </div>
+            </div>
+    </div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        &copy;
+        <script>document.write(new Date().getFullYear())</script> Privont. All Rights Reserved.
+    </footer>
+    <!-- Control Sidebar -->
+    <!-- Page Content overlay -->
+    <!-- Vendor JS -->
+    @*@RenderSection("scripts", required: false)*@
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/Browser_Components/js/vendors.min.js"></script>
+    <script src="~/Browser_Components/js/pages/chat-popup.js"></script>
+    <script src="~/assets/icons/feather-icons/feather.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="~/assets/vendor_components/select2/dist/js/select2.full.js"></script>
+    <script src="~/assets/vendor_plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="~/assets/vendor_plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <script src="~/assets/vendor_components/moment/min/moment.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+    <script src="~/assets/vendor_plugins/timepicker/bootstrap-timepicker.min.js"></script>
+    <script src="~/assets/vendor_plugins/iCheck/icheck.min.js"></script>
+    <script src="~/Browser_Components/js/template.js"></script>
+    <script src="~/Browser_Components/js/pages/advanced-form-element.js"></script>
+    <script src="~/assets/vendor_components/progressbar.js-master/dist/progressbar.js"></script>
+    <script src="~/Browser_Components/js/template.js"></script>
+
+    <script src="~/assets/vendor_components/jquery-steps-master/build/jquery.steps.js"></script>
+    <script src="~/assets/vendor_components/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="~/Browser_Components/js/pages/steps.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+    <script>
+
+        function SaveRecord(obj) {
+            var LeadID = $("#LeadID").val();
+            $.ajax({
+            type: "POST",
+                url: "/GeneralApis/SaveRecordLead",
+                data: JSON.stringify({ LeadID, obj }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+                success: function (r) {
+                    window.location.href = '/GeneralApis/Thankyou';
+                },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+
+    </script>
+
+</body>
+</html>

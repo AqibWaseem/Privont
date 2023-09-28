@@ -1,0 +1,156 @@
+﻿@model Privont.Models.UserInfo
+
+@{
+    ViewBag.Title = "User Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.HiddenFor(model => model.UserID)
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+
+            <div class="row">
+                <div class="col-lg-6 col-12">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">User Information <small>(@((Model.UserID == 0?"New":"Edit")))</small></h4>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="form">
+                            <div class="box-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.Label("Name", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", required = "required" } })
+                                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.Label("User Name", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control", @placeholder = "User Name", required = "required" } })
+                                            @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.Label("Password", htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password", required = "required" } })
+                                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-12">
+                                        <div class="form-group">
+                                            <div class="c-inputs-stacked">
+                                                <input name="UserType" type="radio" id="radio_123" value="1">
+                                                <label for="radio_123" class="me-30">Admin</label>
+                                                <input name="UserType" type="radio" id="radio_456" value="2">
+                                                <label for="radio_456" class="me-30">Real State</label>
+                                                <input name="UserType" type="radio" id="radio_789" value="3">
+                                                <label for="radio_789" class="me-30">Client</label>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <div class="checkbox checkbox-success">
+                                                <input id="Inactive" name="Inactive" type="checkbox" @((Model.Inactive == true ? "checked" : "")) value="@((Model.Inactive==true?"true":"false"))">
+                                                <label for="Inactive"> In Active </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+                            <div class="box-footer pull-right">
+                                <button onclick="SaveRecord()" class="m-1 btn btn-primary pull-right">
+                                    @((Model.UserID == 0?"Save":"Update"))
+                                </button>
+                                <button onclick="window.location.href='/UserInfo/Index'" type="button" class="m-1 btn btn-warning pull-right me-1">
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box -->
+                </div>
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+
+
+<script>
+        $(document).ready(function () {
+                   $("input[type=radio][name=UserType][value=" + @Model.UserType + "]").prop('checked', true);
+        });
+    function SaveRecord() {
+        var check = 0;
+        var collection = {};
+        collection.UserID = $("#UserID").val();
+        collection.UserName = $("#UserName").val();
+        collection.Password = $("#Password").val();
+        collection.Name = $("#Name").val();
+        collection.UserType = $('input[type=radio][name="UserType"]:checked').val();
+        if ($('#Inactive').is(":checked")) {
+            collection.Inactive = true;
+        }
+        else {
+            collection.Inactive = false;
+        }
+        if (collection.Name == "" || collection.Name == " " || collection.Name == 0 || collection.Name == null) {
+            Swal.fire(
+                "",
+                "Please Enter Name"
+            );
+            check = 1;
+            return false;
+        }
+        if (collection.UserName == "" || collection.UserName == " " || collection.UserName == 0 || collection.UserName == null) {
+            Swal.fire("", "Please Enter User Name");
+            return false;
+        }
+        if (collection.Password == "" || collection.Password == " " || collection.Password == 0 || collection.Password == null) {
+            Swal.fire(
+                "",
+                "Please Enter Password"
+            );
+            check = 1;
+            return false;
+        }
+        if (collection.UserType == 0 || collection.UserType == "" || collection.UserType == null) {
+            Swal.fire("", "Please Select User Type");
+            check = 1;
+            return;
+        }
+        if (check == 1) {
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "/UserInfo/SaveRecord",
+            data: JSON.stringify({ collection }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = r.split(",");
+                if (data[0] == '1') {
+                    Swal.fire("", "User Name Already Exist");
+                    return false;
+                }
+                else {
+                    window.location.href = "/UserInfo/Index";
+                }
+            },
+            error: function (x, e) {
+                alert("error " + e);
+            },
+        });
+    }
+</script>

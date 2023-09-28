@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Privont.Models.VendorInfo>
+
+@{
+    ViewBag.Title = "Vendor Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Vendor Info</h3>
+                        <button type="button" class="btn btn-sm btn-success pull-right" onclick="window.location.href='/VendorInfo/Create'">
+                            New
+                        </button>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table id="example" class="table b-1 table-hover display nowrap margin-top-10 w-p100 border-succes">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Registration No
+                                        </th>
+                                        <th>
+                                            Email
+                                        </th>
+                                        <th>
+                                            Contact
+                                        </th>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr id="@item.VendorID">
+                                            <td>
+                                                @item.VendorName
+                                            </td>
+                                            <td>
+                                                @item.RegistrationNo
+                                            </td>
+                                            <td>
+                                                @item.EmailAddress
+                                            </td>
+                                            <td>
+                                                @item.Contact1
+                                            </td>
+                                            <td>
+                                                <button onclick="window.location.href='/VendorInfo/Edit/@item.VendorID'" type="button" class="m-1 btn btn-success btn-sm  me-1">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button id="@item.VendorID" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                                                    <i class="fa fa-close"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+
+<script>
+
+    function DeleteButtonclicked(object) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are you sure to delete the selected record?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: '/VendorInfo/Delete',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: object.id },
+                    success: function () {
+
+                        $("#" + object.id).remove();
+                    },
+                    error: function () {
+                        alert('error');
+                    }
+                })
+                Swal.fire(
+                    'Deleted!',
+                    'Your record has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+</script>
+
+
+

@@ -1,0 +1,560 @@
+﻿@model Privont.Models.RealEstateAgentInfo
+
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../images/favicon.ico">
+    <title>Privont - Sign Up</title>
+
+    <!-- Vendors Style-->
+    <link href="~/Browser_Components/css/vendors_css.css" rel="stylesheet" />
+    <!-- Style-->
+    <link href="~/Browser_Components/css/style.css" rel="stylesheet" />
+    <link href="~/Browser_Components/css/skin_color.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+
+  .layout-top-nav.fixed .content-wrapper {
+    margin-top: 0px;
+  }
+
+
+        .fixed .content-wrapper {
+            margin-top: 41px;
+        }
+
+        .ui-autocomplete {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1100;
+            float: left;
+            display: none;
+            min-width: 160px;
+            _width: 160px;
+            padding: 4px 0;
+            margin: 2px 0 0 0;
+            list-style: none;
+            background-color: #ffffff;
+            border-color: #ccc;
+            border-color: rgba(0, 0, 0, 0.2);
+            border-style: solid;
+            border-width: 1px;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            -webkit-background-clip: padding-box;
+            -moz-background-clip: padding;
+            background-clip: padding-box;
+            *border-right-width: 2px;
+            *border-bottom-width: 2px;
+            max-height: 200px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+        }
+
+            .ui-autocomplete .ui-menu-item > a.ui-corner-all {
+                display: block;
+                padding: 3px 15px;
+                clear: both;
+                font-weight: normal;
+                line-height: 18px;
+                color: #555555;
+                white-space: nowrap
+            }
+
+                .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-hover, .ui-autocomplete .ui-menu-item > a.ui-corner-all.ui-state-active {
+                    color: #ffffff;
+                    text-decoration: none;
+                    background-color: #0088cc;
+                    border-radius: 0px;
+                    -webkit-border-radius: 0px;
+                    -moz-border-radius: 0px;
+                    background-image: none
+                }
+    </style>
+
+
+
+</head>
+
+<body class="layout-top-nav light-skin theme-primary fixed">
+
+    <div class="wrapper">
+        <div id="loader"></div>
+        @using (Html.BeginForm("SignUp", "RealEstateAgentInfo", FormMethod.Post, new { }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.RealEstateAgentId)
+            @Html.HiddenFor(model => model.UserID)
+            @Html.HiddenFor(model => model.UserType)
+            <div class="content-wrapper">
+                <div class="container-full">
+                    <!-- Content Header (Page header) -->
+                    <!-- Main content -->
+                    <section class="content">
+
+                        <div class="row">
+                            <div class="col-lg-2 col-12"></div>
+                            <div class="col-lg-8 col-12">
+                                <div class="box" >
+                                    <div style="display: flex; justify-content: center; align-items: center; ">
+                                        <img style="width:50%; text-align:center" src="~/images/Privont-Logo_Black.png" />
+                                    </div>
+                                        <div class="box-header with-border">
+                                        <h4 class="box-title">Real Estate Agent Information </h4>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <form class="form">
+                                        <div class="box-body">
+                                            <h2 class="text-success">@ViewBag.UserInformation</h2>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.Label("First Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", required = "required",@readonly = "readonly" } })
+                                                        @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.Label("Last Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
+                                                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", required = "required", @readonly = "readonly" } })
+                                                        @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <hr style="border-top:2px solid #484747; width: 80%; margin: auto;" />
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.Label("License No", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.LicenseNo, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.LicenseNo, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.Label("Office No", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.OfficeNo, new { htmlAttributes = new { @class = "form-control", type = "number" } })
+                                                        @Html.ValidationMessageFor(model => model.OfficeNo, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.Label("Website", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.Website, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.Website, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                                @Html.Label("Email address", htmlAttributes: new { @class = "form-label" })
+                                                        <div class="inline" style="display: flex;">
+                                                            @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control", type = "email", @readonly = "readonly" } })
+                                                            @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
+                                                            <button class="btn btn-primary btn-sm" type="button" onclick="Verify()">Verify</button>
+                                                        </div>
+                                                        </div>
+                                                              
+                                                    </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.Label("Contact No 1", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                                        @Html.EditorFor(model => model.Contact1, new { htmlAttributes = new { @class = "form-control", @type = "number", required = "required", @readonly = "readonly" } })
+                                                        @Html.ValidationMessageFor(model => model.Contact1, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        @Html.Label("Contact No 2", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.Contact2, new { htmlAttributes = new { @class = "form-control", @type = "number" } })
+                                                        @Html.ValidationMessageFor(model => model.Contact2, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        @Html.Label("Organziation", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-fill" style="padding: 0px 5px;">
+                                                            <i class="fa fa-plus"></i>
+                                                        </button>
+                                                        @Html.DropDownListFor(model => model.OrganizationID, (SelectList)ViewBag.Organization, "Select Organization", htmlAttributes: new { @class = "form-control select2", style = "width:100%", required = "required" })
+                                                        @Html.ValidationMessageFor(model => model.OrganizationID, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        @Html.Label("Zip Code", htmlAttributes: new { @class = "form-label" })
+                                                        <input type="text" class="form-control" required = "required" id="ZipCode" name="ZipCode">
+                                                        @Html.EditorFor(model => model.ZipCodeID, new { htmlAttributes = new { @class = "form-control", @type = "number", style = "display:none;" } })
+                                                        @*<input type="text" class="form-control" id="txtcode" name="txtcode">*@
+                                                        @Html.ValidationMessageFor(model => model.ZipCodeID, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.Label("Street No", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.StreetNo, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.StreetNo, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.Label("Street name", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.StreetName, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.StreetName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <hr style="border-top:2px solid #484747;width:80%;margin:auto;" />
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.Label("User Name", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                                        @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                                        @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                                                        <p><span class="text-danger">@ViewBag.Message</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        @Html.Label("Password", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @type = "password", required = "required" } })
+                                                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br />
+                                            <hr style="border-top:2px solid #484747;width:80%;margin:auto;" />
+                                            <br />
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        @Html.Label("Remarks", htmlAttributes: new { @class = "form-label" })
+                                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- /.box-body -->
+                                        <div class="box-footer pull-right">
+                                            <button type="submit" class="m-1 btn btn-primary pull-right">
+                                                @((Model.RealEstateAgentId == 0 ? "Save" : "Update"))
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <!-- /.box -->
+                            </div>
+                            <div class="col-lg-2 col-12"></div>
+                        </div>
+
+                        <!-- /.row -->
+                    </section>
+                    <!-- /.content -->
+                </div>
+            </div>
+        }
+
+        <div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Organization</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Organization Name</label>
+                                    <input type="text" class="form-control" id="OrganizationName">
+                                    <span class="text-danger" style="display:none" id="organizationwarning">Please enter Organization Name</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary float-end" onclick="OrganizationSave()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Wrapper. Contains page content -->
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        &copy;
+        <script>document.write(new Date().getFullYear())</script> Privont. All Rights Reserved.
+    </footer>
+    <!-- Control Sidebar -->
+    <!-- Page Content overlay -->
+    <!-- Vendor JS -->
+    @*@RenderSection("scripts", required: false)*@
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/Browser_Components/js/vendors.min.js"></script>
+    <script src="~/Browser_Components/js/pages/chat-popup.js"></script>
+    <script src="~/assets/icons/feather-icons/feather.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="~/assets/vendor_components/select2/dist/js/select2.full.js"></script>
+    <script src="~/assets/vendor_plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="~/assets/vendor_plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <script src="~/assets/vendor_components/moment/min/moment.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+    <script src="~/assets/vendor_plugins/timepicker/bootstrap-timepicker.min.js"></script>
+    <script src="~/assets/vendor_plugins/iCheck/icheck.min.js"></script>
+    <script src="~/Browser_Components/js/template.js"></script>
+    <script src="~/Browser_Components/js/pages/advanced-form-element.js"></script>
+    <script src="~/assets/vendor_components/progressbar.js-master/dist/progressbar.js"></script>
+    <script src="~/Browser_Components/js/template.js"></script>
+
+    <script src="~/assets/vendor_components/jquery-steps-master/build/jquery.steps.js"></script>
+    <script src="~/assets/vendor_components/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="~/Browser_Components/js/pages/steps.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    
+    <script>
+    $(document).ready(function () {
+        // Find the <a> element with href="#finish"
+        $('a[href="#finish"]').click(function (event) {
+            /*                console.log("Link with href='#finish' clicked!");*/
+            $("#btnfinished").click();
+            // You can perform additional actions here
+        });
+
+        $("#ZipCode").val(@Model.ZipCode);
+        //$("#ZipCodeID").change(function () {
+        //    var ZipCodeID = $("#ZipCodeID").val();
+        //    if (ZipCodeID == "" || ZipCodeID == null || ZipCodeID == 0) {
+        //        return;
+        //    }
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/RealEstateAgentInfo/GetZipCodeValue",
+        //        data: JSON.stringify({ ZipCodeID }),
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (r) {
+        //            var data = r.split(',');
+        //            var ZipCode = data[0];
+        //            $("#ZipCode").val(ZipCode);
+        //        },
+        //        error: function (e) {
+        //            console.log("Error getting Value")
+        //        }
+        //    });
+
+        //})
+    });
+    $('a[href="#finish"]').click(function (event) {
+        /*            console.log("Link with href='#finish' clicked!");*/
+        $("#btnfinished").click();
+        // You can perform additional actions here
+    });
+
+
+
+
+    $("#ZipCode").autocomplete({
+        source: function (request, response) {
+            // Fetch data
+            $.ajax({
+                url: "/RealEstateAgentInfo/GetZipCode",
+                type: 'post',
+                dataType: "json",
+                async: true,
+                data: {
+
+                    ProductTitle: request.term
+                },
+                success: function (data) {
+                    //alert(JSON.stringify(data));
+                    response($.map(data, function (item) {
+                        return { label: item.label, value: item.value };
+                    }))
+                }
+            });
+        },
+        select: function (event, ui) {
+            // Set selection
+            //alert(ui.item.label); // display the selected text
+            //alert(ui.item.value); // save selected id to input
+            //Add to table
+            $("#ZipCode").val(ui.item.label);
+            $("#ZipCodeID").val(ui.item.value);
+            return false;
+        },
+        focus: function (event, ui) {
+            // alert("Focus" + ui.item.ProductID);
+            //alert("Focus" + ui.item.label + "-" + ui.item.value);
+
+            return false;
+        },
+    }).keyup(function (e) {
+        if (e.which === 13) {
+            $(".ui-menu-item").hide();
+        }
+    });
+    //$("#ZipCodeID").autocomplete({
+    //    source: function (request, response) {
+    //        // Fetch data
+    //        $.ajax({
+    //            url: "/RealEstateAgentInfo/GetZipCode",
+    //            type: 'post',
+    //            dataType: "json",
+    //            data: {
+    //                ZipCode: request.term
+    //            },
+    //            success: function (data) {
+    //                //alert(JSON.stringify(data));
+    //                response($.map(data, function (item) {
+    //                    return { label: item.label, value: item.value };
+    //                }))
+    //            }
+    //        });
+    //    },
+    //    select: function (event, ui) {
+    //        // Set selection
+    //        //alert(ui.item.label); // display the selected text
+    //        //alert(ui.item.value); // save selected id to input
+    //        //Add to table
+    //        /*                AddToProductsByProductID(ui.item.value);*/
+    //        $("#ZipCodeID").val(ui.item.value);
+    //        return false;
+    //    },
+    //    focus: function (event, ui) {
+    //        // alert("Focus" + ui.item.ProductID);
+    //        //alert("Focus" + ui.item.label + "-" + ui.item.value);
+
+    //        return false;
+    //    },
+    //}).keyup(function (e) {
+    //    if (e.which === 13) {
+    //        $(".ui-menu-item").hide();
+    //    }
+    //});
+
+        function Verify() {
+            var Email = $("#EmailAddress").val();
+            var Firstname = $("#FirstName").val();
+            var Lastname = $("#LastName").val();
+            var Type = 1;
+            var userID = $("#RealEstateAgentId").val();
+
+            if (Firstname == "" || Firstname == null) {
+                Swal.fire(
+                    '',
+                    'Please Enter First Name',
+                    'error'
+                );
+                return;
+            }
+            if (Lastname == "" || Lastname == null) {
+                Swal.fire(
+                    '',
+                    'Please Enter Last Name',
+                    'error'
+                );
+                return;
+            }
+            if (Email == "" || Email == null) {
+                Swal.fire(
+                    '',
+                    'Please Enter Email',
+                    'error'
+                );
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/GeneralApis/VerifyEmail",
+                data: JSON.stringify({ Email, Firstname, Lastname, Type, userID }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (r) {
+                    var data = r.split(',');
+                    if (data[0] == "true") {
+                        Swal.fire(
+                            'Success',
+                            'Verification Code Send to Your Email.Please Check Your Inbox',
+                            'success'
+                        );
+                    }
+                    $("#RealEstateAgentId").val(data[1]);
+                },
+                error: function (x, e) {
+                    Swal.fire("", "Saving Error");
+                },
+                async: false
+            });
+        }
+    function OrganizationSave(objectre) {
+        var OrganizationName = $("#OrganizationName").val();
+        if (OrganizationName == "") {
+            $("#organizationwarning").show();
+            return;
+        }
+        $("#organizationwarning").hide();
+        $("#contactwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/RealEstateAgentInfo/CreateOrganizationInfo",
+            data: JSON.stringify({ OrganizationName }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#OrganizationID').append('<option value="' + r + '">' + OrganizationName + '</option>');
+                $('#OrganizationID').val(r);
+                $("#OrganizationName").val("");
+                $('#modal-fill').modal('hide');
+            },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+
+    </script>
+
+</body>
+</html>

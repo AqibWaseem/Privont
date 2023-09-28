@@ -1,0 +1,46 @@
+﻿@if(General.UserType==1)
+            {
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-xl-2 col-lg-4 order-3 order-xl-first"></div>
+                <div class="col-xl-2 col-lg-4 order-3 order-xl-first">
+                    <div class="box">
+                        <div class="box-body text-center">
+                            <h2 class="my-0">@ViewBag.RealEstateAgent</h2>
+                            <p class="mb-0 text-fade" onclick="window.location.href=">Real Estate</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-4 order-3 order-xl-first">
+                    <div class="box">
+                        <div class="box-body text-center">
+                            <h2 class="my-0">@ViewBag.Lender</h2>
+                            <p class="mb-0 text-fade">Lender</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-4 order-3 order-xl-first">
+                    <div class="box">
+                        <div class="box-body text-center">
+                            <h2 class="my-0">@ViewBag.Vendor</h2>
+                            <p class="mb-0 text-fade">Vendor</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-lg-4 order-3 order-xl-first">
+                    <div class="box">
+                        <div class="box-body text-center">
+                            <h2 class="my-0">@ViewBag.Lead</h2>
+                            <p class="mb-0 text-fade">Leads</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+            }

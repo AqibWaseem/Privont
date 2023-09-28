@@ -1,0 +1,243 @@
+﻿@model IEnumerable<Privont.Models.RealEstateAgentInfo>
+
+@{
+    ViewBag.Title = "Real Estate Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Real Estate Agent</h3>
+                        <button type="button" class="btn btn-success pull-right" onclick="window.location.href='/RealEstateAgentInfo/Create'">
+                            New
+                        </button>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table id="example" class="table b-1 table-hover display nowrap margin-top-10 w-p100 border-succes">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            License
+                                        </th>
+                                        <th>
+                                            Organization
+                                        </th>
+                                        <th>
+                                            Email
+                                        </th>
+                                        <th>
+                                            Contact
+                                        </th>
+                                        @if (General.UserType == 1)
+                                        {
+                                            <th>Approved / Not Approved</th>
+                                        }
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr id="@item.RealEstateAgentId">
+                                            <td>
+                                                @item.FirstName @item.LastName
+                                            </td>
+                                            <td>
+                                                @item.LicenseNo
+                                            </td>
+                                            <td>
+                                                @item.OrganizationTitle
+                                            </td>
+                                            <td>
+                                                @item.EmailAddress
+                                            </td>
+                                            <td>
+                                                @item.Contact1
+                                            </td>
+                                            @if (General.UserType == 1)
+                                            {
+                                                <td>
+                                                    @if (item.IsApproved == true)
+                                                    {
+                                                        <span class="small badge badge-success">Approved</span>
+                                                        <span>@item.ApprovedRemarks</span>
+                                                    }
+                                                    else if (item.IsApproved == false)
+                                                    {
+                                                        <button type="button" id="btn_@item.RealEstateAgentId" class="open-modal btn-sm btn btn-primary pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill" onclick="OpenLenderModal(@item.RealEstateAgentId)" style="margin:0 5px;">
+                                                            Approved
+                                                        </button>
+                                                        <span style="display:none;" id="lbl_@item.RealEstateAgentId">
+                                                            <span id="App_@item.RealEstateAgentId" class="small badge badge-success">Approved</span>
+                                                            <span id="UnApp_@item.RealEstateAgentId" class="small badge badge-danger">Not Approved</span>
+                                                            <span id="Remarks_@item.RealEstateAgentId">@item.ApprovedRemarks</span>
+                                                        </span>
+                                                    }
+                                                </td>
+                                            }
+                                            <td>
+                                                <button onclick="window.location.href='/RealEstateAgentInfo/Edit/@item.RealEstateAgentId'" type="button" class="m-1 btn btn-success btn-sm  me-1">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button id="@item.RealEstateAgentId" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                                                    <i class="fa fa-close"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+
+
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Approve Real Estate</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="pull-center">
+                                <div class="c-inputs-stacked">
+                                    <input type="checkbox" value="1" id="checkbox_123">
+                                    <label for="checkbox_123" class="me-30">Approved</label>
+                                   </div>
+
+
+                                @Html.Label("Remarks", htmlAttributes: new { @class = "" })<span class="text-danger">*</span>
+                                @Html.Hidden("RealEstateAgentID")
+                                <input type="text" class="form-control" id="ApprovalRemarks">
+                                <span class="text-danger" style="display:none" id="organizationwarning">Please enter Approval Remarks</span>
+                                @Html.ValidationMessage("ApprovalRemarks", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pull-right">
+                    <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                    <input type="button" onclick="AddApprovalRemarks()" value="Add Remarks" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var currentrow;
+
+
+    function OpenLenderModal(obj) {
+        var value = obj;
+        $("#RealEstateAgentID").val(value);
+        currentrow = $(obj).closest('td');
+    }
+
+    function AddApprovalRemarks() {
+        var RealEstateAgentID = $("#RealEstateAgentID").val();
+        var ApprovalRemarks = $("#ApprovalRemarks").val();
+        var Approved = $('input[type="checkbox"]:checked').val();
+        if (ApprovalRemarks == "") {
+            $("#ApprovalRemarks").show();
+            return;
+        }
+        $("#organizationwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/RealEstateAgentInfo/ApprovalStatus",
+            data: JSON.stringify({
+                RealEstateAgentID, Approved, ApprovalRemarks
+            }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            async: true,
+            success: function (r) {
+                var data = r.split(',');
+                //var newHtml = "<span class='small badge badge-success'>Approved</span><span>" + ApprovalRemarks + "</span>";
+                //currentrow.append(newHtml);
+                $("#lbl_" + RealEstateAgentID).show();
+                $("#btn_" + RealEstateAgentID).hide();
+                if (Approved == 1) {
+                    $("#App_" + RealEstateAgentID).show();
+                    $("#UnApp_" + RealEstateAgentID).hide();
+                }
+                if (Approved == 0) {
+                    $("#App_" + RealEstateAgentID).hide();
+                    $("#UnApp_" + RealEstateAgentID).show();
+                }
+                $("#Remarks_" + RealEstateAgentID).text(ApprovalRemarks);
+
+                $("#ApprovalRemarks").val("");
+                $('#modal-fill').modal('hide');
+            },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+
+    function DeleteButtonclicked(object) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are you sure to delete the selected record?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: '/RealEstateAgentInfo/Delete',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: object.id },
+                    success: function () {
+
+                        $("#" + object.id).remove();
+                    },
+                    error: function () {
+                        alert('error');
+                    }
+                })
+                Swal.fire(
+                    'Deleted!',
+                    'Your record has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+</script>
+
+
+

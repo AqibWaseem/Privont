@@ -1,0 +1,98 @@
+﻿@model List<Privont.Models.APIConfigInfo>
+
+@{
+    ViewBag.Title = "API Configuration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int j = 1;
+}
+
+
+
+    <div class="content-wrapper">
+        <div class="container-full">
+            <!-- Content Header (Page header) -->
+            <!-- Main content -->
+            <section class="content">
+                <div class="row">
+                    <div class="box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">API Configuration</h3>
+                            <button type="submit" class="btn btn-success pull-right" onclick="SaveRecords()">
+                                Save
+                            </button>
+                        </div>
+                        <!-- /.box-header -->
+                        <div class="box-body">
+                            <div class="table-responsive">
+
+
+                                @Html.AntiForgeryToken()
+                                <table id="tblData" class="table table-bordered table-condensed table-condensed ">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>
+                                                Type
+                                            </th>
+                                            <th>
+                                                API Configuration <span style="color:maroon">(Authorization Key)</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Count; i++)
+                                        {
+                                            <tr>
+                                                <td style="display:none;">@Model[i].TypeID</td>
+                                                <td>
+                                                    @(j++)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(model => Model[i].APITypeTitle)
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control" value="@Model[i].APIConfig" name="@Model[i].TypeID" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </section>
+            <!-- /.content -->
+        </div>
+    </div>
+<script>
+    function SaveRecords() {
+        var collection = new Array();
+        $("#tblData tbody tr").each(function () {
+            var object = {};
+            object.TypeID = $(this).children("TD").eq(0).html();
+            object.APIConfig = $(this).children("TD").eq(3).find("input").val();
+            collection.push(object);
+        });
+        $.ajax({
+            type: "POST",
+            url: "APIConfiguration",
+            data: JSON.stringify({ collection }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                window.location.reload();
+            },
+            error: function (e) {
+                alert("error " + e);
+
+            }
+        });
+    }
+</script>

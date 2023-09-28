@@ -1,0 +1,743 @@
+﻿@if (Request.Cookies["UserID"] == null)
+{
+    Response.Redirect("~/Home/Login");
+}   
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../images/favicon.ico">
+    <title>Privont - @ViewBag.Title</title>
+
+    <!-- Vendors Style-->
+    <link href="~/Browser_Components/css/vendors_css.css" rel="stylesheet" />
+    <!-- Style-->
+    <link href="~/Browser_Components/css/horizontal-menu.css" rel="stylesheet" />
+    <link href="~/Browser_Components/css/style.css" rel="stylesheet" />
+    <link href="~/Browser_Components/css/skin_color.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <style>
+
+        .main-header .app-menu .search-bx input[type="search"]
+        {
+            color:white;
+        }
+        .fs-30 {
+            font-size: 1.7rem !important;
+        }
+        .table > tbody > tr > td, .table > tbody > tr > th {
+        padding:10px;
+        }
+        .table > thead > tr > th {
+            padding: 12px;
+        }
+    </style>
+</head>
+
+<body class="layout-top-nav light-skin theme-primary fixed">
+
+    <div class="wrapper">
+        <div id="loader"></div>
+
+        <header class="main-header">
+            <div class="inside-header">
+                <div class="d-flex align-items-center logo-box justify-content-start">
+                    <!-- Logo -->
+                    <a href="/Home/Index" class="logo">
+                        <!-- logo-->
+                        <div class="logo-lg">
+                            <img src="~/images/Privont-Logo.png" sstyle="width: 80%;" />
+                            <!--<span class="light-logo" style="font-size:30px; color:white">Privont-->@*<img src="../images/logo-light-text.png" alt="logo">*@
+                            <!--</span>
+                            <span class="dark-logo">Privont-->
+                            @*<img src="../images/logo-light-text.png" alt="logo">*@<!--</span>-->
+
+                        </div>
+                    </a>
+                </div>
+                <!-- Header Navbar -->
+                <nav class="navbar navbar-static-top">
+                    <!-- Sidebar toggle button-->
+                    <div class="app-menu">
+                        <ul class="header-megamenu nav">
+                        </ul>
+                    </div>
+
+                    <div class="navbar-custom-menu r-side">
+                        <ul class="nav navbar-nav">
+                            <li class="btn-group d-lg-inline-flex d-none">
+                                <div class="app-menu">
+                                    <div class="search-bx mx-5">
+                                        <form>
+                                            @Html.Partial("~/Views/Shared/_TopNavigation.cshtml")
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="btn-group nav-item d-lg-inline-flex d-none">
+                                <a href="#" data-provide="fullscreen" class="waves-effect waves-light nav-link full-screen btn-warning-light" title="Full Screen">
+                                    <i data-feather="maximize"></i>
+                                </a>
+                            </li>
+                            @if (General.UserType == 2)
+                            {
+                                <li class="dropdown notifications-menu">
+                                    <a href="#" class="waves-effect waves-light dropdown-toggle btn-info-light" data-bs-toggle="dropdown" title="Notifications">
+                                        <span class="icon-Group-chat fs-30" data-bs-toggle="modal" data-bs-target="#modal-fill_Layout"><i class="fa fa-user-plus" aria-hidden="true"></i></span>
+                                    </a>
+                                </li>
+                            }
+                            <!-- Notifications -->
+                            <li class="dropdown notifications-menu">
+                                <a href="#" class="waves-effect waves-light dropdown-toggle btn-info-light" data-bs-toggle="dropdown" title="Notifications">
+                                    <i data-feather="bell"></i>
+                                </a>
+                                <ul class="dropdown-menu animated bounceIn">
+                                    <li class="header">
+                                        <div class="p-20">
+                                            <div class="flexbox">
+                                                <div>
+                                                    <h4 class="mb-0 mt-0">Notifications</h4>
+                                                </div>
+                                                <div>
+                                                    <a href="#" class="text-danger">Clear All</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <!-- inner menu: contains the actual data -->
+                                        @*<ul class="menu sm-scrol">
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-users text-info"></i> Curabitur id eros quis nunc suscipit blandit.
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-warning text-warning"></i> Duis malesuada justo eu sapien elementum, in semper diam posuere.
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-users text-danger"></i> Donec at nisi sit amet tortor commodo porttitor pretium a erat.
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-shopping-cart text-success"></i> In gravida mauris et nisi
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-user text-danger"></i> Praesent eu lacus in libero dictum fermentum.
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-user text-primary"></i> Nunc fringilla lorem
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-user text-success"></i> Nullam euismod dolor ut quam interdum, at scelerisque ipsum imperdiet.
+                            </a>
+                        </li>
+                    </ul>*@
+                                    </li>
+                                    <li class="footer">
+                                        <a href="#">View all</a>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <!-- Control Sidebar Toggle Button -->
+                            <!-- User Account-->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="waves-effect waves-light dropdown-toggle w-auto l-h-12 bg-transparent py-0 no-shadow" data-bs-toggle="dropdown" title="User">
+                                    <img src="~/images/avatar/avatar-1.png" class="avatar rounded-10 bg-primary-light h-40 w-40" alt="" />
+                                </a>
+                                <ul class="dropdown-menu animated flipInX">
+                                    <li class="user-body">
+                                        @if (General.UserType == 1)
+                                        {
+                                            <a class="dropdown-item" href="/UserInfo/Edit/@General.UserID"><i class="ti-user text-muted me-2"></i> Profile</a>
+                                        }
+                                        else if (General.UserType == 2)
+                                        {
+                                            <a class="dropdown-item" href="/RealEstateAgentInfo/Edit/@General.UserID"><i class="ti-user text-muted me-2"></i> Profile</a>
+                                        }
+                                        else if (General.UserType == 3)
+                                        {
+                                            <a class="dropdown-item" href="/LenderInfo/Edit/@General.UserID"><i class="ti-user text-muted me-2"></i> Profile</a>
+                                        }
+                                        <div class="dropdown-divider"></div>
+                                        <a class="dropdown-item" href="/Home/Logout"><i class="ti-lock text-muted me-2"></i> Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <nav class="main-nav" role="navigation">
+
+            <!-- Mobile menu toggle button (hamburger/x icon) -->
+            <input id="main-menu-state" type="checkbox" />
+            <label class="main-menu-btn" for="main-menu-state">
+                <span class="main-menu-btn-icon"></span> Toggle main menu visibility
+            </label>
+
+            <!-- Sample menu definition -->
+            <ul id="main-menu" class="sm sm-blue">
+                @*<li>
+                        <a href="#"><i data-feather="monitor"></i>Dashboard</a>
+                        <ul>
+                            <li><a href="index.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dashboard 1</a></li>
+                            <li><a href="index2.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dashboard 2</a></li>
+                            <li><a href="index3.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dashboard 3</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="layers"></i>Apps</a>
+                        <ul>
+                            <li><a href="extra_calendar.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Calendar</a></li>
+                            <li><a href="contact_app.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Contact List</a></li>
+                            <li><a href="contact_app_chat.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Chat</a></li>
+                            <li><a href="extra_taskboard.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Todo</a></li>
+                            <li><a href="mailbox.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Mailbox</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="layout"></i>Widgets</a>
+                        <ul>
+                            <li><a href="widgets_blog.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Blog</a></li>
+                            <li><a href="widgets_chart.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Chart</a></li>
+                            <li><a href="widgets_list.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>List</a></li>
+                            <li><a href="widgets_social.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Social</a></li>
+                            <li><a href="widgets_statistic.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Statistic</a></li>
+                            <li><a href="widgets_weather.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Weather</a></li>
+                            <li><a href="widgets.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Widgets</a></li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Modals</a>
+                                <ul>
+                                    <li><a href="component_modals.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Modals</a></li>
+                                    <li><a href="component_sweatalert.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Sweet Alert</a></li>
+                                    <li><a href="component_notification.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Toastr</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Maps</a>
+                                <ul>
+                                    <li><a href="map_google.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Google Map</a></li>
+                                    <li><a href="map_vector.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Vector Map</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="lock"></i>Login &amp; Error</a>
+                        <ul>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Authentication</a>
+                                <ul>
+                                    <li><a href="auth_login.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Login</a></li>
+                                    <li><a href="auth_register.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Register</a></li>
+                                    <li><a href="auth_lockscreen.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Lockscreen</a></li>
+                                    <li><a href="auth_user_pass.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Recover password</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Miscellaneous</a>
+                                <ul>
+                                    <li><a href="error_404.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Error 404</a></li>
+                                    <li><a href="error_500.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Error 500</a></li>
+                                    <li><a href="error_maintenance.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Maintenance</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="edit"></i>UI</a>
+                        <ul>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Utilities</a>
+                                <ul>
+                                    <li><a href="ui_grid.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Grid System</a></li>
+                                    <li><a href="ui_badges.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Badges</a></li>
+                                    <li><a href="ui_border_utilities.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Border</a></li>
+                                    <li><a href="ui_buttons.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Buttons</a></li>
+                                    <li><a href="ui_color_utilities.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Color</a></li>
+                                    <li><a href="ui_dropdown.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dropdown</a></li>
+                                    <li><a href="ui_dropdown_grid.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dropdown Grid</a></li>
+                                    <li><a href="ui_progress_bars.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Progress Bars</a></li>
+                                    <li><a href="ui_ribbons.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Ribbons</a></li>
+                                    <li><a href="ui_sliders.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Sliders</a></li>
+                                    <li><a href="ui_typography.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Typography</a></li>
+                                    <li><a href="ui_tab.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Tabs</a></li>
+                                    <li><a href="ui_timeline.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Timeline</a></li>
+                                    <li><a href="ui_timeline_horizontal.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Horizontal Timeline</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Card</a>
+                                <ul>
+                                    <li><a href="box_cards.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>User Card</a></li>
+                                    <li><a href="box_advanced.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advanced Card</a></li>
+                                    <li><a href="box_basic.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Basic Card</a></li>
+                                    <li><a href="box_color.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Card Color</a></li>
+                                    <li><a href="box_group.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Card Group</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Icons</a>
+                                <ul>
+                                    <li><a href="icons_fontawesome.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Font Awesome</a></li>
+                                    <li><a href="icons_glyphicons.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Glyphicons</a></li>
+                                    <li><a href="icons_material.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Material Icons</a></li>
+                                    <li><a href="icons_themify.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Themify Icons</a></li>
+                                    <li><a href="icons_simpleline.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Simple Line Icons</a></li>
+                                    <li><a href="icons_cryptocoins.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Cryptocoins Icons</a></li>
+                                    <li><a href="icons_flag.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Flag Icons</a></li>
+                                    <li><a href="icons_weather.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Weather Icons</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Components</a>
+                                <ul>
+                                    <li><a href="component_bootstrap_switch.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Bootstrap Switch</a></li>
+                                    <li><a href="component_date_paginator.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Date Paginator</a></li>
+                                    <li><a href="component_media_advanced.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Advanced Medias</a></li>
+                                    <li><a href="component_rangeslider.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Range Slider</a></li>
+                                    <li><a href="component_rating.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Ratings</a></li>
+                                    <li><a href="component_animations.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Animations</a></li>
+                                    <li><a href="extension_fullscreen.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Fullscreen</a></li>
+                                    <li><a href="extension_pace.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Pace</a></li>
+                                    <li><a href="component_nestable.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Nestable</a></li>
+                                    <li><a href="component_portlet_draggable.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Draggable Portlets</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="file-text"></i>Forms</a>
+                        <ul>
+                            <li><a href="forms_advanced.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Form Elements</a></li>
+                            <li><a href="forms_general.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Form Layout</a></li>
+                            <li><a href="forms_wizard.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Form Wizard</a></li>
+                            <li><a href="forms_validation.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Form Validation</a></li>
+                            <li><a href="forms_mask.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Formatter</a></li>
+                            <li><a href="forms_xeditable.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Xeditable Editor</a></li>
+                            <li><a href="forms_dropzone.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Dropzone</a></li>
+                            <li><a href="forms_code_editor.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Code Editor</a></li>
+                            <li><a href="forms_editors.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Editor</a></li>
+                            <li><a href="forms_editor_markdown.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Markdown</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="layout"></i>Table</a>
+                        <ul>
+                            <li><a href="tables_simple.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Simple tables</a></li>
+                            <li><a href="tables_data.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Data tables</a></li>
+                            <li><a href="tables_editable.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Editable Tables</a></li>
+                            <li><a href="tables_color.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Table Color</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="pie-chart"></i>Charts</a>
+                        <ul>
+                            <li><a href="charts_chartjs.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>ChartJS</a></li>
+                            <li><a href="charts_flot.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Flot</a></li>
+                            <li><a href="charts_inline.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Inline charts</a></li>
+                            <li><a href="charts_morris.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Morris</a></li>
+                            <li><a href="charts_peity.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Peity</a></li>
+                            <li><a href="charts_chartist.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Chartist</a></li>
+                            <li><a href="charts_c3_axis.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Axis Chart</a></li>
+                            <li><a href="charts_c3_bar.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Bar Chart</a></li>
+                            <li><a href="charts_c3_data.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Data Chart</a></li>
+                            <li><a href="charts_c3_line.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Line Chart</a></li>
+                            <li><a href="charts_echarts_basic.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Basic Charts</a></li>
+                            <li><a href="charts_echarts_bar.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Bar Chart</a></li>
+                            <li><a href="charts_echarts_pie_doughnut.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Pie & Doughnut Chart</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="folder"></i>Pages</a>
+                        <ul>
+                            <li><a href="invoice.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Invoice</a></li>
+                            <li><a href="invoicelist.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Invoice List</a></li>
+                            <li><a href="extra_app_ticket.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Support Ticket</a></li>
+                            <li><a href="extra_profile.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>User Profile</a></li>
+                            <li><a href="contact_userlist_grid.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Userlist Grid</a></li>
+                            <li><a href="contact_userlist.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Userlist</a></li>
+                            <li><a href="sample_faq.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>FAQs</a></li>
+                            <li>
+                                <a href="#"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Extra Pages</a>
+                                <ul>
+                                    <li><a href="sample_blank.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Blank</a></li>
+                                    <li><a href="sample_coming_soon.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Coming Soon</a></li>
+                                    <li><a href="sample_custom_scroll.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Custom Scrolls</a></li>
+                                    <li><a href="sample_gallery.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Gallery</a></li>
+                                    <li><a href="sample_lightbox.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Lightbox Popup</a></li>
+                                    <li><a href="sample_pricing.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Pricing</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i data-feather="shopping-bag"></i>Ecommerce</a>
+                        <ul>
+                            <li><a href="ecommerce_products.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Products</a></li>
+                            <li><a href="ecommerce_cart.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Products Cart</a></li>
+                            <li><a href="ecommerce_products_edit.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Products Edit</a></li>
+                            <li><a href="ecommerce_details.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Product Details</a></li>
+                            <li><a href="ecommerce_orders.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Product Orders</a></li>
+                            <li><a href="ecommerce_checkout.html"><i class="icon-Commit"><span class="path1"></span><span class="path2"></span></i>Products Checkout</a></li>
+                        </ul>
+                    </li>*@
+                @if (General.UserType == 1)
+                {
+                    <li><a href="/RealEstateAgentInfo/Index"><i data-feather="folder"></i>Real Estate Agent</a></li>
+                    <li><a href="/LenderInfo/Index"><i class="fa fa-money"></i>Lender</a></li>
+                    <li><a href="/VendorInfo/Index"><i class="fa fa-user-circle-o"></i>Vendor</a></li>
+                    <li><a href="/LeadInfo/Index"><i data-feather="shopping-bag"></i>Lead</a></li>
+                    <li><a href="/LenderInfo/FavouriteLender"><i data-feather="edit"></i>Favourite Lender</a></li>
+                    <li><a href="/LeadInfo/AddLeadExpiryTime"><i data-feather="edit"></i>Add Lead Expiry</a></li>
+                    <li><a href="/UserInfo/Index"><i data-feather="edit"></i> Users </a></li>
+                }
+                else if (General.UserType == 2)
+                {
+                    <li><a href="/LeadInfo/Index"><i data-feather="shopping-bag"></i>Lead</a></li>
+                    <li><a href="/LenderInfo/FavouriteLender"><i data-feather="edit"></i>Favourite Lender</a></li>
+                }
+                else if (General.UserType == 3)
+                {
+                    <li><a href="/LeadInfo/Index"><i data-feather="shopping-bag"></i>Lead</a></li>
+                }
+                else
+                {
+                    <li>#</li>
+                }
+            </ul>
+        </nav>
+        @RenderBody();
+        <!--<div id="chat-box-body">
+            <div id="chat-circle" class="waves-effect waves-circle btn btn-circle btn-lg btn-warning l-h-70">
+                <div id="chat-overlay"></div>
+                <span class="icon-Group-chat fs-30" data-bs-toggle="modal" data-bs-target="#modal-fill">Invite-->@*<span class="path1"></span><span class="path2"></span>*@<!--</span>
+            </div>
+        </div>-->
+    </div>
+
+
+
+    <div class="modal modal-fill fade" data-backdrop="false" id="modal-fill_Layout" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Invite</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="pull-center">
+                                    @*@Html.Label("Generate Link For", htmlAttributes: new { @class = "form-label" })
+                        <select id="GenerateLinkFor" class="form-control" style="width:100%">
+                            <option value="">Select Generate Link For</option>
+                            <option value="1">Real Estate Agent</option>
+                            <option value="2">Lender</option>
+                        </select>*@
+
+                                    <div class="box-body">
+
+                                        <div class="demo-radio-button">
+                                            <input name="group1" checked type="radio" value="1" class="with-gap" id="radio_3" />
+                                            <label for="radio_3">Real Estate </label>
+                                            <input name="group1" type="radio" value="2" id="radio_4" class="with-gap" />
+                                            <label for="radio_4">Lender</label>
+                                        </div>
+
+                                    </div>
+
+                                    @*@Html.DropDownList("GenerateLinkFor", (SelectList)ViewBag.GenerateLink, "Generate Link For", htmlAttributes: new { @class = "form-control select2", style = "width:100%" })*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="pull-center inline">
+                                    @Html.Label("First Name", htmlAttributes: new { @class = "form-label" })
+                                    <div class="inline" style="display: flex;">
+                                        @Html.Editor("FirstName", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="pull-center inline">
+                                    @Html.Label("Last Name", htmlAttributes: new { @class = "form-label" })
+                                    <div class="inline" style="display: flex;">
+                                        @Html.Editor("LastName", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="pull-center inline">
+                                    @Html.Label("Phone No", htmlAttributes: new { @class = "form-label" })
+                                    <div class="inline" style="display: flex;">
+                                        @Html.Editor("PhoneNo", new { htmlAttributes = new { @class = "form-control",type="number"} })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="pull-center inline">
+                                    @Html.Label("Email Address", htmlAttributes: new { @class = "form-label" })
+                                    <div class="inline" style="display: flex;">
+                                        @Html.Editor("EmailAddress", new { htmlAttributes = new { @class = "form-control",type="email" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="pull-center inline">
+                                        @Html.Label("Generated Link", htmlAttributes: new { @class = "form-label" })
+                                        <div class="inline" style="display: flex;">
+                                            @Html.Editor("GeneratedLink", new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                            <button id="copyButton" class="btn btn-primary">Copy</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    @Html.Label(" ", htmlAttributes: new { @class = "form-label" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer pull-right">
+                            <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                            <input type="button" onclick="GenerateLink()" value="Save & Generate Link" class="btn btn-primary" />
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+
+
+    <!-- Content Wrapper. Contains page content -->
+    <!-- /.content-wrapper -->
+    <footer class="main-footer">
+        &copy;
+        <script>document.write(new Date().getFullYear())</script> Privont. All Rights Reserved.
+    </footer>
+    <!-- Control Sidebar -->
+    <!-- Page Content overlay -->
+    <!-- Vendor JS -->
+    @*@RenderSection("scripts", required: false)*@
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/Browser_Components/js/vendors.min.js"></script>
+    <script src="~/Browser_Components/js/pages/chat-popup.js"></script>
+    <script src="~/assets/icons/feather-icons/feather.min.js"></script>
+    <script src="~/assets/vendor_components/apexcharts-bundle/dist/apexcharts.js"></script>
+
+    <script src="~/assets/vendor_components/bootstrap-select/dist/js/bootstrap-select.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script>
+    <script src="~/assets/vendor_components/select2/dist/js/select2.full.js"></script>
+    <script src="~/assets/vendor_plugins/input-mask/jquery.inputmask.js"></script>
+    <script src="~/assets/vendor_plugins/input-mask/jquery.inputmask.extensions.js"></script>
+    <script src="~/assets/vendor_components/moment/min/moment.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/assets/vendor_components/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.min.js"></script>
+    <script src="~/assets/vendor_plugins/timepicker/bootstrap-timepicker.min.js"></script>
+    <script src="~/assets/vendor_plugins/iCheck/icheck.min.js"></script>
+    <script src="~/Browser_Components/js/template.js"></script>
+    <script src="~/Browser_Components/js/pages/advanced-form-element.js"></script>
+    <script src="~/assets/vendor_components/progressbar.js-master/dist/progressbar.js"></script>
+    <script src="~/assets/vendor_components/datatable/datatables.min.js"></script>
+    <script src="~/Browser_Components/js/jquery.smartmenus.js"></script>
+    <script src="~/Browser_Components/js/menus.js"></script>
+    <script src="~/Browser_Components/js/template.js"></script>
+    <script src="~/Browser_Components/js/pages/dashboard.js"></script>
+    <script src="~/Browser_Components/js/pages/data-table.js"></script>
+
+    <script src="~/assets/vendor_components/jquery-steps-master/build/jquery.steps.js"></script>
+    <script src="~/assets/vendor_components/jquery-validation-1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="~/Browser_Components/js/pages/steps.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+    <script>
+        function GenerateLink() {
+            var value =0;
+            var LinkType = $('input[name="group1"]:checked').val();
+            var FirstName = $("#FirstName").val();
+            var LastName = $("#LastName").val();
+            var PhoneNo = $("#PhoneNo").val();
+            var EmailAddress = $("#EmailAddress").val();
+            if (LinkType == "" || LinkType == null || LinkType == 0) {
+                Swal.fire("", "Please Select For Which Link Is To Generate", "error");
+                return;
+            }
+            if (FirstName == "" || FirstName == null || FirstName == 0) {
+                Swal.fire("", "Please Enter First Name", "error");
+                return;
+            }
+            if (LastName == "" || LastName == null || LastName == 0) {
+                Swal.fire("", "Please Enter Last Name", "error");
+                return;
+            }
+            if (PhoneNo == "" || PhoneNo == null || PhoneNo == 0) {
+                Swal.fire("", "Please Enter Phone No", "error");
+                return;
+            }
+            if (EmailAddress == "" || EmailAddress == null || EmailAddress == 0) {
+                Swal.fire("", "Please Enter Email Address", "error");
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: "/GeneralApis/SaveRecord",
+                data: JSON.stringify({ LinkType, FirstName, LastName, PhoneNo, EmailAddress }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                async: false,
+                success: function (r) {
+                    var data = r.split(',');
+                    if (data[0] == "true") {
+                        value = data[1];
+                    } else {
+                        Swal.fire("", "Error in Data Saving", "error");
+                        return false;
+                    }
+
+                },
+                error: function (e) {
+                    Swal.fire("", "Error in Data Saving", "error");
+                    return false;
+                }
+            });
+
+            // Import CryptoJS library (you need to include the CryptoJS library in your project)
+
+            // Secret key for encryption and decryption (keep this secret)
+            const secretKey = 'Privont@Privont';
+
+            // Data to be encrypted in the token
+            const dataToEncrypt = {
+                userId: @General.UserID,
+                username: 'Abdullah',
+            };
+            // Convert the data to a JSON string
+            const jsonData = JSON.stringify(dataToEncrypt);
+
+            // Encrypt the data using AES encryption
+            const encryptedData = CryptoJS.AES.encrypt(jsonData, secretKey).toString();
+
+            // Creating the token (in this example, we'll simply use the encrypted data as the token)
+            const token = encryptedData;
+            // To decrypt the token, you would do the following:
+            // const decryptedData = CryptoJS.AES.decrypt(token, secretKey).toString(CryptoJS.enc.Utf8);
+            // const decryptedObject = JSON.parse(decryptedData);
+
+/*            var LinkType = $('input[name="group1"]:checked').val();*/
+            var UserType = @General.UserType;
+            var domainUrl = window.location.protocol + "//" + window.location.host;
+            var GeneratedLink = "";
+            // Function to generate a token with an expiration time of 30 minutes (1800000 milliseconds)
+            if (LinkType == 1) {
+                GeneratedLink = domainUrl + "/RealEstateAgentInfo/SignUp?" + 'q=' + token + '&d=' + UserType + '&i=' +@General.UserID+ '&y=' + value + '&s=' + token;
+            }
+            else if (LinkType == 2) {
+                GeneratedLink = domainUrl + "/LenderInfo/SignUp?" + 'q=' + token + '&d=' + UserType + '&i=' +@General.UserID+ '&y=' + value + '&s=' + token;
+            }
+            $("#GeneratedLink").val(GeneratedLink);
+        }
+        $(document).ready(function () {
+            $("#copyButton").click(function () {
+                // Select the text input
+                var copyText = document.getElementById("GeneratedLink");
+                copyText.select();
+
+                try {
+                    // Attempt to copy the text to the clipboard
+                    var successful = document.execCommand("copy");
+                    var message = successful ? "Text copied to clipboard!" : "Failed to copy text.";
+                    Swal.fire(
+                                        '',
+                                        'Link Copied',
+                                        'success'
+                                   );
+                } catch (err) {
+                    console.error("Unable to copy text: " + err);
+                }
+            });
+            //var tokenKey = $('#GeneratedLink').val();
+            //setTimeout(function () {
+            //    navigator.clipboard.writeText(tokenKey);
+            //}, 70);
+
+            //Swal.fire(
+            //    'Claim',
+            //    'Link Copied',
+            //    'success'
+            //);
+
+            //var clipboard = new ClipboardJS('#copyButton', {
+            //    text: function () {
+            //        return $('#GeneratedLink').val(); // Get the text to copy from the input element
+            //    }
+            //});
+
+            // Define success and error handlers (optional)
+//            clipboard.on('success', function (e) {
+//                console.log('Text copied to clipboard:', e.text);
+//                Swal.fire(
+//                    'Claim',
+//                    'Link Copied',
+//                    'success'
+//                );
+//            });
+
+//            clipboard.on('error', function (e) {
+//                console.log('Text copied to clipboard:', e.text);
+//                Swal.fire(
+//                    'Claim',
+//                    'Error Occur',
+//                    'Error'
+//                );
+//});
+        });
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+﻿@model System.Data.DataTable
+
+@{
+    ViewBag.Title = "Favourite Lender Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .theme-primary .select2-container--default.select2-container--open {
+            z-index:9999;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Favourite Lender</h3>
+                        <button type="button" class="btn btn-success btn-sm float-end" data-bs-toggle="modal" data-bs-target="#modal-fill">
+                            Add Lender
+                        </button>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table id="example" class="table b-1 table-hover display nowrap margin-top-10 w-p100 border-succes">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>
+                                            Lender Name
+                                        </th>
+                                        <th>
+                                            Contact
+                                        </th>
+                                        <th>
+                                            Office No
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (System.Data.DataRow dr in Model.Rows)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @dr["LenderName"]
+                                            </td>
+                                            <td>
+                                                @dr["Contact1"]
+                                            </td>
+                                            <td>
+                                                @dr["OfficeNo"]
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+    </div>
+</div>
+
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Favourite Lender</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">Lender</label>
+                            @Html.DropDownList("LenderID", (SelectList)ViewBag.Lender, "Select Lender", htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%" })
+                            <span class="text-danger" style="display:none" id="organizationwarning">Please Select Lender</span>
+                            <span class="text-danger" style="display:none" id="Lenderwarning">Lender Already Exists</span>
+                            <span class="text-danger" style="display:none" id="LenderAdded">Lender Added</span>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary float-end" onclick="AddLender()">Add Lender</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $("#LenderID").change(function () {
+        $("#LenderAdded").hide();
+    });
+    function AddLender(objectre) {
+
+        var LenderID = $("#LenderID").val();
+        var LenderName = $("#LenderID option:selected").text();
+        if (LenderID == "") {
+            $("#organizationwarning").show();
+            return;
+        }
+        $("#organizationwarning").hide();
+        $("#Lenderwarning").hide();
+        $("#LenderAdded").hide();
+        $.ajax({
+            type: "POST",
+            url: "/LenderInfo/SaveFavouritLender",
+            data: JSON.stringify({ LenderID }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = r.split(',');
+                if (data[0] == 1) {
+                    $("#Lenderwarning").show();
+                }
+                else {
+                    var tbl = $("#example tbody tr td.dataTables_empty").length;
+                    console.log("test " + tbl);
+                    if (tbl==1) {
+                        $("#example tbody").empty();
+                    }
+                    var markup = " <tr><td>" + data[1] + "</td><td>" + data[2] + "</td><td>" + data[3] + "</td></tr>";
+                    $("#example tbody").append(markup);
+                    $("#LenderAdded").show();
+                }
+                return;
+            },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+
+
+    function DeleteButtonclicked(object) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are you sure to delete the selected record?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: '/LenderInfo/Delete',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: object.id },
+                    success: function () {
+
+                        $("#" + object.id).remove();
+                    },
+                    error: function () {
+                        alert('error');
+                    }
+                })
+                Swal.fire(
+                    'Deleted!',
+                    'Your record has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+</script>
+
+
+

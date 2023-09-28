@@ -1,0 +1,101 @@
+﻿<style>
+    ol, ul {
+        padding-left: 1rem;
+    }
+</style>
+
+<div class="input-group">
+    <input type="search" class="form-control" placeholder="Search" aria-label="Search" id="LeadSearch" aria-describedby="button-addon3">
+    <div class="input-group-append">
+        <button class="btn" type="button" id="button-addon3"><i data-feather="search"></i></button>
+    </div>
+    <ul class="dropdown-menu" id="hideShowMenu" style=" display: none; width: 260px; list-style-type: none;">
+        <li>
+            <ul class="menu" id="_ulAppend" style="max-height: 350px; list-style-type: none;"></ul>
+        </li>
+    </ul>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- Deposito Admin App -->
+<script>
+    $("#LeadSearch").change(function () {
+        if ($("#LeadSearch").val() == "" || $("#LeadSearch").val() == null || $("#LeadSearch").val() == " " || $("#LeadSearch").val().length==0) {
+            $("#_ulAppend").empty();
+            $("#hideShowMenu").hide();
+            return;
+        }
+    });
+    $("#LeadSearch").on("input",function () {
+        if ($("#LeadSearch").val() == "" || $("#LeadSearch").val() == null || $("#LeadSearch").val() == " " || $("#LeadSearch").val().length == 0) {
+            $("#_ulAppend").empty();
+            $("#hideShowMenu").hide();
+            return;
+        }
+    });
+    var txtTitle = $("#LeadSearch").val();
+        $("#LeadSearch").autocomplete({
+            source: function (request, response) {
+                // Fetch data
+                $.ajax({
+                    url: "/LeadInfo/GetleadInfo",
+                    type: 'post',
+                    dataType: "json",
+                    data: {
+                        txtTitle: request.term
+                    },
+                    async: false,
+                    success: function (data) {
+                        if ($("#LeadSearch").val() == "" || $("#LeadSearch").val() == null || $("#LeadSearch").val() == " ") {
+                            $("#_ulAppend").empty();
+                            $("#hideShowMenu").hide();
+                            return;
+                        }
+                        $("#_ulAppend").empty();
+                        if (data.length > 0) {
+                            var markup = ``;
+                            for (var i = 0; i < data.length; i++) {
+                                var result = data[i];
+                                var Phone = result.value;
+                                var Title = result.label;
+                                var EmailAddress = result.Email;
+                                markup = markup + `<li >
+                                            <a href="#" style='    padding: 0px;
+            padding-left: 0px;
+            padding-right: 10px;
+            padding-top: 5px;' >
+                                              <b>`+ Title + `</b>
+                                              <br><small  style='font-style: italic;'>(`+ EmailAddress + `)</small>
+                                              <br><small  style='font-style: italic;'>(`+ Phone + `)</small>
+                                            </a>
+                                        </li>
+                                        <hr>`;
+                            }
+                            $("#_ulAppend").append(markup);
+                            $("#hideShowMenu").show();
+                        }
+                        else {
+                            $("#hideShowMenu").hide();
+                        }
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $("#LeadSearch").val("");
+                return false;
+            },
+            focus: function (event, ui) {
+                return false;
+            },
+        }).keyup(function (e, ui) {
+            if (e.which === 13) {
+                $("#hideShowMenu").hide();
+                $("#LeadSearch").val("");
+                //window.location.href = ui.value;
+            }
+        });
+</script>

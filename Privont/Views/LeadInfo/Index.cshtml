@@ -1,0 +1,573 @@
+﻿@model IEnumerable<Privont.Models.LeadInfo>
+
+@{
+    ViewBag.Title = "Lead Info";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    System.Data.DataTable dt = new System.Data.DataTable();
+    System.Data.DataTable dt2 = new System.Data.DataTable();
+    decimal i = 0;
+}
+<style>
+    .theme-primary .select2-container--default.select2-container--open {
+        z-index: 9999;
+    }
+</style>
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Leads</h3>
+                        <button type="button" class="btn btn-success btn-sm pull-right" onclick="window.location.href='/LeadInfo/Create'">
+                            New
+                        </button>
+                        <button type="button" class="btn btn-info btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill" style="margin:.0 5px;">
+                            Upload Lead
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-api" style="margin:.0 5px;">
+                            Sync Lead From Apis
+                        </button>
+                    </div>
+                    <h4 class="text-danger">@ViewBag.Message</h4>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <div class="table-responsive">
+                            <table id="example" class="table b-1 table-hover display nowrap margin-top-10 w-p100 border-succes">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        
+                                        <th>
+                                            Phone No
+                                        </th>
+                                        <th>
+                                            Email
+                                        </th>
+                                        @if (General.UserType == 3)
+                                        {
+                                            <th>
+                                                Zip Code
+                                            </th>
+                                        }
+                                        <th>Claim Lead</th>
+                                        <td>Price Point</td>
+                                        @if (General.UserType == 2)
+                                        {
+                                            <th>Claiming</th>
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr id="@item.LeadID">
+                                            @if (General.UserType == 3)
+                                            {
+                                                if (item.OptInSMSStatus == 1)
+                                                {
+                                                    dt2 = General.FetchData($@"Select * from LeadClaimInfo Where ClaimingLender=={General.UserID} and LeadID = {item.LeadID}");
+                                                    if (dt2.Rows.Count > 0)
+                                                    {
+                                                        <td>
+                                                            @item.FirstName @item.LastName
+                                                        </td>
+                                                        <td>
+                                                            @item.PhoneNo
+                                                        </td>
+                                                        <td>
+                                                            @item.EmailAddress
+                                                        </td>
+                                                        <td>
+                                                            @item.ZipCode
+                                                        </td>
+                                                        <td></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td>
+                                                            ****
+                                                        </td>
+                                                        <td>
+                                                            ****
+                                                        </td>
+                                                        <td>
+                                                            ****
+                                                        </td>
+                                                        <td>
+                                                            @item.ZipCode
+                                                        </td>
+                                                        if (item.ReadytoOptin == false)
+                                                        {
+                                                            if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
+                                                            {
+                                                                <td>Claimed</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>
+                                                                    <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                                                                        Claim Lead
+                                                                    </button>
+                                                                    <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
+                                                                </td>
+                                                            }
+
+                                                        }
+                                                        else
+                                                        {
+                                                            <td></td>
+                                                        }
+                                                        <td></td>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        ****
+                                                    </td>
+                                                    <td>
+                                                        ****
+                                                    </td>
+                                                    <td>
+                                                        ****
+                                                    </td>
+                                                    <td>
+                                                        @item.ZipCode
+                                                    </td>
+                                                    if (item.ReadytoOptin == false)
+                                                    {
+                                                        if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
+                                                        {
+                                                            <td>Claimed</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                                                                    Claim Lead
+                                                                </button>
+                                                                <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
+                                                            </td>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    <td></td>
+                                                }
+
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    @item.FirstName @item.LastName
+                                                </td>
+                                                <td>
+                                                    @item.PhoneNo
+                                                </td>
+                                                <td>
+                                                    @item.EmailAddress
+                                                </td>
+                                                {
+                                                    dt = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)Name
+from LeadClaimInfo inner join LenderInfo on LeadClaimInfo.ClaimingLender = LenderInfo.LenderId
+Where LeadClaimInfo.LEadID= {item.LeadID}");
+                                                }
+                                                <td>
+                                                    <div class="box-body">
+                                                        <span style="display:none">@(i=0);</span>
+                                                        @foreach (System.Data.DataRow sa in dt.Rows)
+                                                        {
+                                                            if (i == 0)
+                                                            {
+                                                                <span class="badge badge-pill badge-success">@sa["Name"]</span>
+                                                            }
+                                                            else if (i == 1)
+                                                            {
+                                                                <span class="badge badge-pill badge-danger">@sa["Name"]</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="badge badge-pill badge-info">@sa["Name"]</span>
+                                                            }
+                                                            <span style="display:none">@(i=i+1);</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                if (General.UserType == 2)
+                                                {
+                                                    <td>
+                                                        @if (item.PricePointID == 0)
+                                                        {
+                                                            <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
+                                                                Price Point
+                                                            </button>
+                                                            <span id="PricePointNametd"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            @item.PricePointName
+                                                        }
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        @item.PricePointName
+                                                    </td>
+                                                }
+                                            }
+                                            @if (General.UserType == 2)
+                                            {
+                                                <td>
+                                                    @if (item.isClaimLead == 0)
+                                                    {
+                                                        <button onclick="getClaimingLink(@item.LeadID)" id="Claimbtn_@item.LeadID" type="button" class="m-1 btn btn-success btn-sm  me-1">
+                                                            Get Claiming
+                                                        </button>
+                                                    }
+                                                    @*<button id="@item.LeadID" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                    <i class="fa fa-close"></i>
+                </button>*@
+                                                </td>
+
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </section>
+        <!-- /.content -->
+
+    </div>
+</div>
+
+
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-PricePoint" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Price Point</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="pull-center">
+                                @Html.Label("Price Point", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-fill-NewPricePoint" style="padding: 0px 5px;">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                                @Html.Hidden("LeadID");
+                                @Html.DropDownList("PricePoint", (SelectList)ViewBag.PricePoint, "Select Price Point", htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%;" })
+                                @Html.ValidationMessage("PricePoint", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pull-right">
+                    <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                    <input type="button" onclick="LeadPricePoint()" value="Upload Lead" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-api" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sync Lead</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="pull-center">
+                                @Html.Label("Source", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                @Html.DropDownList("ApiLeadID", (SelectList)ViewBag.ApiLeadType, htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%;" })
+                                @Html.ValidationMessage("ApiLeadID", "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pull-right">
+                    <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                    <input type="button" onclick="SyncApiData()" value="Sync Lead" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-NewPricePoint" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Price Point</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">Price Point</label>
+                            <input type="text" class="form-control" id="PricePointName">
+                            <span class="text-danger" style="display:none" id="organizationwarning">Please enter Price Point Name</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary float-end" onclick="PricePointSave()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload Leads</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @using (Html.BeginForm("UploadLeadFile", "LeadInfo", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="pull-center">
+                                    @Html.TextBox("file", "", new { type = "file", accept = ".csv" })
+                                    <br />
+                                    <br />
+                                    <a class="btn btn-success" href="~/SampleFiles/Lead/Lead.csv">Sample</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer pull-right">
+                        <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                        <input type="submit" value="Upload Lead" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- /.modal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+
+<script>
+    function OpenPricePointModal(obj) {
+        var value = obj;
+        $("#LeadID").val(value);
+    }
+    function SyncApiData() {
+        var SourceID = $("#ApiLeadID").val();
+        $.ajax({
+            url:'/GeneralApis/GetSourceOfAPILeadIndex',
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            data: { SourceID },
+            success: function (r) {
+                var data = r.split(',');
+                if (data[0] == "true") {
+                    swal.fire("Success", "Syncing Data","Success");
+                } else {
+                    Swal.fire("", "Config Not Found Against This Source Please Add Config", "error");
+                    window.location.href = '/RealEstateAgentInfo/APIConfiguration';
+                    return;
+                }
+            }
+        });
+    }
+
+    function getClaimingLink(obj) {
+        $.ajax({
+            url:'/GeneralApis/Encrypt',
+            type: 'POST',
+            dataType: 'json',
+            async: false,
+            data: { obj },
+            success: function (r) {
+                var data = r.split(',');
+                var domainUrl = window.location.protocol + "//" + window.location.host;
+                const secretKey = 'Privont@Privont';
+            const dataToEncrypt = {
+                userId: @General.UserID,
+                username: 'Abdullah',
+                };
+            const dataToEncrypt2 = {
+                userId: @General.UserID,
+                username: 'Abdullah',
+            };
+                const jsonData = JSON.stringify(dataToEncrypt);
+                const jsonData2 = JSON.stringify(dataToEncrypt2);
+                const encryptedData = CryptoJS.AES.encrypt(jsonData, secretKey).toString();
+                const encryptedData2 = CryptoJS.AES.encrypt(jsonData2, secretKey).toString();
+                const token = encryptedData;
+                const token2 = encryptedData2;
+                var GeneratedLink = domainUrl + "/GeneralApis/Lead?" + 'q=' + token + '&d=' + @General.UserType + '&i=' +@General.UserID+ '&y=' + data[1] + '&s=' + token2;
+                alert(GeneratedLink);
+                $("#Claimbtn_" + obj).hide();
+            }
+        });
+    }
+
+
+    function ClaimLead(object) {
+        jQuery.ajax({
+            url: '/LeadInfo/ClaimLead',
+            type: 'POST',
+            dataType: 'json',
+            data: { LeadID: object, LenderID:@General.UserID },
+            success: function (r) {
+                var data = r.split(',');
+                Swal.fire(
+                    'Claim',
+                    'You Claim This Lead SuccessFully',
+                    'success'
+                );
+
+
+                @*< p id="lbl_@item.LeadID" style="display:none" > Already Claimed</p >*@
+                if (data[1] == 1) {
+                    //alert("Working" + $('table tbody tr td button#' + object.id));
+                    //$('button#' + object.id).remove();
+                }
+                if (data[2] == 1) {
+                    Swal.fire(
+                        'Claim',
+                        'You Cannot Claim This Lead Because its Already Claimed',
+                        'danger'
+                    );
+                }
+                if (data[3] == 1) {
+                    Swal.fire(
+                        'Claim',
+                        'You Already Claim this Lead',
+                        'danger'
+                    );
+                }
+                $("#lbl_" + object).show();
+                $("#btn_" + object).hide();
+            },
+            error: function () {
+                alert('error');
+            }
+        });
+    }
+
+    function LeadPricePoint() {
+        var PricePoint = $("#PricePoint").val();
+        var PricePointname = $("#PricePoint option:selected").text();
+        var LeadID =  $("#LeadID").val();
+        $.ajax({
+            type: "POST",
+            url: "/LeadInfo/LeadPricePoint",
+            data: JSON.stringify({ LeadID,PricePoint }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var data = r.split(',');
+                if (data[1] == 1) {
+                    Swal.fire("", "Price Point Already Added", "error");
+                }
+                else {
+                    $("#PricePointNametd").text(PricePointname);
+                    $("#btn_" + LeadID).hide();
+                    $('#modal-fill-PricePoint').modal('hide');
+                }
+            },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+
+    function PricePointSave(objectre) {
+        var PricePoint = $("#PricePointName").val();
+        if (PricePoint == "") {
+            $("#organizationwarning").show();
+            return;
+        }
+        $("#organizationwarning").hide();
+        $.ajax({
+            type: "POST",
+            url: "/LeadInfo/CreateLeadPricePoint",
+            data: JSON.stringify({ PricePoint }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                var catid = r;
+                $('#PricePoint').append('<option value="' + r + '">' + PricePoint + '</option>');
+                $('#PricePoint').val(r);
+                $("#PricePointName").val("");
+                $('#modal-fill-NewPricePoint').modal('hide');
+            },
+            error: function (x, e) {
+                Swal.fire("", "Saving Error");
+            },
+            async: false
+        });
+    }
+
+    function DeleteButtonclicked(object) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are you sure to delete the selected record?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                jQuery.ajax({
+                    url: '/LeadInfo/Delete',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: object.id },
+                    success: function () {
+
+                        $("#" + object.id).remove();
+                    },
+                    error: function () {
+                        alert('error');
+                    }
+                })
+                Swal.fire(
+                    'Deleted!',
+                    'Your record has been deleted.',
+                    'success'
+                )
+            }
+        })
+    }
+</script>
+
+
+

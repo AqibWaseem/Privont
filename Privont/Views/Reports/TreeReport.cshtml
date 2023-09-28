@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "TreeReport";
+    System.Data.DataTable dt = General.FetchData("Select * from RealEstateAgentInfo");
+}
+
+<h2>TreeReport</h2>
+<ul class="sidebar-menu " data-widget="tree">
+  
+    @foreach (System.Data.DataRow dr in dt.Rows)
+    {
+      <li class="treeview">
+          <a href="@dr["Link"]">
+              <i class="@dr["Icon"]"></i> <span>@dr["MenuTitle"] </span>
+              <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+              </span>
+
+          </a>
+          <ul class="treeview-menu">
+              @{System.Data.DataRow[] ChildMenus = dt.Select("RealEstateID=" + dr["UserID"]);
+
+                  foreach (System.Data.DataRow cm in ChildMenus)
+                  {
+                      <li>
+
+                          <a onclick="ShowLoad(event)" href="@cm["Link"]"><i class="@cm["Icon"]"></i>@cm["MenuTitle"]</a>
+                      </li>
+                  }
+
+              }
+          </ul>
+
+      </li>
+    }
+
+
+</ul>
