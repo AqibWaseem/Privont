@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using Privont.Models;
 
 namespace Privont
 {
@@ -151,7 +152,6 @@ namespace Privont
         {
             using (Aes aesAlg = Aes.Create())
             {
-                key = "0123456789ABCDEF";
                 aesAlg.Key = Encoding.UTF8.GetBytes(key);
                 aesAlg.IV = new byte[16]; // IV (Initialization Vector) should be unique and unpredictable, but it's a constant for simplicity here.
 
@@ -175,7 +175,6 @@ namespace Privont
         {
             using (Aes aesAlg = Aes.Create())
             {
-                key = "0123456789ABCDEF";
                 aesAlg.Key = Encoding.UTF8.GetBytes(key);
                 aesAlg.IV = new byte[16]; // IV (Initialization Vector) should match the one used for encryption.
 
@@ -193,7 +192,7 @@ namespace Privont
                 }
             }
         }
-        public static string FetchDataFromAPIs(string APIsPath)
+        public static string FetchDataFromAPIs(string APIsPath,string Auth)
         {
             HttpClientHandler clientHandler = new HttpClientHandler();
             clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
@@ -201,7 +200,7 @@ namespace Privont
             //client.BaseAddress = new Uri(BaseAddress);
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            client.DefaultRequestHeaders.Add("authorization", "Basic ZmthXzBLbmRXTm1kbURoTHBCMFBkNDJUVjBHcnRVQjhNUGs0TVQ6WGF2aWVyMTIzISM=");
+            client.DefaultRequestHeaders.Add("authorization", Auth);
             client.Timeout = TimeSpan.FromMilliseconds(60000);
             ///System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             StringContent jcontent = new StringContent("", Encoding.UTF8, "application/json");
@@ -217,5 +216,57 @@ namespace Privont
             }
             return Jsonstring;
         }
+        public static string GetAPIAuthKey(int UserID,int APITypeSource)
+        {
+            string KEY = "";
+            DataTable dt = General.FetchData($@"select * from APIConfigInfo where RealEstateID={UserID} and TypeID="+APITypeSource);
+            if(dt.Rows.Count > 0)
+            {
+                KEY = dt.Rows[0]["APIConfig"].ToString();
+                return KEY;
+            }
+            return "";
+        }
+        public enum LogTypes
+        {
+            New,
+            Edit,
+            Delete,
+            Logout,
+            Login,
+            APICall,
+            ChangePassword
+        }
+        public enum LogSource
+        {
+            FollowUpBoss,
+            Zillow
+        }
+        public static string PostFromAPIs(string APIsPath, string Auth)
+        {
+            HttpClientHandler clientHandler = new HttpClientHandler();
+            clientHandler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; };
+            var client = new HttpClient(clientHandler);
+            //client.BaseAddress = new Uri(BaseAddress);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            client.DefaultRequestHeaders.Add("authorization", Auth);
+            client.Timeout = TimeSpan.FromMilliseconds(60000);
+            ///System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 |SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            StringContent jcontent = new StringContent("", Encoding.UTF8, "application/json");
+            HttpResponseMessage response = client.GetAsync(APIsPath).Result;
+            string Jsonstring = "";
+            if (response.IsSuccessStatusCode)
+            {
+                Jsonstring = response.Content.ReadAsStringAsync().Result;
+            }
+            else
+            {
+                Jsonstring = "Error";
+            }
+            return Jsonstring;
+        }
+        public readonly TrueDialogService trueDialogService;
+
     }
 }

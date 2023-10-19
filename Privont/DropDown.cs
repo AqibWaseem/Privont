@@ -7,7 +7,21 @@ namespace Privont
 {    
     public class DropDown
     {
-
+        public SelectList GetApiLeadType(string whereclause = "", int selectedvalue = 0)
+        {
+            DataTable dtEmployee = General.FetchData(@"Select ApiTypeID,ApiTypeTitle from APITypeInfo	  " + whereclause);
+            List<SelectListItem> objsli = new List<SelectListItem>();
+            SelectListItem si = new SelectListItem();
+            foreach (DataRow dr in dtEmployee.Rows)
+            {
+                si = new SelectListItem();
+                si.Text = dr["ApiTypeTitle"].ToString();
+                si.Value = dr["ApiTypeID"].ToString();
+                objsli.Add(si);
+            }
+            SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue);
+            return sl;
+        }
         public SelectList GetOrganizationList(string whereclause = "", int selectedvalue = 0)
         {
             DataTable dtEmployee = General.FetchData(@"select OrganizationID,OrganizationTitle from OrganizationInfo	  " + whereclause);
@@ -64,21 +78,6 @@ namespace Privont
                 si = new SelectListItem();
                 si.Text = dr["ZipCode"].ToString();
                 si.Value = dr["ZipCodeID"].ToString();
-                objsli.Add(si);
-            }
-            SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue);
-            return sl;
-        }
-        public SelectList GetApiLeadType(string whereclause = "", int selectedvalue = 0)
-        {
-            DataTable dtEmployee = General.FetchData(@"Select ApiTypeID,ApiTypeTitle from APITypeInfo	  " + whereclause);
-            List<SelectListItem> objsli = new List<SelectListItem>();
-            SelectListItem si = new SelectListItem();
-            foreach (DataRow dr in dtEmployee.Rows)
-            {
-                si = new SelectListItem();
-                si.Text = dr["ApiTypeTitle"].ToString();
-                si.Value = dr["ApiTypeID"].ToString();
                 objsli.Add(si);
             }
             SelectList sl = new SelectList(objsli, "Value", "Text", selectedvalue);

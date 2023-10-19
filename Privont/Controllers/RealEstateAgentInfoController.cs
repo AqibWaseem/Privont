@@ -191,13 +191,13 @@ namespace Privont.Controllers
             General.ExecuteNonQuery(sql);
             return Json("true,");
         }
-
+        //  RealEstateAgentInfo/APIConfiguration
         public ActionResult APIConfiguration()
         {
             ViewBag.Alert = "";
-            List<APIConfigInfo> lst = new List<APIConfigInfo>();
+            List<APIConfigInfo> lst=new List<APIConfigInfo>();
             lst = General.ConvertDataTable<APIConfigInfo>(General.FetchData($@" select APITypeInfo.APITypeTitle,APIConfigInfo.* from APITypeInfo
-	left outer join APIConfigInfo on APIConfigInfo.TypeID=APITypeInfo.APITypeID  and RealEstateID=" + General.UserID));
+	left outer join APIConfigInfo on APIConfigInfo.TypeID=APITypeInfo.APITypeID  and RealEstateID="+General.UserID));
             return View(lst);
         }
         [HttpPost]
@@ -211,10 +211,11 @@ namespace Privont.Controllers
             collection[0].DeleteRecords();
             foreach (APIConfigInfo item in collection)
             {
-                if (!string.IsNullOrEmpty(item.APIConfig))
+                if(!string.IsNullOrEmpty(item.APIConfig))
                     item.InsertRecords();
             }
             return Json("true");
         }
+       
     }
 }

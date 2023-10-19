@@ -1,14 +1,19 @@
-﻿using Privont.Models;
+﻿using Newtonsoft.Json;
+using Privont.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using static Privont.General;
+using static Privont.Models.APILeads;
 
 namespace Privont.Controllers
 {
@@ -27,6 +32,7 @@ namespace Privont.Controllers
             List<LeadInfo> lst = General.ConvertDataTable<LeadInfo>(Model.GetIndexAllRecord(WhereClause));
             ViewBag.PricePoint = new DropDown().GetPricePoint();
             ViewBag.ApiLeadType = new DropDown().GetApiLeadType();
+            Session[$"TotalCount"] = 0;
             return View(lst);
         }
         public ActionResult ClaimLead(int LeadID,int LenderID)
@@ -322,6 +328,102 @@ GetDate(),
                 value = "1";
             }
             return Json("true,"+value);
+        }
+        public int TotalCount{get;set;} 
+        public ActionResult GetInfoSync(string ApiSource)
+        {
+            int val = 0;
+            int TotalCount = int.Parse(Session[$"TotalCount"].ToString());
+            DataTable dt = General.FetchData($@"select count(*)AddedVal from LeadInfo where EntrySource=2 and ApiSource='{ApiSource}' and UserID={General.UserID} and ApiLeadID>0");
+            int.TryParse(dt.Rows[0]["AddedVal"].ToString(), out val);
+            if(TotalCount > 0 )
+                val= (val / TotalCount)*100;
+            return Json(val);
+        }
+        public ActionResult GetSourceOfAPILeadIndex(int UserID,int SourceID)
+        {
+            if(UserID==0)
+            {
+                UserID = General.UserID;
+            }
+            string Query = $@"
+select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={UserID}
+";
+            DataTable dt = General.FetchData(Query);
+            if (dt.Rows.Count > 0)
+            {
+                FetchingLeadsFromAPIs(UserID,SourceID);
+                return Json("true," + dt.Rows[0]["APIConfig"].ToString());
+            }
+            else
+            {
+                return Json("false,");
+            }
+        }
+        public string GetAPIOfFollowUPBoss()
+        {
+            return ""+ $@"https://api.followupboss.com/v1/people?sort=created&limit=100&offset=0&includeTrash=false&includeUnclaimed=false";
+        }
+        public void FetchingLeadsFromAPIs(int UserID,int APISourceID)
+        {
+            var NextLink = GetAPIOfFollowUPBoss();
+            string GetingLastAddedLink = new GeneralApisController().LastAddedLink_APILog(LogSource.FollowUpBoss);
+            if (!string.IsNullOrEmpty(GetingLastAddedLink))
+            {
+                NextLink = GetingLastAddedLink;
+            }
+            TotalCount = 2;
+            for(int i = 1; i <= TotalCount;)
+            {
+
+                string Response = General.FetchDataFromAPIs(NextLink, General.GetAPIAuthKey(UserID,APISourceID));
+                if (Response != "Error")
+                {
+                    Root root = JsonConvert.DeserializeObject<Root>(Response);
+                    TotalCount = root._metadata.total;
+                    Session[$"TotalCount"] = TotalCount;
+                    foreach (var item in root.people)
+                    {
+                        LeadInfo objnew = new LeadInfo();
+                        objnew.FirstName = item.firstName;
+                        objnew.LastName = item.lastName;
+                        if (item.phones.Count > 0)
+                        {
+                            objnew.PhoneNo = item.phones[0].value;
+                        }
+                        if (item.emails.Count > 0)
+                        {
+                            objnew.EmailAddress = item.emails[0].value;
+                        }
+                        objnew.ApiLeadID = item.id;
+                        objnew.APITypeID = APISourceID;
+                        objnew.ApiSource = item.source;
+                        objnew.UserID = UserID;
+                        objnew.UserType = 2;
+                        if(!new GeneralApisController().CheckIfLeadsAlreadyExist(UserID,objnew.ApiLeadID))
+                        {
+                            Model.InsertRecord(objnew);
+                        }
+                        i++;
+                    }
+                    NextLink = root._metadata.nextLink;
+                    // Last Add Leads
+                    int ID = LastAddedAPI();
+                    GeneralApisController.InsertAPILogs(LogTypes.APICall, LogSource.FollowUpBoss, ID, "Follow Up Boss API Records", root._metadata.nextLink);
+                }
+                else
+                {
+
+                }
+            }
+           
+        }
+        public int LastAddedAPI()
+        {
+            int LeadID = 0;
+            DataTable dt = General.FetchData($@"select MAX(LeadInfo.LeadID)LeadID from LeadInfo");
+            int.TryParse(dt.Rows[0]["LeadID"].ToString(),out LeadID);
+            return LeadID;
         }
     }
 }

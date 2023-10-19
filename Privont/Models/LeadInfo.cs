@@ -23,6 +23,9 @@ namespace Privont.Models
         public int PricePointID { get; set; }
         public string PricePointName { get; set; }
         public int isClaimLead { get; set; }
+        public int APITypeID { get; set; }
+        public int ApiLeadID { get; set; }
+        public string ApiSource { get; set; }
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
@@ -42,15 +45,40 @@ Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSM
             }
             else
             {
-                sql = "Select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType,LeadInfo.PricePointID,(LeadPricePoint.PricePoint)PricePointName,LeadInfo.isClaimLead";
-                sql = sql + " from LeadInfo  left outer join LeadPricePoint on LeadInfo.PricePointID = LeadPricePoint.PricePointID ";
-                sql = sql + $@" {WhereClause} Order by LeadID";
+                sql = $@"SELECT
+    LI.LeadID,
+    LI.FirstName,
+    LI.LastName,
+    ISNULL(LI.OptInSMSStatus, 0) AS OptInSMSStatus,
+    LI.PhoneNo,
+    LI.EmailAddress,
+    LI.EntryDateTime,
+    ISNULL(LI.ReadytoOptin, 0) AS ReadytoOptin,
+    LI.UserID,
+    LI.EntrySource AS UserType,
+    LI.PricePointID,
+    LPP.PricePoint AS PricePointName,
+    LI.isClaimLead ";
+                sql = sql + $@" FROM
+    LeadInfo LI
+LEFT OUTER JOIN
+    LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID ";
+                sql = sql + $@" {WhereClause} ORDER BY
+    LI.LeadID ";
             }
             dataTable = General.FetchData(sql);
             return dataTable;
         }
         public int InsertRecord(LeadInfo obj)
         {
+            if(obj.UserID==0)
+            {
+                obj.UserID = General.UserID;
+            }
+            if (obj.UserType == 0)
+            {
+                obj.UserType = General.UserType;
+            }
             int LeadID = 0;
             string Query = $@"INSERT INTO [dbo].[LeadInfo]
            ([FirstName]
@@ -59,15 +87,19 @@ Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSM
            ,[EmailAddress],
 [UserID],
 [EntryDateTime],
-[EntrySource],)
+[EntrySource],[ApiSource]
+           ,[ApiLeadID]
+           ,[APITypeID])
      VALUES
            ('{obj.FirstName}'
            ,'{obj.LastName}'
            ,'{obj.PhoneNo}'
            ,'{obj.EmailAddress}'
-,{General.UserID},
+,{obj.UserID},
 GetDate(),
-{General.UserType})";
+{obj.UserType},'{obj.ApiSource}'
+           ,{obj.ApiLeadID}
+           ,{obj.APITypeID})";
             try
             {
                 Query = Query + $@"SELECT SCOPE_IDENTITY() as LeadID";

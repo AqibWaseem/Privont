@@ -82,9 +82,9 @@
                                                         <br />
                                                         <span>@item.ApprovedRemarks</span>
                                                         <br />*@
-                                                        <button type="button" id="btn_@item.LenderId" class="open-modal btn-sm btn btn-primary pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill" onclick="OpenLenderModal(@item.LenderId)" style="margin:0 5px;">
-                                                            Approved
-                                                        </button>
+                                                <button type="button" id="btn_@item.LenderId" class="open-modal btn-sm btn btn-warning pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill" onclick="OpenLenderModal(@item.LenderId)" style="margin:0 5px;">
+                                                    Approval Pending
+                                                </button>
                                                         <span style="display:none;" id="lbl_@item.LenderId">
                                                             <span id="App_@item.LenderId" class="small badge badge-success">Approved</span>
                                                             <span id="UnApp_@item.LenderId" class="small badge badge-danger">Un Approved</span>

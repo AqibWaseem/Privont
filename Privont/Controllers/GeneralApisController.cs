@@ -17,6 +17,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Antlr.Runtime.Tree;
+using static Privont.General;
 
 namespace Privont.Controllers
 {
@@ -721,6 +722,50 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
         {
             return View();
         }
+        public static bool InsertAPILogs(LogTypes Log, LogSource Source, int SourceID, string LogDescription,string NextLink)
+        {
+            string Query = $@"INSERT INTO APIsLogs
+           (LogSource
+           ,LogTypeID
+           ,Source
+           ,SourceID
+           ,LogDateTime
+           ,Description
+           ,NextLink)
+     VALUES
+           ('{Source}'
+           ,'{Log}'
+           ,'{Source.ToString()}'
+           ,{SourceID}
+           ,GETDATE()
+           ,'{LogDescription}'
+           ,'{NextLink}')";
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public string LastAddedLink_APILog(LogSource Source)
+        {
+            string Query = $@"select NextLink from APIsLogs  
+where SourceID in (select LeadID from LeadInfo where ApiSource is not null)  and Source='{Source.ToString()}'
+order by LogID desc
+";
+            DataTable dt = General.FetchData(Query);
+            if(dt.Rows.Count > 0)
+            {
+                return dt.Rows[0]["NextLink"].ToString();
+            }
+            else
+            {
+                return "";
+            }
+        }
         public string GetSourceOfAPI(int SourceID)
         {
             string Query = $@"
@@ -736,20 +781,220 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Ge
                 return "";
             }
         }
-        public ActionResult GetSourceOfAPILeadIndex(int SourceID)
+        public bool CheckIfLeadsAlreadyExist(int UserID,int APILeadID)
         {
-            string Query = $@"
-select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={General.UserID}
-";
-            DataTable dt = General.FetchData(Query);
+            string QueryCheck = $@"select * from LeadInfo where ApiLeadID={APILeadID} and EntrySource=2 and UserID=" + UserID;
+            DataTable dt = General.FetchData(QueryCheck);
             if (dt.Rows.Count > 0)
             {
-                return Json("true,"+dt.Rows[0]["APIConfig"].ToString());
+                return true;
+            }
+            return false;
+        }
+        //GeneralAPIs/SMSAPI
+
+        public ActionResult SMSAPI(string PhoneNo, string message)
+        {
+        //    var result = trueDialogService.SendMessage("" + PhoneNo + "", "" + message + "");
+            return Json("true");
+        }
+
+        [HttpGet]
+        public JsonResult GetUserInfo(string UserName, string Password)
+        {
+            string WhereClause = $@"where UserName='{UserName}' and Password='{Password}'";
+            string sql1 = $@"select UserID,UserName,Inactive,1 as UserType from UserInfo {WhereClause}  union Select (RealEstateAgentId)UserID,UserName,Inactive,2 as UserType from RealEstateAgentInfo {WhereClause} union
+Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo {WhereClause}   ";
+            DataTable dtproductinfo = General.FetchData(sql1);
+            List<Dictionary<string, object>> dbrows = GetProductRows(dtproductinfo);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
             }
             else
             {
-                return Json("false,");
+                JSResponse.Add("Status", true);
             }
+            JSResponse.Add("Message", "Data for Login User");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [ValidateInput(false)]
+        public List<Dictionary<string, object>> GetProductRows(DataTable dtData)
+        {
+            List<Dictionary<string, object>>
+            lstRows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> dictRow = null;
+
+            foreach (DataRow dr in dtData.Rows)
+            {
+                dictRow = new Dictionary<string, object>();
+                foreach (DataColumn col in dtData.Columns)
+                {
+                    dictRow.Add(col.ColumnName, dr[col]);
+                }
+                lstRows.Add(dictRow);
+            }
+            return (lstRows);
+        }
+        LeadInfo LeadInfoModel = new LeadInfo();
+        [HttpPost]
+        public ActionResult LeadInfoCreate(LeadInfo collection)
+        {
+            try
+            {
+                if (collection.LeadID == 0)
+                {
+                     collection.LeadID = LeadInfoModel.InsertRecord(collection);
+                }
+                else
+                {
+                    collection.LeadID = LeadInfoModel.UpdateRecord(collection);
+                }
+                return Json("true,"+collection.LeadID);
+            }
+            catch
+            {
+                return View("false,"+collection);
+            }
+        }
+        [HttpGet]
+        public JsonResult GetLeadInfo(int UserID,int UserType)
+        {
+            DataTable dataTable = new DataTable();
+            string sql = "";
+            string whereclause = "";
+            if(UserType==2)
+            {
+                whereclause = whereclause + $@" and UserID={UserID}";
+            }
+            if (UserType == 3)
+            {
+                sql = $@"Declare @LenderID int set @LenderID={UserID}
+Declare @EntryTime int
+Select @EntryTime=ExpiryTime from LeadExpiryTime
+Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=10 then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end ";
+            }
+            else
+            {
+                sql = $@"SELECT
+    LI.LeadID,
+    LI.FirstName,
+    LI.LastName,
+    ISNULL(LI.OptInSMSStatus, 0) AS OptInSMSStatus,
+    LI.PhoneNo,
+    LI.EmailAddress,
+    LI.EntryDateTime,
+    ISNULL(LI.ReadytoOptin, 0) AS ReadytoOptin,
+    LI.UserID,
+    LI.EntrySource AS UserType,
+    LI.PricePointID,
+    LPP.PricePoint AS PricePointName,
+    LI.isClaimLead";
+                sql = sql + $@" FROM
+    LeadInfo LI
+LEFT OUTER JOIN
+    LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID ";
+                sql = sql + $@" {whereclause} Order by LeadID";
+            }
+            dataTable = General.FetchData(sql);;
+            List<Dictionary<string, object>> dbrows = GetProductRows(dataTable);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Data for Lead Info");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [HttpGet]
+        public JsonResult GetApiLeadType()
+        {
+            DataTable dataTable = new DataTable();
+            string sql = "";
+            sql = sql + $@" Select ApiTypeID,ApiTypeTitle from APITypeInfo";
+            dataTable = General.FetchData(sql); ;
+            List<Dictionary<string, object>> dbrows = GetProductRows(dataTable);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Data for Api Type(Follow up Boss or Zillow)");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [HttpGet]
+        public JsonResult GetDashboard()
+        {
+            DataTable dataTable = new DataTable();
+            string sql = "";
+            sql = sql + $@" select Count(LeadID)LeadID,'Leads' as Title from LeadInfo
+union all Select Count(RealEstateAgentID)RealEstateAgentID,'Real Estate' as Title from RealEstateAgentInfo
+union all
+Select Count(VendorID)VendorID, 'Vendor' as Title from VendorInfo
+union all
+Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
+            dataTable = General.FetchData(sql); ;
+            List<Dictionary<string, object>> dbrows = GetProductRows(dataTable);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Dashboard Details");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
         }
     }
 }

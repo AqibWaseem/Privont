@@ -1,0 +1,90 @@
+﻿@model Privont.Models.SMSSetting
+
+@{
+    /**/
+
+    ViewBag.Title = "SMS Settings";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <!-- CK Editor -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="box">
+                            <div class="box-header">
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <h4 class="header-title">SMS Settings</h4>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="submit" value="Save" class="btn btn-success pull-right" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="form-horizontal">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <label>SMS format</label>
+                                                </div>
+                                            </div>
+                                            <div class="row ">
+                                                <div class="col-md-8" style="padding-left:0px;">
+                                                    <small class="pull-right">(Message Fields)</small>
+                                                </div>
+                                                <div class="col-md-2 pull-right">
+                                                    <Select class="form-control" id="cmbsale">
+                                                        <option value="0">Select Field</option>
+                                                        <option value="[Name]">Name</option>
+                                                        <option value="[Link]">Link</option>
+                                                    </Select>
+                                                </div>
+                                                <div class="col-md-2 pull-right" style="padding-left:0px;margin-bottom:10px">
+                                                    <input type="button" class="btn-sm btn-primary" value="Add Field" id="btnAddSaleFields" onclick="AddFieldtoSale()">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    @Html.TextAreaFor(model => model.SMSDetail, new { @class = "textarea", @style = "width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;" })
+                                                    @Html.ValidationMessageFor(model => model.SMSDetail, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            </section>
+        </div>
+    </div>
+            <script>
+                $(document).ready(function () {
+                });
+                function AddFieldtoSale() {
+                    if ($("#cmbsale").val() == 0) {
+                        return;
+                    }
+                    else {
+                        var currenttext = $("#SMSDetail").val();
+                        currenttext = currenttext + $("#cmbsale").val();
+                        $("#SMSDetail").val(currenttext);
+                    }
+                }
+            </script>

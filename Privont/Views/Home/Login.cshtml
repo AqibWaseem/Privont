@@ -28,11 +28,47 @@
     @*<link rel="stylesheet" href="css/style.css">*@
     <link href="~/Browser_Components/css/skin_color.css" rel="stylesheet" />
     @*<link rel="stylesheet" href="css/skin_color.css">*@
+<style>
+        .loader {
+            border: 16px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 16px solid black;
+            width: 120px;
+            height: 120px;
+            /*-webkit-animation: spin 2s linear infinite;*/ /* Safari */
+            animation: spin 2s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 10px;
+        }
+    #loading {
+        color: white;
+        position: absolute;
+        top: 65%;
+        left: 55%;
+        transform: translate(-50%, -50%);
+        padding: 10px;
+    }
+    @@-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
 
+@@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
 </head>
 
 <body class="hold-transition theme-primary bg-img" style="background-color:black">
     @*style="background-image: url(../images/peakpx.jpg)"*@
+    <div class="loader"></div>
+    <h3 id="loading">
+        Please Wait..
+    </h3>
     <div class="container h-p100">
         <div class="row align-items-center justify-content-md-center h-p100">
             <div class="col-12">
@@ -79,7 +115,7 @@
                                         </div>
                                         @*/.col*@
                                         <div class="col-12 text-center">
-                                            <button type="submit" class="btn btn-danger mt-10">SIGN IN</button>
+                                            <button type="submit" onclick="ShowLoader()" class="btn btn-danger mt-10">SIGN IN</button>
                                         </div>
                                         @*/.col*@
                                     </div>
@@ -113,6 +149,14 @@
     <script src="~/assets/icons/feather-icons/feather.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script>
+        $(".loader").hide();
+        $(".container").show();
+        $("#loading").hide();
+        function ShowLoader() {
+            $(".loader").show();
+            $(".container").hide();
+            $("#loading").show();
+        }
         function GotoSignUpForm() {
             var Value = 1;
             $.ajax({
