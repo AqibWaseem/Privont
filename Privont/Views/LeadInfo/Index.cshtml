@@ -475,7 +475,7 @@ Where LeadClaimInfo.LEadID= {item.LeadID}");
     }
 
     function SendSMS(message, PhoneNo, obj) {
-        alert("Working");
+        /*alert("Working");*/
         $.ajax({
             url: '/SMSTrueDialog/SendPushCampaignAsync',
             type: 'POST',
@@ -490,6 +490,13 @@ Where LeadClaimInfo.LEadID= {item.LeadID}");
                         'success'
                     );
                     $("#Claimbtn_" + obj).hide();
+                }
+                else {
+                    Swal.fire(
+                        '',
+                        'Sms Not Send To Lead',
+                        'false'
+                    );
                 }
             }
         });

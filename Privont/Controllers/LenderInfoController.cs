@@ -109,7 +109,7 @@ namespace Privont.Controllers
             {
                 return RedirectToAction("PageNotFound", "Home");
             }
-            List<LenderInfo> lst = General.ConvertDataTable<LenderInfo>(Model.GetAllRecord(" where LenderId=" + id));
+            List<LenderInfo> lst = General.ConvertDataTable<LenderInfo>(Model.GetAllRecord(" and LenderId=" + id));
             ViewBag.Organization = new DropDown().GetOrganizationList("", lst[0].OrganizationID);
             ViewBag.ZipCode = new DropDown().GetZipCode("", lst[0].ZipCodeID);
             return View("Create", lst[0]);

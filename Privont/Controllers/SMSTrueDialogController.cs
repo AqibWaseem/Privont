@@ -60,6 +60,10 @@ namespace Privont.Controllers
         {
             try
             {
+                if(!PhoneNo.StartsWith("+1"))
+                {
+                    PhoneNo = "+1" + PhoneNo;
+                }
                 using (var httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) })
                 {
                     // Set up authorization header

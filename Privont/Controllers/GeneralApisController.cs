@@ -141,7 +141,7 @@ Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo Where us
 
             // Store the token and user's email address in your database
             // Replace this with your database code
-            string Ec = General.Encrypt(ID,"@AFG");
+            string Ec = General.Encrypt(ID,General.key);
             // Send the verification email
             var verificationLink = Url.Action("Verify", "GeneralApis", new { token = verificationToken,value= Ec}, Request.Url.Scheme);
             var subject = "Verify Your Email Address";
@@ -383,7 +383,7 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                                                                 <tr>
                                                                     <td style='padding-right: 0px;padding-left: 0px;' align='center'>
 
-                                                                        <img align='center' border='0' src='https://privont.softinn.pk/images/Privont-Logo.png' alt='Image' title='Image' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 10%;max-width: 58px;' width='58' />
+                                                                        <img align='center' border='0' src='https://www.privont.com/images/Privont-Logo.png' alt='Image' title='Image' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 10%;max-width: 58px;' width='58' />
 
                                                                     </td>
                                                                 </tr>
@@ -438,9 +438,9 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                                                             <div style='line-height: 140%; text-align: left; word-wrap: break-word;'>
                                                                 <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px; color: #666666;'>Hello " + Username + @",</span></p>
                                                                 <p style='font-size: 14px; line-height: 140%;'>&nbsp;</p>
-                                                                <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px; color: #666666;'>We have sent you this email in response to your request to create Account of Privont as Real Estate.</span></p>
+                                                                <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px; color: #666666;'>We have sent you this email in response to your request to create account of Privont as real estate.</span></p>
                                                                 <p style='font-size: 14px; line-height: 140%;'>&nbsp;</p>
-                                                                <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px; color: #666666;'>To reset your password, please click the link below to Verify your Account: </span></p>
+                                                                <p style='font-size: 14px; line-height: 140%;'><span style='font-size: 18px; line-height: 25.2px; color: #666666;'>To verify you email, please click the link below to verify your account: </span></p>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -454,8 +454,8 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
 
                                                             <div align='center'>
                                                                 <!--[if mso]><table width='100%' cellpadding='0' cellspacing='0' border='0' style='border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:'Lato',sans-serif;'><tr><td style='font-family:'Lato',sans-serif;' align='left'><v:roundrect xmlns:v='urn:schemas-microsoft-com:vml' xmlns:w='urn:schemas-microsoft-com:office:word' href='' style='height:51px; v-text-anchor:middle; width:205px;' arcsize='2%' stroke='f' fillcolor='#075e55'><w:anchorlock/><center style='color:#FFFFFF;font-family:'Lato',sans-serif;'><![endif]-->
-                                                                <a href='"+verificationLink+@"' target='_blank' style='box-sizing: border-box;display: inline-block;font-family: Lato,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #075e55; border-radius: 1px;-webkit-border-radius: 1px; -moz-border-radius: 1px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;'>
-                                                                    <span style='display:block;padding:15px 40px;line-height:120%;'><span style='font-size: 18px; line-height: 21.6px;'>Reset Password</span></span>
+                                                                <a href='"+verificationLink+ @"' target='_blank' style='box-sizing: border-box;display: inline-block;font-family: Lato,sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #075e55; border-radius: 1px;-webkit-border-radius: 1px; -moz-border-radius: 1px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;'>
+                                                                    <span style='display:block;padding:15px 40px;line-height:120%;'><span style='font-size: 18px; line-height: 21.6px;'>Verify Email</span></span>
                                                                 </a>
                                                                 <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
                                                             </div>
@@ -470,7 +470,7 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                                                         <td style='overflow-wrap:break-word;word-break:break-word;padding:40px 40px 30px;font-family: Lato,sans-serif;' align='left'>
 
                                                             <div style='line-height: 140%; text-align: left; word-wrap: break-word;'>
-                                                                <p style='font-size: 14px; line-height: 140%;'><span style='color: #888888; font-size: 14px; line-height: 19.6px;'><em><span style='font-size: 16px; line-height: 22.4px;'>Please ignore this email if you did not request a password change.</span></em></span><br /><span style='color: #888888; font-size: 14px; line-height: 19.6px;'><em><span style='font-size: 16px; line-height: 22.4px;'>&nbsp;</span></em></span></p>
+                                                                <p style='font-size: 14px; line-height: 140%;'><span style='color: #888888; font-size: 14px; line-height: 19.6px;'><em><span style='font-size: 16px; line-height: 22.4px;'>Please ignore this email if you did not request to verify Email.</span></em></span><br /><span style='color: #888888; font-size: 14px; line-height: 19.6px;'><em><span style='font-size: 16px; line-height: 22.4px;'>&nbsp;</span></em></span></p>
                                                             </div>
 
                                                         </td>
@@ -516,7 +516,7 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                                                                             <tr style='vertical-align: top'>
                                                                                 <td align='left' valign='middle' style='word-break: break-word;border-collapse: collapse !important;vertical-align: top'>
                                                                                     <a href='https://web.facebook.com/Privont' title='Facebook' target='_blank'>
-                                                                                        <img src='https://zp.hisabdaar.com/Newimages/image-2.png' alt='Facebook' title='Facebook' width='32' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important'>
+                                                                                        <img src='https://img.freepik.com/premium-vector/blue-social-media-logo_197792-1759.jpg' alt='Facebook' title='Facebook' width='32' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important'>
                                                                                     </a>
                                                                                 </td>
                                                                             </tr>
@@ -529,7 +529,7 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                                                                             <tr style='vertical-align: top'>
                                                                                 <td align='left' valign='middle' style='word-break: break-word;border-collapse: collapse !important;vertical-align: top'>
                                                                                     <a href='https://twitter.com/Privont' title='Twitter' target='_blank'>
-                                                                                        <img src='https://zp.hisabdaar.com/Newimages/image-1.png' alt='Twitter' title='Twitter' width='32' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important'>
+                                                                                        <img src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkUf043IwpPGEVHlGqChxbRS6uLlAo2n19CAuX3gdd&s' alt='Twitter' title='Twitter' width='32' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important'>
                                                                                     </a>
                                                                                 </td>
                                                                             </tr>
@@ -542,7 +542,7 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                                                                             <tr style='vertical-align: top'>
                                                                                 <td align='left' valign='middle' style='word-break: break-word;border-collapse: collapse !important;vertical-align: top'>
                                                                                     <a href='https://www.instagram.com/privont/' title='Instagram' target='_blank'>
-                                                                                        <img src='https://zp.hisabdaar.com/Newimages/image-3.png' alt='Instagram' title='Instagram' width='32' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important'>
+                                                                                        <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/600px-Instagram_icon.png' alt='Instagram' title='Instagram' width='32' style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: block !important;border: none;height: auto;float: none;max-width: 32px !important'>
                                                                                     </a>
                                                                                 </td>
                                                                             </tr>
@@ -691,21 +691,21 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
         {
             // Look up the user with the given token in your database
             // Update the user's account status to "verified"
-            int ID = int.Parse(General.Decrypt(value, "@AFG"));
+            int ID = int.Parse(General.Decrypt(value, General.key));
             string sql = "";
             if (Type==1)
             {
-                DataTable dt = General.FetchData($@"Select * from RealEstateInfo Where RealEstateAgentID={ID}");
-                if(dt.Rows.Count>0)
+                DataTable dt = General.FetchData($@"Select * from RealEstateAgentInfo Where RealEstateAgentID={ID}");
+                if(dt.Rows.Count<0)
                 {
                     return RedirectToAction("LinkExpire", "RealEstateAgentInfo");
                 }
-                sql = $@"Update RealEstateInfo Set IsEmailVerified=1 Where RealEstateAgentID={ID}";
+                sql = $@"Update RealEstateAgentInfo Set IsEmailVerified=1 Where RealEstateAgentID={ID}";
             }
             else if(Type==2)
             {
                 DataTable dt = General.FetchData($@"Select * from LenderInfo Where LenderID={ID}");
-                if (dt.Rows.Count > 0)
+                if (dt.Rows.Count < 0)
                 {
                     return RedirectToAction("LinkExpire", "RealEstateAgentInfo");
                 }
@@ -795,7 +795,7 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Ge
 
         public ActionResult SMSAPI(string PhoneNo, string message)
         {
-        //    var result = trueDialogService.SendMessage("" + PhoneNo + "", "" + message + "");
+            //var result = trueDialogService.SendMessage("" + PhoneNo + "", "" + message + "");
             return Json("true");
         }
 
