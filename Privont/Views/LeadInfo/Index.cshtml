@@ -70,6 +70,7 @@
                                         @if (General.UserType == 2)
                                         {
                                             <th>Claiming</th>
+                                            <td>Action</td>
                                         }
                                     </tr>
                                 </thead>
@@ -243,9 +244,15 @@ Where LeadClaimInfo.LEadID= {item.LeadID}");
                                                             Get Claiming
                                                         </button>
                                                     }
-                                                    @*<button id="@item.LeadID" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                            <i class="fa fa-close"></i>
-                                                        </button>*@
+                                                    </td>
+                                                    <td>
+                                                    <button onclick="window.location.href='/LeadInfo/Edit/@item.LeadID'" type="button" class="m-1 btn btn-success btn-sm  me-1">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <button id="@item.LeadID" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                                                        <i class="fa fa-close"></i>
+                                                    </button>
+
                                                 </td>
 
                                             }
@@ -475,7 +482,7 @@ Where LeadClaimInfo.LEadID= {item.LeadID}");
     }
 
     function SendSMS(message, PhoneNo, obj) {
-        /*alert("Working");*/
+        /*alert("Working" + message);*/
         $.ajax({
             url: '/SMSTrueDialog/SendPushCampaignAsync',
             type: 'POST',

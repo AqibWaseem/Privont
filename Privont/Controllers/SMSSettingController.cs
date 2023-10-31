@@ -14,10 +14,11 @@ namespace Privont.Controllers
         public ActionResult Index()
         {
             SMSSetting obj = new SMSSetting();
-            DataTable dt = General.FetchData($@"Select SMSDetail from SMSSetting Where UserID={General.UserID}");
+            DataTable dt = General.FetchData($@"Select SMSDetail,SMSDetailInvite from SMSSetting Where UserID={General.UserID}");
             if(dt.Rows.Count>0)
             {
                 obj.SMSDetail = dt.Rows[0]["SMSDetail"].ToString();
+                obj.SMSDetailInvite = dt.Rows[0]["SMSDetailInvite"].ToString();
             }
             return View(obj);
         }
@@ -25,7 +26,7 @@ namespace Privont.Controllers
         public ActionResult Index(SMSSetting collection)
         {
             string sql = $@"Delete from SMSSetting Where UserID = {General.UserID}";
-             sql = sql+ $@"  Insert into SMSSetting (SMSDetail,UserID) values ('{collection.SMSDetail}',{General.UserID})";
+             sql = sql+ $@"  Insert into SMSSetting (SMSDetail,SMSDetailInvite,UserID) values ('{collection.SMSDetail}','{collection.SMSDetailInvite}',{General.UserID})";
             General.ExecuteNonQuery(sql);
             return View("Index");
         }

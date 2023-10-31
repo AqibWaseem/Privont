@@ -682,6 +682,48 @@
                 GeneratedLink = domainUrl + "/LenderInfo/SignUp?" + 'q=' + token + '&d=' + UserType + '&i=' +@General.UserID+ '&y=' + value + '&s=' + token;
             }
             $("#GeneratedLink").val(GeneratedLink);
+            SendEmail(value, UserType, GeneratedLink);
+        }
+        function SendEmail(value,UserType,GeneratedLink) {
+            /*alert("Working" + message);*/
+            $.ajax({
+                url: '/GeneralApis/SendEmailAsync',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ value,UserType, GeneratedLink }),
+                success: function (r) {
+                    var data = r.split(',');
+                    if (data[0] == "true") {
+                        Swal.fire(
+                            '',
+                            'Email and SMS Successfully Send',
+                            'success'
+                        );
+                    }
+                    else if (data[0]==3)
+                    {
+                        Swal.fire(
+                            '',
+                            'Email Successfully Send but SMS not send because you have not SMS setting',
+                            'error'
+                        );
+                    }
+                    else if (data[0] == 0) {
+                        Swal.fire(
+                            '',
+                            'Email Sending Error',
+                            'error'
+                        );
+                    }
+                    else {
+                        Swal.fire(
+                            '',
+                            'Email or SMS Sending Error',
+                            'error'
+                        );
+                    }
+                }
+            });
         }
         $(document).ready(function () {
             $("#copyButton").click(function () {

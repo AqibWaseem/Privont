@@ -112,5 +112,63 @@ namespace Privont.Controllers
                 throw;
             }
         }
+
+        [HttpPost]
+        public async Task<bool> SendPushCampaignAsyncbool(string PhoneNo, string message)
+        {
+            try
+            {
+                if (!PhoneNo.StartsWith("+1"))
+                {
+                    PhoneNo = "+1" + PhoneNo;
+                }
+                using (var httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) })
+                {
+                    // Set up authorization header
+                    var authHeader = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{ApiKey}:{ApiSecret}"));
+                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authHeader);
+
+                    // Define your request payload
+                    var requestPayload = new
+                    {
+                        Channels = new int[] { 22 },
+                        Targets = new string[] { $"{PhoneNo}" },
+                        Message = $"{message}",
+                        Execute = true
+                    };
+
+                    // Serialize the request payload to JSON
+                    var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(requestPayload);
+
+                    // Create StringContent with JSON payload
+                    using (var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json"))
+                    {
+                        // Replace {AccountId} in the URL with the actual account ID
+                        var requestUrl = $"account/{AccountID}/action-pushcampaign";
+
+                        // Send the POST request
+                        using (var response = await httpClient.PostAsync(requestUrl, content))
+                        {
+                            response.EnsureSuccessStatusCode();
+                            if (response.IsSuccessStatusCode)
+                            {
+                                string responseData = await response.Content.ReadAsStringAsync();
+                            }
+                            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                            {
+                                return false;
+                            }
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (e.g., log the error)
+                Console.WriteLine($"Error: {ex.Message}");
+                throw;
+            }
+        }
     }
 }
