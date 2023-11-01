@@ -41,7 +41,8 @@
                                         </th>
                                         @if (General.UserType == 1)
                                         {
-                                            <th>Approved / Not Approved</th>
+                                            <th>Remarks</th>
+                                            <th>Approval</th>
                                         }
                                         <th>
                                             Action
@@ -70,20 +71,23 @@
                                             @if (General.UserType == 1)
                                             {
                                                 <td>
+                                                    <span id="Remarks_@item.RealEstateAgentId">@item.ApprovedRemarks</span>
+                                                </td>
+                                                <td>
                                                     @if (item.IsApproved == true)
                                                     {
-                                                        <span class="small badge badge-success">Approved</span>
-                                                        <span>@item.ApprovedRemarks</span>
+                                                        @*<span id="UnApp_@item.RealEstateAgentId" class="small badge badge-danger">Not Approved</span>*@
+                                                        @*<span>@item.ApprovedRemarks</span>*@
                                                     }
                                                     else if (item.IsApproved == false)
                                                     {
                                                         <button type="button" id="btn_@item.RealEstateAgentId" class="open-modal btn-sm btn btn-warning pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill" onclick="OpenLenderModal(@item.RealEstateAgentId)" style="margin:0 5px;">
-                                                            Approval Pending
+                                                            Click to Approve
                                                         </button>
                                                         <span style="display:none;" id="lbl_@item.RealEstateAgentId">
-                                                            <span id="App_@item.RealEstateAgentId" class="small badge badge-success">Approved</span>
+                                                            @*<span id="App_@item.RealEstateAgentId" class="small badge badge-success">Approved</span>*@
                                                             <span id="UnApp_@item.RealEstateAgentId" class="small badge badge-danger">Not Approved</span>
-                                                            <span id="Remarks_@item.RealEstateAgentId">@item.ApprovedRemarks</span>
+                                                            @*<span id="Remarks_@item.RealEstateAgentId">@item.ApprovedRemarks</span>*@
                                                         </span>
                                                     }
                                                 </td>
