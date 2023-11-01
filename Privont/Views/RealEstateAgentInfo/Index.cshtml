@@ -41,8 +41,7 @@
                                         </th>
                                         @if (General.UserType == 1)
                                         {
-                                            <th>Remarks</th>
-                                            <th>Approval</th>
+                                            <th>Approved/Not Approved</th>
                                         }
                                         <th>
                                             Action
@@ -70,14 +69,14 @@
                                             </td>
                                             @if (General.UserType == 1)
                                             {
-                                                <td>
+                                                @*<td>
                                                     <span id="Remarks_@item.RealEstateAgentId">@item.ApprovedRemarks</span>
-                                                </td>
+                                                </td>*@
                                                 <td>
                                                     @if (item.IsApproved == true)
                                                     {
-                                                        @*<span id="UnApp_@item.RealEstateAgentId" class="small badge badge-danger">Not Approved</span>*@
-                                                        @*<span>@item.ApprovedRemarks</span>*@
+                                                        <span id="UnApp_@item.RealEstateAgentId" class="small badge badge-success">Approved</span>
+                                                        <span>@item.ApprovedRemarks</span>
                                                     }
                                                     else if (item.IsApproved == false)
                                                     {

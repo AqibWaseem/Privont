@@ -126,14 +126,14 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         @Html.Label("First Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
-                                                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", required = "required",@readonly = "readonly" } })
+                                                        @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                                                         @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         @Html.Label("Last Name", htmlAttributes: new { @class = "control-label" })<span class="text-danger">*</span>
-                                                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", required = "required", @readonly = "readonly" } })
+                                                        @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", required = "required" } })
                                                         @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
@@ -169,7 +169,7 @@
                                                     <div class="form-group">
                                                                 @Html.Label("Email address", htmlAttributes: new { @class = "form-label" })
                                                         <div class="inline" style="display: flex;">
-                                                            @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control", type = "email", @readonly = "readonly" } })
+                                                            @Html.EditorFor(model => model.EmailAddress, new { htmlAttributes = new { @class = "form-control", type = "email" } })
                                                             @Html.ValidationMessageFor(model => model.EmailAddress, "", new { @class = "text-danger" })
                                                             <button class="btn btn-primary btn-sm" type="button" onclick="Verify()">Verify</button>
                                                         </div>
@@ -179,7 +179,7 @@
                                                 <div class="col-md-4">
                                                     <div class="form-group">
                                                         @Html.Label("Contact No 1", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
-                                                        @Html.EditorFor(model => model.Contact1, new { htmlAttributes = new { @class = "form-control", @type = "number", required = "required", @readonly = "readonly" } })
+                                                        @Html.EditorFor(model => model.Contact1, new { htmlAttributes = new { @class = "form-control", @type = "number", required = "required" } })
                                                         @Html.ValidationMessageFor(model => model.Contact1, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
@@ -264,7 +264,7 @@
                                         <!-- /.box-body -->
                                         <div class="box-footer pull-right">
                                             <button type="submit" class="m-1 btn btn-primary pull-right">
-                                                @((Model.RealEstateAgentId == 0 ? "Save" : "Update"))
+                                                @((Model.RealEstateAgentId == 0 ? "Save" : "Sign Up"))
                                             </button>
                                         </div>
                                     </form>
