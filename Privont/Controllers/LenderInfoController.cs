@@ -161,7 +161,7 @@ on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {L
             List<LenderInfo> lst = General.ConvertDataTable<LenderInfo>(Model.GetAllRecordforSignup(" where LenderId=" + y));
             if(lst.Count<=0)
             {
-                return Redirect("LinkExpire");
+                return RedirectToAction("LinkExpire","RealEstateAgentInfo");
             }
             ViewBag.UserInformation = "You Have Been Invited by " + General.FetchData($@"Select (FirstName+' '+LastName)Name From LenderInfo Where LenderId={i}").Rows[0]["Name"].ToString();
             ViewBag.Organization = new DropDown().GetOrganizationList();
