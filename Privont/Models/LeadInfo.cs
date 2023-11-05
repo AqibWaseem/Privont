@@ -26,6 +26,7 @@ namespace Privont.Models
         public int APITypeID { get; set; }
         public int ApiLeadID { get; set; }
         public string ApiSource { get; set; }
+        public bool SMSSent { get; set; }
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
@@ -41,7 +42,7 @@ namespace Privont.Models
                 sql = $@"Declare @LenderID int set @LenderID={General.UserID}
 Declare @EntryTime int
 Select @EntryTime=ExpiryTime from LeadExpiryTime
-Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=10 then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
+Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
             }
             else
             {
@@ -57,6 +58,7 @@ Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSM
     LI.UserID,
     LI.EntrySource AS UserType,
     LI.PricePointID,
+LI.SMSSent,
     LPP.PricePoint AS PricePointName,
     LI.isClaimLead ";
                 sql = sql + $@" FROM
