@@ -21,6 +21,8 @@ using static Privont.General;
 using Newtonsoft.Json.Linq;
 using TrueDialog.Model;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using System.Web.Helpers;
 
 namespace Privont.Controllers
 {
@@ -59,12 +61,16 @@ namespace Privont.Controllers
             {
                 return Json("false,");
             }
-
         }
         public ActionResult Encrypt(int obj)
         {
             string value = General.Encrypt(obj.ToString(), General.key);
             return Json("true," + value);
+        }
+        public string EncryptLead(int obj)
+        {
+            string value = General.Encrypt(obj.ToString(), General.key);
+            return value;
         }
         public ActionResult Lead(string q, string d, string i, string y, string s)
         {
@@ -95,7 +101,8 @@ Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo Where us
             if (dt.Rows.Count > 0)
             {
                 return Json("1,");
-            } else
+            }
+            else
             {
                 return Json("2,");
             }
@@ -1415,7 +1422,7 @@ Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo {WhereCl
                 sql = $@"Declare @LenderID int set @LenderID={UserID}
 Declare @EntryTime int
 Select @EntryTime=ExpiryTime from LeadExpiryTime
-Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=10 then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end ";
+Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
             }
             else
             {
@@ -1437,7 +1444,7 @@ Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSM
     LeadInfo LI
 LEFT OUTER JOIN
     LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID ";
-                sql = sql + $@" {whereclause} Order by LeadID";
+                sql = sql + $@" {whereclause} Order by LeadID desc";
             }
             dataTable = General.FetchData(sql); ;
             List<Dictionary<string, object>> dbrows = GetProductRows(dataTable);
@@ -1547,6 +1554,10 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             Name = dt.Rows[0]["Name"].ToString();
             Email = dt.Rows[0]["EmailAddress"].ToString();
             PhoneNo = dt.Rows[0]["Contact1"].ToString();
+            if(!PhoneNo.StartsWith("+1"))
+            {
+                PhoneNo = "+1"+PhoneNo;
+            }
             string InvitedPersonName = General.FetchData($@"Select (FirstName+' '+LastName)Name from RealEstateAgentInfo WHere RealEstateAgentID={General.UserID}").Rows[0]["Name"].ToString();
             var subject = "Create Account";
             var body = LeadBodyHtml($@"{Name}", InvitedPersonName, GeneratedLink, UserType);
@@ -1583,10 +1594,10 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 if (dtSMS.Rows.Count <= 0)
                 {
                     testingValue = 3;
-                    return Json(testingValue+",");
+                    return Json(testingValue + ",");
                 }
                 string SMSDetailInvite = dtSMS.Rows[0]["SMSDetailInvite"].ToString();
-                if(SMSDetailInvite!="")
+                if (SMSDetailInvite != "")
                 {
                     PhoneNo = PhoneNo.Trim().Replace("-", "").Replace("_", "").Replace(",", "");
                     SMSDetailInvite = SMSDetailInvite.Replace("[Name]", Name);
@@ -1613,6 +1624,327 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 {
                     testingValue = 3;
                     return Json(testingValue + ",");
+                }
+            }
+        }
+        [HttpGet]
+        public async Task<JsonResult> SendSmsToLead(int LeadID,int UserID,int UserType)
+        {
+            string y = EncryptLead(LeadID);
+            string secretKey = "Privont@Privont";
+            // Construct the data to be encrypted
+            var dataToEncrypt = new
+            {
+                userId = UserID,
+                username = "Abdullah"
+            };
+
+            var dataToEncrypt2 = new
+            {
+                userId = UserType,
+                username = "Abdullah"
+            };
+
+            // Serialize the data to JSON
+            var serializer = new JavaScriptSerializer();
+            string jsonData = serializer.Serialize(dataToEncrypt);
+            string jsonData2 = serializer.Serialize(dataToEncrypt2);
+            // Encrypt the data
+            string encryptedData = Encrypt(jsonData, secretKey);
+            string encryptedData2 = Encrypt(jsonData2, secretKey);
+            // Construct the URL
+            string domainUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+            string userType = UserType.ToString();
+            string userId = UserID.ToString();
+            string generatedLink = $"{domainUrl}/GeneralApis/Lead?q={encryptedData}&d={userType}&i={userId}&y={y}&s={encryptedData2}";
+            string value = new SMSSettingController().SendSmsString(LeadID, generatedLink,UserID);
+            string[] resultArray = value.Split(',');
+            int value1 = int.Parse(resultArray[0]);
+            if(value1==1)
+            {
+                return Json("false,SMS Setting is not defined please Correct this first", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                string PhoneNo = resultArray[2];
+                string Message = resultArray[1];
+                if (await new SMSTrueDialogController().SendPushCampaignAsyncbool(PhoneNo, Message))
+                {
+                    return Json("true",JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json("false",JsonRequestBehavior.AllowGet);
+                }
+            }
+        }
+        private string Encrypt(string data, string secretKey)
+        {
+            using (Aes aesAlg = Aes.Create())
+            {
+                aesAlg.Key = Encoding.UTF8.GetBytes(General.key);
+                aesAlg.Mode = CipherMode.CFB;
+
+                // Perform encryption
+                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+                byte[] encryptedBytes;
+                using (MemoryStream msEncrypt = new MemoryStream())
+                {
+                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+                    {
+                        using (StreamWriter swEncrypt = new StreamWriter(csEncrypt))
+                        {
+                            swEncrypt.Write(data);
+                        }
+                    }
+                    encryptedBytes = msEncrypt.ToArray();
+                }
+
+                // Combine IV and encrypted data
+                byte[] combinedBytes = new byte[aesAlg.IV.Length + encryptedBytes.Length];
+                aesAlg.IV.CopyTo(combinedBytes, 0);
+                encryptedBytes.CopyTo(combinedBytes, aesAlg.IV.Length);
+                return Convert.ToBase64String(combinedBytes);
+            }
+        }
+        [HttpGet]
+        public ActionResult CreateRealorLenderSendEmail(string Email, string Firstname, string Lastname, int Type, int userID)
+        {
+            string sql = "";
+            if (Type == 2)
+            {
+                if (userID == 0)
+                {
+                    sql = sql + $@"Insert into RealEstateAgentInfo (FirstName,LastName,EmailAddress) values ('{Firstname}','{Lastname}','{Email}')";
+                    sql = sql + " SELECT SCOPE_IDENTITY() as Id";
+                }
+                else
+                {
+                    sql = sql + $@" Update RealEstateAgentInfo Set FirstName='{Firstname}',Lastname='{Lastname}',EmailAddress='{Email}' Where RealEstateAgentID={userID}";
+                }
+            }
+            else
+            {
+                if (userID == 0)
+                {
+                    sql = sql + $@" Insert into LenderInfo (FirstName,LastName,EmailAddress) values ('{Firstname}','{Lastname}','{Email}')";
+                    sql = sql + " SELECT SCOPE_IDENTITY() as Id";
+                }
+                else
+                {
+                    sql = sql + $@" Update LenderInfo Set Set FirstName='{Firstname}',Lastname='{Lastname}',EmailAddress='{Email}' Where LenderID={userID}";
+                }
+            }
+            string ID = "0";
+            if (userID == 0)
+            {
+                ID = (General.FetchData(sql).Rows[0]["Id"].ToString());
+            }
+            else
+            {
+                ID = userID.ToString();
+            }
+            UserID = int.Parse(ID);
+            // Generate a verification token (e.g., a GUID)
+            var verificationToken = Guid.NewGuid().ToString();
+
+            // Store the token and user's email address in your database
+            // Replace this with your database code
+            string Ec = General.Encrypt(ID, General.key);
+            // Send the verification email
+            var verificationLink = Url.Action("Verify", "GeneralApis", new { token = verificationToken, value = Ec }, Request.Url.Scheme);
+            var subject = "Verify Your Email Address";
+            var body = BodyHtml(UserID, $@"{Firstname} {Lastname}", verificationToken, Ec, Type);
+            //$"Please click the following link to verify your email address: <a href='{verificationLink}'>Verify Email</a>";
+
+            using (var smtpClient = new SmtpClient())
+            {
+                var smtpSection = System.Configuration.ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+                smtpClient.Host = smtpSection.Network.Host;
+                smtpClient.Port = smtpSection.Network.Port;
+                smtpClient.EnableSsl = smtpSection.Network.EnableSsl;
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
+                var fromAddress = new MailAddress(smtpSection.From, "Privont");
+                var toAddress = new MailAddress(Email);
+                var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                };
+                smtpClient.Send(message);
+                ViewBag.Message = "Registration successful. Please check your email to verify your account.";
+                return Json("true," + userID,JsonRequestBehavior.AllowGet);
+            }
+        }
+        public ActionResult InvitelenderorRealEstate(int Type,string FirstName,string LastName,string PhoneNo,string EmailAddress,int UserID,int UserType)
+        {
+            try
+            {
+                string value = "";
+                int ID = 0;
+                if (Type == 2)
+                {
+                    string sql = $@"Insert into RealEstateAgentInfo (FirstName,LastName,Contact1,EmailAddress,UserID,UserType) values ('{FirstName}','{LastName}','{PhoneNo}','{EmailAddress}',{UserID},{UserType})";
+                    sql = sql + $@"SELECT SCOPE_IDENTITY() as RealEstateAgentID";
+                    DataTable dt = General.FetchData(sql);
+                    value = dt.Rows[0]["RealEstateAgentID"].ToString();
+                    ID = int.Parse(dt.Rows[0]["RealEstateAgentID"].ToString());
+                }
+                else
+                {
+                    string sql = $@"Insert into LenderInfo (FirstName,LastName,Contact1,EmailAddress,UserID,UserType) values ('{FirstName}','{LastName}','{PhoneNo}','{EmailAddress}',{UserID},{UserType})";
+                    sql = sql + $@"SELECT SCOPE_IDENTITY() as LenderID";
+                    DataTable dt = General.FetchData(sql);
+                    value = dt.Rows[0]["LenderID"].ToString();
+                    ID = int.Parse(dt.Rows[0]["LenderID"].ToString());
+                }
+                value = General.Encrypt(value, General.key);
+
+                string secretKey = "Privont@Privont";
+                // Construct the data to be encrypted
+                var dataToEncrypt = new
+                {
+                    userId = UserID,
+                    username = "Abdullah"
+                };
+
+                var dataToEncrypt2 = new
+                {
+                    userId = UserType,
+                    username = "Abdullah"
+                };
+
+                // Serialize the data to JSON
+                var serializer = new JavaScriptSerializer();
+                string jsonData = serializer.Serialize(dataToEncrypt);
+                string jsonData2 = serializer.Serialize(dataToEncrypt2);
+                // Encrypt the data
+                string encryptedData = Encrypt(jsonData, secretKey);
+                string encryptedData2 = Encrypt(jsonData2, secretKey);
+                // Construct the URL
+                string domainUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+                string userType = UserType.ToString();
+                string userId = UserID.ToString();
+                string generatedLink = "";
+                // Function to generate a token with an expiration time of 30 minutes (1800000 milliseconds)
+                if (Type == 2)
+                {
+                    generatedLink = domainUrl + "/RealEstateAgentInfo/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
+                }
+                else if (Type == 3)
+                {
+                    generatedLink = domainUrl + "/LenderInfo/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
+                }
+                Task<string> returnvalue = SendEmailAsyncString(value, Type,generatedLink,UserID);
+                string answer = returnvalue.Result;
+                string[] resultArray = answer.Split(',');
+                string value1 = resultArray[0];
+                if(int.Parse(value1)==0)
+                {
+                    return Json($@"{value1},{"Email Sending Error"},{ID}",JsonRequestBehavior.AllowGet);
+                }
+                else if (int.Parse(value1) == 3)
+                {
+                    return Json($@"{value1},{"Email Successfully Send but SMS not send because you have not SMS setting"},{ID}", JsonRequestBehavior.AllowGet);
+                }
+                return Json($@"true,{ID}",JsonRequestBehavior.AllowGet);
+            }
+            catch
+            {
+                return Json("false,");
+            }
+        }
+        [HttpPost]
+        public async Task<string> SendEmailAsyncString(string value, int UserType, string GeneratedLink,int UserID)
+        {
+            int ID = int.Parse(General.Decrypt(value, General.key));
+            string Name = "";
+            string Email = "";
+            string PhoneNo = "";
+            DataTable dt = new DataTable();
+            if (UserType == 2)
+            {
+                dt = General.FetchData($@"Select (FirstName+' '+LastName)Name,EmailAddress,Contact1 from RealEstateAgentInfo Where RealEstateAgentID = {ID}");
+            }
+            if (UserType == 3)
+            {
+                dt = General.FetchData($@"Select (FirstName+' '+LastName)Name,EmailAddress,Contact1 From lenderInfo Where LenderID = {ID}");
+            }
+            Name = dt.Rows[0]["Name"].ToString();
+            Email = dt.Rows[0]["EmailAddress"].ToString();
+            PhoneNo = dt.Rows[0]["Contact1"].ToString();
+            if (!PhoneNo.StartsWith("+1"))
+            {
+                PhoneNo = "+1" + PhoneNo;
+            }
+            string InvitedPersonName = General.FetchData($@"Select (FirstName+' '+LastName)Name from RealEstateAgentInfo WHere RealEstateAgentID={UserID}").Rows[0]["Name"].ToString();
+            var subject = "Create Account";
+            var body = LeadBodyHtml($@"{Name}", InvitedPersonName, GeneratedLink, UserType);
+            //$"Please click the following link to verify your email address: <a href='{verificationLink}'>Verify Email</a>";
+
+            using (var smtpClient = new SmtpClient())
+            {
+                var smtpSection = System.Configuration.ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+                smtpClient.Host = smtpSection.Network.Host;
+                smtpClient.Port = smtpSection.Network.Port;
+                smtpClient.EnableSsl = smtpSection.Network.EnableSsl;
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
+                var fromAddress = new MailAddress(smtpSection.From, "Privont");
+                var toAddress = new MailAddress(Email);
+                var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                };
+                int testingValue = 0;
+                try
+                {
+                    smtpClient.Send(message);
+                    testingValue = 1;
+                }
+                catch
+                {
+                    testingValue = 0;
+                    return $@"{testingValue},";
+                }
+                DataTable dtSMS = General.FetchData($@"Select isnulL(SMSDetailInvite,'')SMSDetailInvite from SMSSetting Where UserID={UserID}");
+                if (dtSMS.Rows.Count <= 0)
+                {
+                    testingValue = 3;
+                    return $@"{testingValue},";
+                }
+                string SMSDetailInvite = dtSMS.Rows[0]["SMSDetailInvite"].ToString();
+                if (SMSDetailInvite != "")
+                {
+                    PhoneNo = PhoneNo.Trim().Replace("-", "").Replace("_", "").Replace(",", "");
+                    SMSDetailInvite = SMSDetailInvite.Replace("[Name]", Name);
+                    SMSDetailInvite = SMSDetailInvite.Replace("[YourName]", InvitedPersonName);
+                    SMSDetailInvite = SMSDetailInvite.Replace("[Link]", GeneratedLink);
+                    var SMSTrueDialog = new SMSTrueDialogController();
+                    try
+                    {
+                        if (await SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, SMSDetailInvite))
+                        {
+                            return $@"true,";
+                        }
+                        else
+                        {
+                            return $@"false,";
+                        }
+                    }
+                    catch
+                    {
+                        return $@"false,";
+                    }
+                }
+                else
+                {
+                    testingValue = 3;
+                    return $@"{testingValue},";
                 }
             }
         }

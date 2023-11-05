@@ -15,6 +15,7 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using Privont.Models;
+using System.Linq.Expressions;
 
 namespace Privont
 {
@@ -56,6 +57,25 @@ namespace Privont
                 return;
             }
         }
+        public static int LeadExpiryTime
+        {
+            get
+            {
+                try
+                {
+                    return int.Parse(General.FetchData($@"Select ExpiryTime from LeadExpiryTime").Rows[0]["ExpiryTime"].ToString());
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+            set
+            {
+
+            }
+        }
+
         public static string key = "HisabdaarPrivont";
         public static string ConnectionString { get; set; }
         public static DataTable FetchData(string query)

@@ -47,5 +47,22 @@ namespace Privont.Controllers
             SMSDetail = SMSDetail.Replace("[Link]", Link);
             return Json("true," + SMSDetail + "," + obj.PhoneNo);
         }
+        public string SendSmsString(int LeadID, string Link,int UserID)
+        {
+            DataTable dt = General.FetchData($@"Select SMSDetail from SMSSetting Where UserID={UserID}");
+            if (dt.Rows.Count <= 0)
+            {
+                return "1,";
+            }
+            string SMSDetail = dt.Rows[0]["SMSDetail"].ToString();
+            DataTable LeadDetail = General.FetchData($@"Select * from LeadInfo Where LeadID ={LeadID}");
+            LeadInfo obj = new LeadInfo();
+            obj.PhoneNo = LeadDetail.Rows[0]["PhoneNo"].ToString().Trim().Replace("-", "").Replace("_", "").Replace(",", "");
+            obj.FirstName = LeadDetail.Rows[0]["FirstName"].ToString();
+            obj.LastName = LeadDetail.Rows[0]["LastName"].ToString();
+            SMSDetail = SMSDetail.Replace("[Name]", obj.FirstName + " " + obj.LastName);
+            SMSDetail = SMSDetail.Replace("[Link]", Link);
+            return $@"2,{SMSDetail},{obj.PhoneNo}";
+        }
     }
 }

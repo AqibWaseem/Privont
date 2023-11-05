@@ -10,6 +10,7 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Services.Description;
 using static Privont.General;
@@ -424,6 +425,11 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
             DataTable dt = General.FetchData($@"select MAX(LeadInfo.LeadID)LeadID from LeadInfo");
             int.TryParse(dt.Rows[0]["LeadID"].ToString(),out LeadID);
             return LeadID;
+        }
+        public JsonResult UpdateSmsInfo(int obj)
+        {
+            General.ExecuteNonQuery($@"Update LeadInfo set SMSSent=1 Where LeadID={obj}");
+            return Json("true");
         }
     }
 }

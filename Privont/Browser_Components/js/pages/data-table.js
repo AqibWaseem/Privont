@@ -22,8 +22,22 @@ $(function () {
 		buttons: [
 			'copy', 'csv', 'excel', 'pdf', 'print'
 		]
-	} );
-	
+	});
+	$('#pendingleads')
+		.DataTable({
+			dom: 'Bfrtip',
+			buttons: [
+				'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+		});
+	$('#Approvedleads')
+		.DataTable({
+			dom: 'Bfrtip',
+			buttons: [
+				'copy', 'csv', 'excel', 'pdf', 'print'
+			]
+		});
+
 	$('#tickets').DataTable({
 	  'paging'      : true,
 	  'lengthChange': true,
