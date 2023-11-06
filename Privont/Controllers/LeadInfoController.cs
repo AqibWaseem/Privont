@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Privont.Models;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,11 @@ namespace Privont.Controllers
         LeadInfo Model = new LeadInfo();
         public ActionResult Index(string Value)
         {
-            string WhereClause= " Where 1=1 ";
+            string WhereClause = " Where 1=1 ";
             ViewBag.Message = Value;
-            if(General.UserType == 2)
+            if (General.UserType == 2)
             {
-                WhereClause = WhereClause+ $@" and UserID={General.UserID}";
+                WhereClause = WhereClause + $@" and UserID={General.UserID}";
             }
             List<LeadInfo> lst = General.ConvertDataTable<LeadInfo>(Model.GetIndexAllRecord(WhereClause));
             ViewBag.PricePoint = new DropDown().GetPricePoint();
@@ -36,14 +37,64 @@ namespace Privont.Controllers
             Session[$"TotalCount"] = 0;
             return View(lst);
         }
-        public ActionResult ClaimLead(int LeadID,int LenderID)
+
+        public ActionResult Index2()
+        {
+            DataTable dataTable = General.FetchData($@"
+Declare @LenderID int set @LenderID={General.UserID}
+Declare @EntryTime int
+Select @EntryTime=ExpiryTime from LeadExpiryTime
+Select  A.LeadID,A.ZipCode,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.FirstName  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as FirstName,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.LastName  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as LastName,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.PhoneNo  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as PhoneNo,
+case
+ when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.EmailAddress  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as EmailAddress,
+case When A.ClaimingLender is not null and ClaimingLender = @LenderID then 'Claimed'
+else '0' end as Claimed
+ from (select LeadInfo.LeadID,LeadInfo.FirstName,LeadInfo.LastName,
+isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,
+isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , LeadClaiminfo.ClaimingLender,
+case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime 
+from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID 
+inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID 
+Left outer join LeadClaimInfo on LeadInfo.LeadID = LeadClaimInfo.LeadID 
+ Where LeadInfo.EntrySource = 2  
+and LeadInfo.isClaimLead = 1 and LeadInfo.OptInSMSStatus=1 
+)A 
+where 1=case when isbelowtime=1 and (select Count(*) from favouritelender 
+where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 
+then 1  else 0 end order by LeadID desc
+");
+            List<LeadInfo> lst = General.ConvertDataTable<LeadInfo>(dataTable);
+            ViewBag.PricePoint = new DropDown().GetPricePoint();
+            ViewBag.ApiLeadType = new DropDown().GetApiLeadType();            
+            return View(lst);
+        }
+        public ActionResult GetLeadDetails(int LeadID)
+        {
+            LeadInfo objVoucher = GetLeadByID(LeadID);
+            return View(objVoucher);
+        }
+        public ActionResult ClaimLead(int LeadID, int LenderID)
         {
             string Value = "0";
             bool Return = bool.Parse(General.FetchData($@"Select Isnull(ReadyToOptin,0)ReadyToOptin from LeadInfo Where LeadID = {LeadID}").Rows[0]["ReadyToOptin"].ToString());
             string Return1 = "0";
             string AlreadyAdded = "0";
             DataTable dt2 = General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {LeadID} and ClaimingLender = {LenderID}");
-            if(dt2.Rows.Count==0)
+            if (dt2.Rows.Count == 0)
             {
                 if (Return == false)
                 {
@@ -66,7 +117,7 @@ namespace Privont.Controllers
             {
                 AlreadyAdded = "1";
             }
-            return Json("true,"+Value+","+ Return1 + "," + AlreadyAdded);
+            return Json("true," + Value + "," + Return1 + "," + AlreadyAdded);
         }
         public ActionResult Create()
         {
@@ -136,18 +187,18 @@ namespace Privont.Controllers
                                 {
                                     Lead.FirstName = values[0].Trim().Replace("'", "");
                                     Lead.LastName = values[1].Trim().Replace("'", "").Replace("*", " x ");
-                                    Lead.PhoneNo = values[2].Trim().Replace("'","").Replace("*", " x ");
+                                    Lead.PhoneNo = values[2].Trim().Replace("'", "").Replace("*", " x ");
                                     Lead.EmailAddress = values[3].Trim().Replace("'", "").Replace("*", " x ");
                                     lstLeadInfo.Add(Lead);
                                 }
                             }
                             i++;
                         }
-                       int Value =  SaveRecord(lstLeadInfo);
-                        if(Value>0)
+                        int Value = SaveRecord(lstLeadInfo);
+                        if (Value > 0)
                         {
                             Message = "Error Uploading File";
-                            return RedirectToAction("Index", new { id=Message});
+                            return RedirectToAction("Index", new { id = Message });
                         }
                         else
                         {
@@ -233,7 +284,7 @@ GetDate(),
             {
                 string problem = "";
                 bool anomaliefound = false;
-                if (lstLeadInfo.Where(x => x.PhoneNo == pi.PhoneNo && x.FirstName==pi.FirstName && x.LastName == pi.LastName && x.EmailAddress == pi.EmailAddress).Count() > 1)
+                if (lstLeadInfo.Where(x => x.PhoneNo == pi.PhoneNo && x.FirstName == pi.FirstName && x.LastName == pi.LastName && x.EmailAddress == pi.EmailAddress).Count() > 1)
                 {
                     problem = "Duplication of Data";
                     anomaliefound = true;
@@ -263,7 +314,7 @@ GetDate(),
         }
 
         public ActionResult GetleadInfo(string txtTitle)
-      {
+        {
             if (txtTitle is null)
             {
                 txtTitle = "";
@@ -287,7 +338,7 @@ GetDate(),
         public ActionResult AddLeadExpiryTime()
         {
             ViewBag.ExpiryDate = General.FetchData("Select isnull(ExpiryTime,0)ExpiryTime from LeadExpiryTime").Rows[0]["ExpiryTime"].ToString();
-            return View();   
+            return View();
         }
         public ActionResult SaveLeadExpiryTime(int Time)
         {
@@ -315,11 +366,11 @@ GetDate(),
                 return View();
             }
         }
-        public ActionResult LeadPricePoint(int LeadID,int PricePoint)
+        public ActionResult LeadPricePoint(int LeadID, int PricePoint)
         {
             string value = "0";
             DataTable dt = General.FetchData($@"Select PricePointID from leadInfo Where LeadID={LeadID}");
-            if (dt.Rows[0]["PricePointID"]==DBNull.Value)
+            if (dt.Rows[0]["PricePointID"] == DBNull.Value)
             {
                 string sql = $@"Update LeadInfo Set PricePointID={PricePoint} Where LeadID={LeadID}";
                 General.ExecuteNonQuery(sql);
@@ -328,22 +379,22 @@ GetDate(),
             {
                 value = "1";
             }
-            return Json("true,"+value);
+            return Json("true," + value);
         }
-        public int TotalCount{get;set;} 
+        public int TotalCount { get; set; }
         public ActionResult GetInfoSync(string ApiSource)
         {
             int val = 0;
             int TotalCount = int.Parse(Session[$"TotalCount"].ToString());
             DataTable dt = General.FetchData($@"select count(*)AddedVal from LeadInfo where EntrySource=2 and ApiSource='{ApiSource}' and UserID={General.UserID} and ApiLeadID>0");
             int.TryParse(dt.Rows[0]["AddedVal"].ToString(), out val);
-            if(TotalCount > 0 )
-                val= (val / TotalCount)*100;
+            if (TotalCount > 0)
+                val = (val / TotalCount) * 100;
             return Json(val);
         }
-        public ActionResult GetSourceOfAPILeadIndex(int UserID,int SourceID)
+        public ActionResult GetSourceOfAPILeadIndex(int UserID, int SourceID)
         {
-            if(UserID==0)
+            if (UserID == 0)
             {
                 UserID = General.UserID;
             }
@@ -353,7 +404,7 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
             DataTable dt = General.FetchData(Query);
             if (dt.Rows.Count > 0)
             {
-                FetchingLeadsFromAPIs(UserID,SourceID);
+                FetchingLeadsFromAPIs(UserID, SourceID);
                 return Json("true," + dt.Rows[0]["APIConfig"].ToString());
             }
             else
@@ -363,9 +414,9 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
         }
         public string GetAPIOfFollowUPBoss()
         {
-            return ""+ $@"https://api.followupboss.com/v1/people?sort=created&limit=100&offset=0&includeTrash=false&includeUnclaimed=false";
+            return "" + $@"https://api.followupboss.com/v1/people?sort=created&limit=100&offset=0&includeTrash=false&includeUnclaimed=false";
         }
-        public void FetchingLeadsFromAPIs(int UserID,int APISourceID)
+        public void FetchingLeadsFromAPIs(int UserID, int APISourceID)
         {
             var NextLink = GetAPIOfFollowUPBoss();
             string GetingLastAddedLink = new GeneralApisController().LastAddedLink_APILog(LogSource.FollowUpBoss);
@@ -374,10 +425,10 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
                 NextLink = GetingLastAddedLink;
             }
             TotalCount = 2;
-            for(int i = 1; i <= TotalCount;)
+            for (int i = 1; i <= TotalCount;)
             {
 
-                string Response = General.FetchDataFromAPIs(NextLink, General.GetAPIAuthKey(UserID,APISourceID));
+                string Response = General.FetchDataFromAPIs(NextLink, General.GetAPIAuthKey(UserID, APISourceID));
                 if (Response != "Error")
                 {
                     Root root = JsonConvert.DeserializeObject<Root>(Response);
@@ -401,7 +452,7 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
                         objnew.ApiSource = item.source;
                         objnew.UserID = UserID;
                         objnew.UserType = 2;
-                        if(!new GeneralApisController().CheckIfLeadsAlreadyExist(UserID,objnew.ApiLeadID))
+                        if (!new GeneralApisController().CheckIfLeadsAlreadyExist(UserID, objnew.ApiLeadID))
                         {
                             Model.InsertRecord(objnew);
                         }
@@ -417,19 +468,53 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
 
                 }
             }
-           
+
         }
         public int LastAddedAPI()
         {
             int LeadID = 0;
             DataTable dt = General.FetchData($@"select MAX(LeadInfo.LeadID)LeadID from LeadInfo");
-            int.TryParse(dt.Rows[0]["LeadID"].ToString(),out LeadID);
+            int.TryParse(dt.Rows[0]["LeadID"].ToString(), out LeadID);
             return LeadID;
         }
         public JsonResult UpdateSmsInfo(int obj)
         {
             General.ExecuteNonQuery($@"Update LeadInfo set SMSSent=1 Where LeadID={obj}");
             return Json("true");
+        }
+        public LeadInfo GetLeadByID(int LeadID)
+        {
+            string Query = @"Select LeadInfo.*,ZipCode from LeadInfo 
+inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID 
+inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadID=" + LeadID;
+            DataTable dt = General.FetchData(Query);
+            LeadInfo objVoucher = new LeadInfo();
+            LenderInfo objdetail = new LenderInfo();
+            if (dt.Rows.Count > 0)
+            {
+                objVoucher.LeadID = int.Parse(dt.Rows[0]["LeadID"].ToString());
+                objVoucher.FirstName = (dt.Rows[0]["FirstName"].ToString());
+                objVoucher.LastName = (dt.Rows[0]["LastName"].ToString());
+                objVoucher.PhoneNo = (dt.Rows[0]["PhoneNo"].ToString());
+                objVoucher.ZipCode = (dt.Rows[0]["ZipCode"].ToString());
+                objVoucher.EmailAddress = (dt.Rows[0]["EmailAddress"].ToString());
+                DataTable dtDetail = General.FetchData($@"Select LenderInfo.FirstName,LenderInfo.LastName from LeadClaimInfo 
+inner join LenderInfo on LeadClaimInfo.ClaimingLender = LenderInfo.LenderID
+Where LeadClaimInfo.LeadID={LeadID}");
+                if (dtDetail.Rows.Count > 0)
+                {
+                    foreach (DataRow dr in dtDetail.Rows)
+                    {
+                        objdetail = new LenderInfo();
+                        objdetail.FirstName = dr["FirstName"].ToString();
+                        objdetail.LastName = (dr["LastName"].ToString());
+                        objVoucher.LstLenderInfo.Add(objdetail);
+                    }
+                }
+                return objVoucher;
+
+            }
+            return new LeadInfo();
         }
     }
 }

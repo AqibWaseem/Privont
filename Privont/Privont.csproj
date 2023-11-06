@@ -10649,6 +10649,8 @@
     <Content Include="Views\GeneralApis\EmailThankyou.cshtml" />
     <Content Include="Views\RealEstateAgentInfo\APIConfiguration.cshtml" />
     <Content Include="Views\SMSSetting\Index.cshtml" />
+    <Content Include="Views\LeadInfo\GetLeadDetails.cshtml" />
+    <Content Include="Views\LeadInfo\Index2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

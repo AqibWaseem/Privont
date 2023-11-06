@@ -1,0 +1,77 @@
+﻿@model Privont.Models.LeadInfo
+
+@{
+    ViewBag.Title = "Lead Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 0;
+}
+<div class="content-wrapper">
+    <div class="container-full">
+        <!-- Content Header (Page header) -->
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="box">
+                        <div class=" box-header">
+                            <button type="button" class="btn btn-primary pull-right" onclick="location.href='/LeadInfo/Index'"> Back</button>
+                        </div>
+                        <div class=" box-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>First Name: </strong>@Model.FirstName
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Last Name: </strong>@Model.LastName
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <strong>Phone No: </strong>@Model.PhoneNo
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Email Address: </strong>@Model.EmailAddress
+                                </div>
+                                <div class="col-md-4">
+                                    <strong>Zip Code: </strong>@Model.ZipCode
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-condensed">
+                                        <tbody>
+                                            @{
+                                                for (i = 0; i <= 3; i++)
+                                                {
+                                                    if (Model.LstLenderInfo.Count > i)
+                                                    {
+                                                        <tr>
+                                                            <td>Lender Claim No @(i==0?"1":""+i+"") by: <strong>@Model.LstLenderInfo[i].FirstName @Model.LstLenderInfo[i].LastName</strong></td>
+                                                        </tr>
+                                                            if (i == 0)
+                    {
+                                                        i = i + 1;
+                                                    }
+                                                }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td>Lead Claim No @(i) by: <strong>Not Claimed</strong></td>
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            }
+                                        </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

@@ -23,6 +23,7 @@ using TrueDialog.Model;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Web.Helpers;
+using System.Web.DynamicData;
 
 namespace Privont.Controllers
 {
@@ -1419,10 +1420,47 @@ Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo {WhereCl
             }
             if (UserType == 3)
             {
-                sql = $@"Declare @LenderID int set @LenderID={UserID}
+
+                sql = $@" Declare @LenderID int set @LenderID={UserID}
 Declare @EntryTime int
 Select @EntryTime=ExpiryTime from LeadExpiryTime
-Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
+Select  A.LeadID,A.ZipCode,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.FirstName  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as FirstName,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.LastName  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as LastName,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.PhoneNo  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as PhoneNo,
+case
+ when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.EmailAddress  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as EmailAddress,
+case When A.ClaimingLender is not null and ClaimingLender = @LenderID then 'Claimed'
+else '0' end as Claimed
+ from (select LeadInfo.LeadID,LeadInfo.FirstName,LeadInfo.LastName,
+isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,
+isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , LeadClaiminfo.ClaimingLender,
+case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime 
+from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID 
+inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID 
+Left outer join LeadClaimInfo on LeadInfo.LeadID = LeadClaimInfo.LeadID 
+ Where LeadInfo.EntrySource = 2  
+and LeadInfo.isClaimLead = 1 and LeadInfo.OptInSMSStatus=1 
+)A 
+where 1=case when isbelowtime=1 and (select Count(*) from favouritelender 
+where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 
+then 1  else 0 end order by LeadID desc
+";
+//                sql = $@"Declare @LenderID int set @LenderID={UserID}
+//Declare @EntryTime int
+//Select @EntryTime=ExpiryTime from LeadExpiryTime
+//Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
             }
             else
             {
@@ -1471,6 +1509,93 @@ LEFT OUTER JOIN
             return jr;
         }
         [HttpGet]
+        public ActionResult GetLeadDetails(int LeadID)
+        {
+            try
+            {
+                DataTable dtLeadInfo = General.FetchData($@"Select LeadInfo.*,ZipCode from LeadInfo 
+inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID 
+inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadID= {LeadID}");
+                DataTable dtLeadDetail = General.FetchData($@"Select LenderInfo.FirstName,LenderInfo.LastName from LeadClaimInfo 
+inner join LenderInfo on LeadClaimInfo.ClaimingLender = LenderInfo.LenderID
+Where LeadClaimInfo.LeadID= {LeadID}");
+                Dictionary<string, object> dbrows = GetTableFirstRow(dtLeadInfo);
+                List<Dictionary<string, object>> details = GetTableRows(dtLeadDetail);
+                dbrows.Add("Details", details);
+
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Data for Lead Info");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+                //return new JsonResult()
+                //{
+                //    Data = new
+                //    {
+                //        dbrows,
+                //    },
+                //    ContentType = "application/json",
+                //    ContentEncoding = System.Text.Encoding.UTF8,
+                //    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                //    MaxJsonLength = Int32.MaxValue
+                //};
+                //return Json(true);
+            }
+            catch (Exception)
+            {
+                return Json(false);
+            }
+        }
+        public Dictionary<string, object> GetTableFirstRow(DataTable dtData)
+        {
+
+            Dictionary<string, object> dictRow = null;
+            for (int i = 0; i < 1; i++)
+            {
+                dictRow = new Dictionary<string, object>();
+                foreach (DataColumn col in dtData.Columns)
+                {
+                    dictRow.Add(col.ColumnName, dtData.Rows[i][col]);
+                }
+
+            }
+            return dictRow;
+        }
+        [ValidateInput(false)]
+        public List<Dictionary<string, object>> GetTableRows(DataTable dtData)
+        {
+            List<Dictionary<string, object>>
+            lstRows = new List<Dictionary<string, object>>();
+            Dictionary<string, object> dictRow = null;
+            foreach (DataRow dr in dtData.Rows)
+            {
+                dictRow = new Dictionary<string, object>();
+                foreach (DataColumn col in dtData.Columns)
+                {
+                    dictRow.Add(col.ColumnName, dr[col]);
+                }
+                lstRows.Add(dictRow);
+            }
+            return lstRows;
+        }
+
+[HttpGet]
         public JsonResult GetApiLeadType()
         {
             DataTable dataTable = new DataTable();
