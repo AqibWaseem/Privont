@@ -27,6 +27,7 @@ namespace Privont.Models
         public int ApiLeadID { get; set; }
         public string ApiSource { get; set; }
         public bool SMSSent { get; set; }
+        public string Claimed { get; set; }
         public List<LenderInfo> LstLenderInfo = new List<LenderInfo>();
         public DataTable GetAllRecord(string WhereClause = "")
         {

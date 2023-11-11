@@ -42,30 +42,33 @@
                                 <div class="col-md-12">
                                     <table class="table table-bordered table-condensed">
                                         <tbody>
-                                            @{
-                                                for (i = 0; i <= 3; i++)
-                                                {
-                                                    if (Model.LstLenderInfo.Count > i)
+                                            <tr>
+                                                @{
+                                                    for (i = 0; i <= 3; i++)
                                                     {
-                                                        <tr>
-                                                            <td>Lender Claim No @(i==0?"1":""+i+"") by: <strong>@Model.LstLenderInfo[i].FirstName @Model.LstLenderInfo[i].LastName</strong></td>
-                                                        </tr>
-                                                            if (i == 0)
-                    {
-                                                        i = i + 1;
-                                                    }
-                                                }
-                                                    else
-                                                    {
-                                                        <tr>
-                                                            <td>Lead Claim No @(i) by: <strong>Not Claimed</strong></td>
-                                                        </tr>
-                                                    }
-                                                }
+                                                        if (Model.LstLenderInfo.Count > i)
+                                                        {
 
-                                            }
-                                        </tbody>
-                                        </table>
+                                                            <td>Lender Claim No @(i==0?"1":""+i+"") by: <strong>@Model.LstLenderInfo[i].FirstName @Model.LstLenderInfo[i].LastName</strong></td>
+                                                            if (i == 0)
+                                                            {
+                                                                i = i + 1;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>Lead Claim No @(i==0?"1":""+i+"") by: <strong>Not Claimed</strong></td>
+                                                            if (i == 0)
+                                                            {
+                                                                i = i + 1;
+                                                            }
+
+                                                        }
+                                                    }
+                                                }
+                                            </tr>
+                                            </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>

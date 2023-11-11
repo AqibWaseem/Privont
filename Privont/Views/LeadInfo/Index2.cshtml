@@ -65,10 +65,15 @@
                                             <th>
                                                 Zip Code
                                             </th>
+                                            <th>
+                                                Claimed
+                                            </th>
                                         }
-                                        <td>Price Point</td>
+
                                         @if (General.UserType == 2)
                                         {
+                                            <td>Price Point</td>
+                                            <td>Send SMS</td>
                                             <td>Action</td>
                                         }
                                     </tr>
@@ -76,156 +81,50 @@
                                 <tbody>
                                     @foreach (var item in Model.Where(u => u.SMSSent == false))
                                     {
-                                        <tr id="@item.LeadID">
-                                                        <td>
-                                                            @item.FirstName @item.LastName
-                                                        </td>
-                                                        <td>
-                                                            @item.PhoneNo
-                                                        </td>
-                                                        <td>
-                                                            @item.EmailAddress
-                                                        </td>
-                                                        <td>
-                                                            @item.ZipCode
-                                                        </td>
-                                                        <td></td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            @item.ZipCode
-                                                        </td>
-                                                        if (item.ReadytoOptin == false)
-                                                        {
-                                                            if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
-                                                            {
-                                                                <td>Claimed</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>
-                                                                    <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                                        Claim Lead
-                                                                    </button>
-                                                                    <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
-                                                                </td>
-                                                            }
-
-                                                        }
-                                                        else
-                                                        {
-                                                            <td></td>
-                                                        }
-                                                        <td></td>
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    <td>
-                                                        ****
-                                                    </td>
-                                                    <td>
-                                                        ****
-                                                    </td>
-                                                    <td>
-                                                        ****
-                                                    </td>
-                                                    <td>
-                                                        @item.ZipCode
-                                                    </td>
-                                                    if (item.ReadytoOptin == false)
-                                                    {
-                                                        if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
-                                                        {
-                                                            <td>Claimed</td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>
-                                                                <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                                    Claim Lead
-                                                                </button>
-                                                                <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
-                                                            </td>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <td></td>
-                                                    }
-                                                    <td></td>
-                                                }
-
-                                            }
-                                            else
+                                        <tr id="@item.LeadID" onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'">
+                                            <td>
+                                                @item.FirstName @item.LastName
+                                            </td>
+                                            <td>
+                                                @item.PhoneNo
+                                            </td>
+                                            <td>
+                                                @item.EmailAddress
+                                            </td>
+                                            @if (General.UserType == 3)
                                             {
                                                 <td>
-                                                    @item.FirstName @item.LastName
+                                                    @item.ZipCode
                                                 </td>
                                                 <td>
-                                                    @item.PhoneNo
+                                                    @if (item.Claimed == "0")
+                                                    {<button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
+                                                            Claim Lead
+                                                        </button>
+                                                        <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Claimed</span>
+                                                    }
                                                 </td>
+
+                                            }
+                                            @if (General.UserType == 2)
+                                            {
                                                 <td>
-                                                    @item.EmailAddress
-                                                </td>
-                                                @*{
-                                                                                                        dt = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)Name
-                                                    from LeadClaimInfo inner join LenderInfo on LeadClaimInfo.ClaimingLender = LenderInfo.LenderId
-                                                    Where LeadClaimInfo.LEadID= {item.LeadID}");
-                                                                                                    }
-                                                                                                    <td>
-                                                                                                        <div class="box-body">
-                                                                                                            <span style="display:none">@(i=0);</span>
-                                                                                                            @foreach (System.Data.DataRow sa in dt.Rows)
-                                                                                                            {
-                                                                                                                if (i == 0)
-                                                                                                                {
-                                                                                                                    <span class="badge badge-pill badge-success">@sa["Name"]</span>
-                                                                                                                }
-                                                                                                                else if (i == 1)
-                                                                                                                {
-                                                                                                                    <span class="badge badge-pill badge-danger">@sa["Name"]</span>
-                                                                                                                }
-                                                                                                                else
-                                                                                                                {
-                                                                                                                    <span class="badge badge-pill badge-info">@sa["Name"]</span>
-                                                                                                                }
-                                                                                                                <span style="display:none">@(i=i+1);</span>
-                                                                                                            }
-                                                                                                        </div>
-                                                                                                    </td>*@
-                                                if (General.UserType == 2)
-                                                {
-                                                    <td>
-                                                        @if (item.PricePointID == 0)
-                                                        {
-                                                            <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
-                                                                Price Point
-                                                            </button>
-                                                            <span id="PricePointNametd"></span>
-                                                        }
-                                                        else
-                                                        {
-                                                            @item.PricePointName
-                                                        }
-                                                    </td>
-                                                }
-                                                else
-                                                {
-                                                    <td>
+                                                    @if (item.PricePointID == 0)
+                                                    {
+                                                        <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
+                                                            Price Point
+                                                        </button>
+                                                        <span id="PricePointNametd"></span>
+                                                    }
+                                                    else
+                                                    {
                                                         @item.PricePointName
-                                                    </td>
-                                                }
+                                                    }
+                                                </td>
                                             }
                                             @if (General.UserType == 2)
                                             {
@@ -252,7 +151,6 @@
                                                     <button id="@item.LeadID" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
                                                         <i class="fa fa-close"></i>
                                                     </button>
-
                                                 </td>
 
                                             }
@@ -272,7 +170,8 @@
         <!-- /.content -->
         <!-- Pending Leads Main content -->
         @if (General.UserType == 2)
-        {<section class="content">
+        {
+            <section class="content">
                 <div class="row">
                     <div class="box">
                         <div class="box-header with-border">
@@ -295,16 +194,10 @@
                                             <th>
                                                 Email
                                             </th>
-                                            @if (General.UserType == 3)
-                                            {
-                                                <th>
-                                                    Zip Code
-                                                </th>
-                                            }
-                                            <td>Price Point</td>
                                             @if (General.UserType == 2)
                                             {
-                                                <th>Claiming</th>
+                                                <td>Price Point</td>
+                                                <td>SMS Send</td>
                                                 <td>Action</td>
                                             }
                                         </tr>
@@ -312,180 +205,38 @@
                                     <tbody>
                                         @foreach (var item in Model.Where(u => u.SMSSent == true))
                                         {
-                                            <tr id="@item.LeadID">
-                                                @if (General.UserType == 3)
+                                            <tr id="@item.LeadID" onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'">
+                                                <td>
+                                                    @item.FirstName @item.LastName
+                                                </td>
+                                                <td>
+                                                    @item.PhoneNo
+                                                </td>
+                                                <td>
+                                                    @item.EmailAddress
+                                                </td>
+                                                @if (General.UserType == 2)
                                                 {
-                                                    if (item.OptInSMSStatus == 1)
-                                                    {
-                                                        dt2 = General.FetchData($@"Select * from LeadClaimInfo Where ClaimingLender={General.UserID} and LeadID = {item.LeadID}");
-                                                        if (dt2.Rows.Count > 0)
+                                                    <td>
+                                                        @if (item.PricePointID == 0)
                                                         {
-                                                            <td>
-                                                                @item.FirstName @item.LastName
-                                                            </td>
-                                                            <td>
-                                                                @item.PhoneNo
-                                                            </td>
-                                                            <td>
-                                                                @item.EmailAddress
-                                                            </td>
-                                                            <td>
-                                                                @item.ZipCode
-                                                            </td>
-                                                            <td></td>
+                                                            <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
+                                                                Price Point
+                                                            </button>
+                                                            <span id="PricePointNametd"></span>
                                                         }
                                                         else
                                                         {
-                                                            <td>
-                                                                ****
-                                                            </td>
-                                                            <td>
-                                                                ****
-                                                            </td>
-                                                            <td>
-                                                                ****
-                                                            </td>
-                                                            <td>
-                                                                @item.ZipCode
-                                                            </td>
-                                                            if (item.ReadytoOptin == false)
-                                                            {
-                                                                if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
-                                                                {
-                                                                    <td>Claimed</td>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <td>
-                                                                        <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                                            Claim Lead
-                                                                        </button>
-                                                                        <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
-                                                                    </td>
-                                                                }
-
-                                                            }
-                                                            else
-                                                            {
-                                                                <td></td>
-                                                            }
-                                                            <td></td>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            @item.ZipCode
-                                                        </td>
-                                                        if (item.ReadytoOptin == false)
-                                                        {
-                                                            if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
-                                                            {
-                                                                <td>Claimed</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>
-                                                                    <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                                        Claim Lead
-                                                                    </button>
-                                                                    <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
-                                                                </td>
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            <td></td>
-                                                        }
-                                                        <td></td>
-                                                    }
-
-                                                }
-                                                else
-                                                {
-                                                    <td>
-                                                        @item.FirstName @item.LastName
-                                                    </td>
-                                                    <td>
-                                                        @item.PhoneNo
-                                                    </td>
-                                                    <td>
-                                                        @item.EmailAddress
-                                                    </td>
-                                                    @*{
-                                                                                                            dt = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)Name
-                                                        from LeadClaimInfo inner join LenderInfo on LeadClaimInfo.ClaimingLender = LenderInfo.LenderId
-                                                        Where LeadClaimInfo.LEadID= {item.LeadID}");
-                                                                                                        }
-                                                                                                        <td>
-                                                                                                            <div class="box-body">
-                                                                                                                <span style="display:none">@(i = 0);</span>
-                                                                                                                @foreach (System.Data.DataRow sa in dt.Rows)
-                                                                                                                {
-                                                                                                                    if (i == 0)
-                                                                                                                    {
-                                                                                                                        <span class="badge badge-pill badge-success">@sa["Name"]</span>
-                                                                                                                    }
-                                                                                                                    else if (i == 1)
-                                                                                                                    {
-                                                                                                                        <span class="badge badge-pill badge-danger">@sa["Name"]</span>
-                                                                                                                    }
-                                                                                                                    else
-                                                                                                                    {
-                                                                                                                        <span class="badge badge-pill badge-info">@sa["Name"]</span>
-                                                                                                                    }
-                                                                                                                    <span style="display:none">@(i = i + 1);</span>
-                                                                                                                }
-                                                                                                            </div>
-                                                                                                        </td>*@
-                                                    if (General.UserType == 2)
-                                                    {
-                                                        <td>
-                                                            @if (item.PricePointID == 0)
-                                                            {
-                                                                <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
-                                                                    Price Point
-                                                                </button>
-                                                                <span id="PricePointNametd"></span>
-                                                            }
-                                                            else
-                                                            {
-                                                                @item.PricePointName
-                                                            }
-                                                        </td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>
                                                             @item.PricePointName
-                                                        </td>
-                                                    }
+                                                        }
+                                                    </td>
                                                 }
                                                 @if (General.UserType == 2)
                                                 {
                                                     <td>
-                                                        @if (item.isClaimLead == 0)
+                                                        @if (item.SMSSent == true)
                                                         {
-                                                            if (item.SMSSent == true)
-                                                            {
-                                                                <p>SMS send</p>
-                                                            }
-                                                            else
-                                                            {
-                                                                <button onclick="getClaimingLink(@item.LeadID,'@item.FirstName','@item.LastName')" id="Claimbtn_@item.LeadID" type="button" class="m-1 btn btn-success btn-sm  me-1">
-                                                                    Get Claim
-                                                                </button>
-                                                                <p id="AfterClaim_@item.LeadID"></p>
-                                                            }
+                                                            <p>SMS send</p>
                                                         }
                                                     </td>
                                                     <td>
@@ -537,16 +288,9 @@
                                             <th>
                                                 Email
                                             </th>
-                                            @if (General.UserType == 3)
-                                            {
-                                                <th>
-                                                    Zip Code
-                                                </th>
-                                            }
-                                            <td>Price Point</td>
                                             @if (General.UserType == 2)
                                             {
-                                                <th>Claiming</th>
+                                                <td>Price Point</td>
                                                 <td>Action</td>
                                             }
                                         </tr>
@@ -554,182 +298,34 @@
                                     <tbody>
                                         @foreach (var item in Model.Where(u => u.isClaimLead == 1))
                                         {
-                                            <tr id="@item.LeadID">
-                                                @if (General.UserType == 3)
-                                                {
-                                                    if (item.OptInSMSStatus == 1)
-                                                    {
-                                                        dt2 = General.FetchData($@"Select * from LeadClaimInfo Where ClaimingLender={General.UserID} and LeadID = {item.LeadID}");
-                                                        if (dt2.Rows.Count > 0)
-                                                        {
-                                                            <td>
-                                                                @item.FirstName @item.LastName
-                                                            </td>
-                                                            <td>
-                                                                @item.PhoneNo
-                                                            </td>
-                                                            <td>
-                                                                @item.EmailAddress
-                                                            </td>
-                                                            <td>
-                                                                @item.ZipCode
-                                                            </td>
-                                                            <td></td>
-                                                        }
-                                                        else
-                                                        {
-                                                            <td>
-                                                                ****
-                                                            </td>
-                                                            <td>
-                                                                ****
-                                                            </td>
-                                                            <td>
-                                                                ****
-                                                            </td>
-                                                            <td>
-                                                                @item.ZipCode
-                                                            </td>
-                                                            if (item.ReadytoOptin == false)
-                                                            {
-                                                                if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
-                                                                {
-                                                                    <td>Claimed</td>
-                                                                }
-                                                                else
-                                                                {
-                                                                    <td>
-                                                                        <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                                            Claim Lead
-                                                                        </button>
-                                                                        <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
-                                                                    </td>
-                                                                }
-
-                                                            }
-                                                            else
-                                                            {
-                                                                <td></td>
-                                                            }
-                                                            <td></td>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            ****
-                                                        </td>
-                                                        <td>
-                                                            @item.ZipCode
-                                                        </td>
-                                                        if (item.ReadytoOptin == false)
-                                                        {
-                                                            if (General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {item.LeadID} and ClaimingLender = {General.UserID}").Rows.Count > 0)
-                                                            {
-                                                                <td>Claimed</td>
-                                                            }
-                                                            else
-                                                            {
-                                                                <td>
-                                                                    <button id="btn_@item.LeadID" onclick="ClaimLead(@item.LeadID)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
-                                                                        Claim Lead
-                                                                    </button>
-                                                                    <p id="lbl_@item.LeadID" style="display:none">Claimed</p>
-                                                                </td>
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            <td></td>
-                                                        }
-                                                        <td></td>
-                                                    }
-
-                                                }
-                                                else
-                                                {
-                                                    <td>
-                                                        @item.FirstName @item.LastName
-                                                    </td>
-                                                    <td>
-                                                        @item.PhoneNo
-                                                    </td>
-                                                    <td>
-                                                        @item.EmailAddress
-                                                    </td>
-                                                    @*{
-                                                                                                            dt = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)Name
-                                                        from LeadClaimInfo inner join LenderInfo on LeadClaimInfo.ClaimingLender = LenderInfo.LenderId
-                                                        Where LeadClaimInfo.LEadID= {item.LeadID}");
-                                                                                                        }
-                                                                                                        <td>
-                                                                                                            <div class="box-body">
-                                                                                                                <span style="display:none">@(i = 0);</span>
-                                                                                                                @foreach (System.Data.DataRow sa in dt.Rows)
-                                                                                                                {
-                                                                                                                    if (i == 0)
-                                                                                                                    {
-                                                                                                                        <span class="badge badge-pill badge-success">@sa["Name"]</span>
-                                                                                                                    }
-                                                                                                                    else if (i == 1)
-                                                                                                                    {
-                                                                                                                        <span class="badge badge-pill badge-danger">@sa["Name"]</span>
-                                                                                                                    }
-                                                                                                                    else
-                                                                                                                    {
-                                                                                                                        <span class="badge badge-pill badge-info">@sa["Name"]</span>
-                                                                                                                    }
-                                                                                                                    <span style="display:none">@(i = i + 1);</span>
-                                                                                                                }
-                                                                                                            </div>
-                                                                                                        </td>*@
-                                                    if (General.UserType == 2)
-                                                    {
-                                                        <td>
-                                                            @if (item.PricePointID == 0)
-                                                            {
-                                                                <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
-                                                                    Price Point
-                                                                </button>
-                                                                <span id="PricePointNametd"></span>
-                                                            }
-                                                            else
-                                                            {
-                                                                @item.PricePointName
-                                                            }
-                                                        </td>
-                                                    }
-                                                    else
-                                                    {
-                                                        <td>
-                                                            @item.PricePointName
-                                                        </td>
-                                                    }
-                                                }
+                                            <tr id="@item.LeadID" onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'">
+                                                <td>
+                                                    @item.FirstName @item.LastName
+                                                </td>
+                                                <td>
+                                                    @item.PhoneNo
+                                                </td>
+                                                <td>
+                                                    @item.EmailAddress
+                                                </td>
                                                 @if (General.UserType == 2)
                                                 {
                                                     <td>
-                                                        @if (item.isClaimLead == 0)
+                                                        @if (item.PricePointID == 0)
                                                         {
-                                                            if (item.SMSSent == true)
-                                                            {
-                                                                <p>SMS send</p>
-                                                            }
-                                                            else
-                                                            {
-                                                                <button onclick="getClaimingLink(@item.LeadID,'@item.FirstName','@item.LastName')" id="Claimbtn_@item.LeadID" type="button" class="m-1 btn btn-success btn-sm  me-1">
-                                                                    Get Claim
-                                                                </button>
-                                                                <p id="AfterClaim_@item.LeadID"></p>
-                                                            }
+                                                            <button type="button" class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#modal-fill-PricePoint" id="btn_@item.LeadID" onclick="OpenPricePointModal(@item.LeadID)" style="margin:0 5px;">
+                                                                Price Point
+                                                            </button>
+                                                            <span id="PricePointNametd"></span>
+                                                        }
+                                                        else
+                                                        {
+                                                            @item.PricePointName
                                                         }
                                                     </td>
+                                                }
+                                                @if (General.UserType == 2)
+                                                {
                                                     <td>
                                                         <button onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'" type="button" class="m-1 btn btn-success btn-sm  me-1">
                                                             <i class="fa fa-eye"></i>
@@ -740,171 +336,168 @@
                                                         <button id="@item.LeadID" onclick="DeleteButtonclicked(this)" type="button" class="m-1 btn btn-danger  btn-sm me-1">
                                                             <i class="fa fa-close"></i>
                                                         </button>
-
                                                     </td>
-
                                                 }
                                             </tr>
-                                        }
-                                    </tbody>
-                                </table>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+                            <!-- /.box-body -->
                         </div>
-                        <!-- /.box-body -->
-                    </div>
 
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </section>
-            <!-- /.content -->
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </section>
+                <!-- /.content -->
         }
-    </div>
-</div>
-
-
-<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-PricePoint" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Price Point</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <div class="pull-center">
-                                @Html.Label("Price Point", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-fill-NewPricePoint" style="padding: 0px 5px;">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                                @Html.Hidden("LeadID");
-                                @Html.DropDownList("PricePoint", (SelectList)ViewBag.PricePoint, "Select Price Point", htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%;" })
-                                @Html.ValidationMessage("PricePoint", "", new { @class = "text-danger" })
+        </div>
+        
+        <div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-PricePoint" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Price Point</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="pull-center">
+                                        @Html.Label("Price Point", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-fill-NewPricePoint" style="padding: 0px 5px;">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                        @Html.Hidden("LeadID");
+                                        @Html.DropDownList("PricePoint", (SelectList)ViewBag.PricePoint, "Select Price Point", htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%;" })
+                                        @Html.ValidationMessage("PricePoint", "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <div class="modal-footer pull-right">
+                            <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                            <input type="button" onclick="LeadPricePoint()" value="Upload Lead" class="btn btn-primary" />
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer pull-right">
-                    <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
-                    <input type="button" onclick="LeadPricePoint()" value="Upload Lead" class="btn btn-primary" />
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div class="modal center-modal fade" data-backdrop="false" id="modal-fill-api" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content modal-lg">
-            <div class="modal-header">
-                <h5 class="modal-title">Sync Lead</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body modal-lg">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <div class="pull-center">
-                                @Html.Label("Source", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
-                                @Html.DropDownList("ApiLeadID", (SelectList)ViewBag.ApiLeadType, htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%;" })
-                                @Html.ValidationMessage("ApiLeadID", "", new { @class = "text-danger" })
+        <div class="modal center-modal fade" data-backdrop="false" id="modal-fill-api" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Sync Lead</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body modal-lg">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="pull-center">
+                                        @Html.Label("Source", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
+                                        @Html.DropDownList("ApiLeadID", (SelectList)ViewBag.ApiLeadType, htmlAttributes: new { @class = "form-control select2", required = "required", style = "width:100%;" })
+                                        @Html.ValidationMessage("ApiLeadID", "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="modal-footer pull-right">
-                    <input type="button" onclick="SyncApiData()" value="Sync Lead" class="btn btn-primary pull-right" />
+                        <div class="modal-footer pull-right">
+                            <input type="button" onclick="SyncApiData()" value="Sync Lead" class="btn btn-primary pull-right" />
 
-                    <button type="button" class="btn btn-danger pull-right" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-NewPricePoint" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Price Point</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label class="form-label">Price Point</label>
-                            <input type="text" class="form-control" id="PricePointName">
-                            <span class="text-danger" style="display:none" id="organizationwarning">Please enter Price Point Name</span>
+                            <button type="button" class="btn btn-danger pull-right" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary float-end" onclick="PricePointSave()">Save changes</button>
-
-                <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
-            </div>
         </div>
-    </div>
-</div>
-<!-- Modal -->
-<div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Upload Leads</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            @using (Html.BeginForm("UploadLeadFile", "LeadInfo", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <div class="pull-center">
-                                    @Html.TextBox("file", "", new { type = "file", accept = ".csv" })
-                                    <br />
-                                    <br />
-                                    <a class="btn btn-success" href="~/SampleFiles/Lead/Lead.csv">Sample</a>
+
+        <div class="modal modal-fill fade" data-backdrop="false" id="modal-fill-NewPricePoint" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Price Point</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label class="form-label">Price Point</label>
+                                    <input type="text" class="form-control" id="PricePointName">
+                                    <span class="text-danger" style="display:none" id="organizationwarning">Please enter Price Point Name</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer pull-right">
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary float-end" onclick="PricePointSave()">Save changes</button>
+
                         <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
-                        <input type="submit" value="Upload Lead" class="btn btn-primary" />
                     </div>
                 </div>
-            }
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal center-modal fade" data-backdrop="false" id="modalProgressBar" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content modal-lg">
-            <div class="modal-body modal-lg">
-                <br />
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-                                <span id="ProgressbarCount" style="font-size:medium">Loading Please Wait!</span>
+        <!-- Modal -->
+        <div class="modal modal-fill fade" data-backdrop="false" id="modal-fill" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Upload Leads</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    @using (Html.BeginForm("UploadLeadFile", "LeadInfo", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="pull-center">
+                                            @Html.TextBox("file", "", new { type = "file", accept = ".csv" })
+                                            <br />
+                                            <br />
+                                            <a class="btn btn-success" href="~/SampleFiles/Lead/Lead.csv">Sample</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer pull-right">
+                                <button type="button" class="btn btn-danger float-end" data-bs-dismiss="modal">Close</button>
+                                <input type="submit" value="Upload Lead" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="modal center-modal fade" data-backdrop="false" id="modalProgressBar" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content modal-lg">
+                    <div class="modal-body modal-lg">
+                        <br />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-primary progress-bar-striped" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                                        <span id="ProgressbarCount" style="font-size:medium">Loading Please Wait!</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- /.modal -->
+        <!-- /.modal -->
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
 
-<script>
+        <script>
     function OpenPricePointModal(obj) {
         var value = obj;
         $("#LeadID").val(value);
@@ -1229,7 +822,7 @@
             }
         });
     }
-</script>
+        </script>
 
 
 

@@ -10651,6 +10651,7 @@
     <Content Include="Views\SMSSetting\Index.cshtml" />
     <Content Include="Views\LeadInfo\GetLeadDetails.cshtml" />
     <Content Include="Views\LeadInfo\Index2.cshtml" />
+    <Content Include="Views\LeadInfo\PreviousIndexforms.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
