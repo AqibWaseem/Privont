@@ -170,5 +170,39 @@ namespace Privont.Controllers
                 throw;
             }
         }
+        public async Task<string> FetchReceivedMessages()
+        {
+            string apiUrl = "https://api.truedialog.com/receivedMessages"; // Replace with TrueDialog API endpoint for received messages
+            string apiKey = ApiKey; // Replace with your actual API key
+
+            // Set up the HTTP request with necessary headers (authentication, etc.)
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + apiKey);
+
+            try
+            {
+                // Send GET request to retrieve received messages
+                HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // Read and process the response content (assuming it's JSON)
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    // Process the responseBody containing received messages data (e.g., parse JSON)
+                    return responseBody;
+                }
+                else
+                {
+                    // Handle unsuccessful response
+                    Console.WriteLine("Error fetching messages. Status code: " + response.StatusCode);
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                Console.WriteLine("Exception: " + ex.Message);
+                return null;
+            }
+        }
     }
 }
