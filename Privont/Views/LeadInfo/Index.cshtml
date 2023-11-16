@@ -81,8 +81,8 @@
                                 <tbody>
                                     @foreach (var item in Model.Where(u => u.SMSSent == false))
                                     {
-                                        <tr id="@item.LeadID" onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'">
-                                            <td>
+                                        <tr id="@item.LeadID" >
+                                            <td onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'">
                                                 @item.FirstName @item.LastName
                                             </td>
                                             <td>
@@ -516,34 +516,34 @@
             cancelButtonText: 'NO',
         }).then((result) => {
             if (result.isConfirmed) {
-        $.ajax({
-            url:'/GeneralApis/Encrypt',
-            type: 'POST',
-            dataType: 'json',
-            async: false,
-            data: { obj },
-            success: function (r) {
-                var data = r.split(',');
-                var domainUrl = window.location.protocol + "//" + window.location.host;
-                const secretKey = 'Privont@Privont';
-            const dataToEncrypt = {
-                userId: @General.UserID,
-                username: 'Abdullah',
-                };
-            const dataToEncrypt2 = {
-                userId: @General.UserID,
-                username: 'Abdullah',
-            };
-                const jsonData = JSON.stringify(dataToEncrypt);
-                const jsonData2 = JSON.stringify(dataToEncrypt2);
-                const encryptedData = CryptoJS.AES.encrypt(jsonData, secretKey).toString();
-                const encryptedData2 = CryptoJS.AES.encrypt(jsonData2, secretKey).toString();
-                const token = encryptedData;
-                const token2 = encryptedData2;
-                var GeneratedLink = domainUrl + "/GeneralApis/Lead?" + 'q=' + token + '&d=' + @General.UserType + '&i=' +@General.UserID+ '&y=' + data[1] + '&s=' + token2;
-                sendSMSLink(obj, GeneratedLink);
-            }
-        });
+                $.ajax({
+                    url:'/GeneralApis/Encrypt',
+                    type: 'POST',
+                    dataType: 'json',
+                    async: false,
+                    data: { obj },
+                    success: function (r) {
+                    var data = r.split(',');
+                    var domainUrl = window.location.protocol + "//" + window.location.host;
+                    const secretKey = 'Privont@Privont';
+                    const dataToEncrypt = {
+                    userId: @General.UserID,
+                    username: 'Abdullah',
+                    };
+                    const dataToEncrypt2 = {
+                        userId: @General.UserID,
+                        username: 'Abdullah',
+                    };
+                    const jsonData = JSON.stringify(dataToEncrypt);
+                    const jsonData2 = JSON.stringify(dataToEncrypt2);
+                    const encryptedData = CryptoJS.AES.encrypt(jsonData, secretKey).toString();
+                    const encryptedData2 = CryptoJS.AES.encrypt(jsonData2, secretKey).toString();
+                    const token = encryptedData;
+                    const token2 = encryptedData2;
+                    var GeneratedLink = domainUrl + "/GeneralApis/Lead?" + 'q=' + token + '&d=' + @General.UserType + '&i=' +@General.UserID+ '&y=' + data[1] + '&s=' + token2;
+                    sendSMSLink(obj, GeneratedLink);
+                    }
+                 });
             }
         })
     }
@@ -553,6 +553,7 @@
             url: '/SMSSetting/SendSms',
             type: 'POST',
             dataType: 'json',
+            async: false,
             data: { LeadID: obj, Link: GeneratedLink },
             success: function (r) {
                 var data = r.split(',');
@@ -581,6 +582,7 @@
             url: '/SMSTrueDialog/SendPushCampaignAsync',
             type: 'POST',
             contentType: 'application/json',
+            async: false,
             data: JSON.stringify({ PhoneNo: PhoneNo, message: message }),
             success: function (r) {
                 var data = r.split(',');
@@ -595,6 +597,7 @@
                         type: 'POST',
                         contentType: 'application/json',
                         data: JSON.stringify({ obj }),
+                        async: false,
                         success: function (r) {
                             return;
                         }

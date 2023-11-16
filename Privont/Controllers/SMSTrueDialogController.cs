@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace Privont.Controllers
 {
@@ -52,9 +53,9 @@ namespace Privont.Controllers
         //}
         
         private const string BaseUrl = "https://api.truedialog.com/api/v2.1/";
-        private const string ApiKey = "2a3026c04aef4826ab6bd59af941d29f"; // Replace with your API key
-        private const string ApiSecret = "Ex5?9Y&ti7T{"; // Replace with your API secret   
-        private const int AccountID = 23058;
+        private const string ApiKey = "42e7b9be42864ab9a417ac09310c61bb"; // Replace with your API key
+        private const string ApiSecret = "L+t96oD=i_5P"; // Replace with your API secret   
+        private const int AccountID = 22965;
         [HttpPost]
         public async Task<ActionResult> SendPushCampaignAsync(string PhoneNo,string message)
         {
@@ -172,36 +173,34 @@ namespace Privont.Controllers
         }
         public async Task<string> FetchReceivedMessages()
         {
-            string apiUrl = "https://api.truedialog.com/receivedMessages"; // Replace with TrueDialog API endpoint for received messages
-            string apiKey = ApiKey; // Replace with your actual API key
-
-            // Set up the HTTP request with necessary headers (authentication, etc.)
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + apiKey);
-
-            try
+            string apiUrl = BaseUrl+ $@"account/{AccountID}/callback"; 
+            string apiKey = ApiKey;
+            using (var httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) })
             {
-                // Send GET request to retrieve received messages
-                HttpResponseMessage response = await client.GetAsync(apiUrl);
+                // Set up authorization header
+                var authHeader = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{ApiKey}:{ApiSecret}"));
+                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authHeader);
 
-                if (response.IsSuccessStatusCode)
+
+
+                // Create StringContent with JSON payload
+                var requestUrl = apiUrl;// $"account/{AccountID}/action-pushcampaign";
+
+                // Send the POST request
+                using (var response = await httpClient.GetAsync(requestUrl))
                 {
-                    // Read and process the response content (assuming it's JSON)
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    // Process the responseBody containing received messages data (e.g., parse JSON)
-                    return responseBody;
+                    response.EnsureSuccessStatusCode();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string responseData = await response.Content.ReadAsStringAsync();
+                        return responseData;
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                    {
+                        return "";
+                    }
+                    return "";
                 }
-                else
-                {
-                    // Handle unsuccessful response
-                    Console.WriteLine("Error fetching messages. Status code: " + response.StatusCode);
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions
-                Console.WriteLine("Exception: " + ex.Message);
-                return null;
             }
         }
     }
