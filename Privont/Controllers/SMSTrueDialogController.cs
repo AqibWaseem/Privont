@@ -203,5 +203,14 @@ namespace Privont.Controllers
                 }
             }
         }
+        [HttpPost]
+        public JsonResult IncomingMessageCallback(TrueDialogIncomeMessage data)
+        {
+            // Process the incoming message data here
+            // You can access the data sent by TrueDialog in the 'data' variable
+            // Perform necessary actions with the received message
+
+            return Json(""); // Respond with a success status
+        }
     }
 }
