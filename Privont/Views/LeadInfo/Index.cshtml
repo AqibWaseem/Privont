@@ -81,7 +81,7 @@
                                 <tbody>
                                     @foreach (var item in Model.Where(u => u.SMSSent == false))
                                     {
-                                        <tr id="@item.LeadID" onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'">
+                                        <tr id="@item.LeadID" @*onclick="window.location.href='/LeadInfo/GetLeadDetails?LeadID=@item.LeadID'"*@>
                                             <td>
                                                 @item.FirstName @item.LastName
                                             </td>
