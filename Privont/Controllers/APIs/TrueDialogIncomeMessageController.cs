@@ -15,15 +15,15 @@ namespace Privont.Controllers.APIs
 {
     public class TrueDialogIncomeMessageController : ApiController
     {
-        [HttpPost]
-        [Route("api/TrueDialog/IncomingMessageCallback")]
-        public HttpResponseMessage IncomingMessageCallback(JObject jObject)
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/TrueDialog/IncomingMessageCallback")]
+        public HttpResponseMessage IncomingMessageCallback(TrueDialogIncomeMessage value)
         {
             try
             {
-                TrueDialogIncomeMessage value = new TrueDialogIncomeMessage();
-                //JArray userArray = (JArray)jObject["value"];
-                value = jObject["value"].ToObject<TrueDialogIncomeMessage>();
+                //TrueDialogIncomeMessage value = new TrueDialogIncomeMessage();
+                ////JArray userArray = (JArray)jObject["value"];
+                //value = jObject["value"].ToObject<TrueDialogIncomeMessage>();
                 string QueryInsert = $@"INSERT INTO TrueDialogIncomeMessage
            (CallbackTimestamp
            ,CallbackToken
