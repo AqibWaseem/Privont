@@ -1,0 +1,1785 @@
+﻿@{ 
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>Privont</title>
+    <style type="text/css" data-type="vc_custom-css">
+
+        @@media (max-width: 576px) {
+            .privontMap {
+                padding-top: 20px;
+            }
+
+            .lastSlide {
+            }
+
+            .slide2Container {
+                align-items: center !important;
+                -webkit-align-items: center;
+                padding-top: 60px;
+            }
+
+            .slide2Image {
+                height: 70px !important;
+                object-fit: contain;
+            }
+
+            .slide2Heading {
+                margin-bottom: 0px !important;
+            }
+
+            .slide2Text {
+                letter-spacing: normal !important;
+                font-size: 18px !important;
+            }
+
+            .phoneNumber {
+                font-size: 32px !important;
+            }
+
+            .slide1divider {
+                margin-top: 12px !important;
+            }
+
+            .membersLoginBtn {
+                height: 45px;
+                font-size: 14px;
+                line-height: 20px;
+            }
+
+            .features {
+                flex-direction: column !important;
+                gap: 12px !important;
+            }
+
+            .feature {
+                flex-direction: row !important;
+                align-items: center;
+            }
+
+            .featuresDescription {
+                margin-bottom: 16px !important;
+            }
+
+            .feature .icon {
+                border: 2px solid #fff;
+                height: 36px !important;
+                width: 36px !important;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 32px;
+            }
+
+                .feature .icon::before {
+                    display: none;
+                }
+
+            .feature .content {
+            }
+
+                .feature .content > :nth-child(2) {
+                    display: none;
+                }
+
+            .storeBtnContainer img {
+                width: auto !important;
+                height: 46px !important;
+            }
+        }
+
+        @@media (min-width:576px ) and ( max-width: 768px) {
+            .slide2Image {
+                height: 70px !important;
+            }
+
+            .slide2Container {
+                align-items: center !important;
+                -webkit-align-items: center !important;
+                padding-top: 60px;
+            }
+        }
+
+        .slide2Image {
+            height: 100px;
+            width: 100px;
+            object-fit: contain;
+            object-position: center;
+        }
+
+        .slide2Heading {
+            margin-bottom: 20px;
+        }
+
+        .slide2TextContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .slide2Text {
+            color: #fff;
+            text-align: center;
+            display: block;
+            font-size: 20px;
+            font-family: "montserrat ultralight";
+            margin-top: 12px;
+            letter-spacing: 1px;
+            max-width: 832px;
+        }
+
+        .slide1divider {
+            margin-top: 30px;
+        }
+
+        .wpb_single_image .vc_single_image-wrapper {
+            padding-top: 16px;
+        }
+
+        div.fp-tooltip {
+            background-color: #3e8de3 !important;
+        }
+
+            div.fp-tooltip:after {
+                border-left: 5px solid #3e8de3 !important;
+            }
+
+        .contactInfo {
+            background-color: rgba(255, 255, 255, 0.052);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        .contactPhoneIco {
+            border: 4px solid #bebcbc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70px;
+            width: 70px;
+            margin-bottom: 32px;
+        }
+
+            .contactPhoneIco i {
+                font-size: 42px;
+                color: #bebcbc;
+                margin-top: 3px;
+            }
+
+        .phoneNumber {
+            font-family: montserrat;
+            font-weight: 700;
+            font-size: 42px;
+            text-shadow: 4px 4px 8px #000000;
+            color: #fff !important;
+            margin-bottom: 42px;
+        }
+
+        .address {
+            font-family: montserrat;
+            text-align: center;
+        }
+
+        .header-main {
+            display: flex !important;
+            justify-content: space-between;
+            align-items: center;
+            /*CJ: change align-items to flex-start if u add big logo image */
+            /* add then add padding top as desired to the button */
+        }
+
+        .membersLoginBtn {
+            color: #fff !important;
+            border: 1px solid #fff;
+            font-family: montserrat;
+            padding: 12px;
+            display: inline-block;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .membersLoginBtn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0px 0px 6px 0px #000000;
+            }
+
+        .footerLinks > * {
+            font-family: oswald;
+            color: #929292 !important;
+        }
+
+        .footerLinks > a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            display: flex;
+            flex-direction: column;
+            height: 35%;
+            justify-content: center;
+            align-items: center;
+            background-color: #212121 !important;
+            margin-bottom: 16px;
+        }
+
+        .footerLogo {
+            font-size: 52px !important;
+            line-height: normal;
+            font-family: Cinzel;
+            font-weight: 400;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .privontMap {
+            height: 65%;
+            width: 100%;
+            padding-top: 20px;
+            background-image: url("/Browser_Components/MainIndex/assets/uploads/2023/map.png");
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-size: cover;
+            background-position: center right;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .privontMap .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+        #slide8 {
+            padding: 0px !important;
+            width: 100%;
+        }
+
+        .lastSlide {
+            width: 100%;
+        }
+
+        .featuresContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 0 32px;
+            padding-top: 42px;
+        }
+
+            .featuresContainer h1 {
+                margin-bottom: 30px;
+            }
+
+            .featuresContainer .underline {
+                width: 100px;
+                height: 4px;
+                background-color: #fff;
+                margin-bottom: 26px;
+            }
+
+            .featuresContainer > p {
+                font-family: montserrat;
+                text-align: center;
+                max-width: 800px;
+                margin-bottom: 60px;
+            }
+
+        .features {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 32px;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+            .feature .icon {
+                border: 2px solid #fff;
+                height: 100px;
+                width: 100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: 100px;
+                transition: all 0.3s ease-in-out;
+            }
+
+                .feature .icon::before {
+                    content: "";
+                    height: 100px;
+                    width: 100px;
+                    border-radius: 100px;
+                    border: 2px solid #fff;
+                    position: absolute;
+                    transition: all 0.3s ease-in-out;
+                }
+
+                .feature .icon:hover::before {
+                    height: 110px;
+                    width: 110px;
+                }
+
+                .feature .icon:hover {
+                    background-color: #fff;
+                    color: #000;
+                }
+
+            .feature .content > :nth-child(1) {
+                font-family: oswald;
+                margin: 6px;
+                color: #cacaca;
+                text-align: center;
+                font-size: 21px;
+            }
+
+            .feature .content > :nth-child(2) {
+                font-family: montserrat ultralight;
+                text-align: center;
+                text-align: center;
+                font-size: 15px;
+            }
+
+        .storeBtnContainer {
+            display: flex;
+            gap: 16px;
+        }
+
+            .storeBtnContainer a {
+                cursor: pointer;
+            }
+
+            .storeBtnContainer img {
+                transition: all 0.3s ease-in-out;
+            }
+
+                .storeBtnContainer img:hover {
+                    transform: translateY(-2px);
+                }
+
+        .logo {
+            height: 64px;
+            object-fit: cover;
+        }
+
+        span.logoText {
+            font-size: 32px !important;
+            line-height: normal;
+            font-family: Cinzel;
+            color: #fff;
+        }
+
+        #slide1 .wpb_animate_when_almost_visible {
+            -webkit-animation-delay: 1s;
+            -moz-animation-delay: 1s;
+            -o-animation-delay: 1s;
+            animation-delay: 1s;
+        }
+
+        body:not(.compose-mode) #slide3 .animated-image-5,
+        body:not(.compose-mode) #slide3 .animated-image-6 {
+            position: absolute;
+            top: 16%;
+            left: 50%;
+            margin-left: -226px;
+        }
+
+        #slide3 .animated-image-5 {
+            z-index: 15;
+        }
+
+        #slide3 .animated-image-6 {
+            z-index: 9;
+        }
+
+        #slide3 .animated-image-5,
+        #slide3 .animated-image-6 {
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+        }
+
+        #slide3.fp-completely .animated-image-5 {
+            -webkit-transform: scale(0.9) translate3d(-58px, -58px, 0px);
+            -moz-transform: scale(0.9) translate3d(-58px, -58px, 0px);
+            -ms-transform: scale(0.9) translate3d(-58px, -58px, 0px);
+            transform: scale(0.9) translate3d(-58px, -58px, 0px);
+        }
+
+        #slide3.fp-completely .animated-image-6 {
+            -webkit-transform: scale(0.9) translate3d(158px, 58px, 0px);
+            -moz-transform: scale(0.9) translate3d(158px, 58px, 0px);
+            -ms-transform: scale(0.9) translate3d(158px, 58px, 0px);
+            transform: scale(0.9) translate3d(158px, 58px, 0px);
+        }
+
+        #slide3:not(.active) .animated-image-5 {
+            -webkit-transform: scale(1) translate3d(0px, 0px, 0px);
+            -moz-transform: scale(1) translate3d(0px, 0px, 0px);
+            -ms-transform: scale(1) translate3d(0px, 0px, 0px);
+            transform: scale(1) translate3d(0px, 0px, 0px);
+            z-index: 10;
+        }
+
+        #slide3:not(.active) .animated-image-6 {
+            -webkit-transform: scale(1) translate3d(0px, 0px, 0px);
+            -moz-transform: scale(1) translate3d(0px, 0px, 0px);
+            -ms-transform: scale(1) translate3d(0px, 0px, 0px);
+            transform: scale(1) translate3d(0px, 0px, 0px);
+            z-index: 10;
+        }
+
+        body:not(.compose-mode) #slide4 .animated-image-center {
+            z-index: 14;
+            position: relative;
+        }
+
+        body:not(.compose-mode) #slide4 .animated-image-0 {
+            z-index: 12;
+        }
+
+        body:not(.compose-mode) #slide4 .animated-image-0,
+        body:not(.compose-mode) #slide4 .animated-image-1,
+        body:not(.compose-mode) #slide4 .animated-image-2,
+        body:not(.compose-mode) #slide4 .animated-image-3,
+        body:not(.compose-mode) #slide4 .animated-image-4 {
+            position: absolute;
+            top: 78px;
+            left: 50%;
+            margin-left: -149px;
+        }
+
+        #slide4.fp-completely .animated-image-1,
+        #slide4.fp-completely .animated-image-2 {
+            -webkit-transition: all 1s ease-in-out;
+            -moz-transition: all 1s ease-in-out;
+            -o-transition: all 1s ease-in-out;
+        }
+
+        #slide4.fp-completely .animated-image-3,
+        #slide4.fp-completely .animated-image-4 {
+            -webkit-transition: all 1.2s ease-in-out;
+            -moz-transition: all 1.2s ease-in-out;
+            -o-transition: all 1.2s ease-in-out;
+        }
+
+        #slide4.fp-completely .animated-image-1 {
+            -webkit-transform: scale(0.8) translate3d(-356px, 0px, 0px);
+            -moz-transform: scale(0.8) translate3d(-356px, 0px, 0px);
+            -ms-transform: scale(0.8) translate3d(-356px, 0px, 0px);
+            transform: scale(0.8) translate3d(-356px, 0px, 0px);
+            z-index: 10;
+        }
+
+        #slide4.fp-completely .animated-image-2 {
+            -webkit-transform: scale(0.8) translate3d(356px, 0px, 0px);
+            -moz-transform: scale(0.8) translate3d(356px, 0px, 0px);
+            -ms-transform: scale(0.8) translate3d(356px, 0px, 0px);
+            transform: scale(0.8) translate3d(356px, 0px, 0px);
+            z-index: 10;
+        }
+
+        #slide4.fp-completely .animated-image-3 {
+            -webkit-transform: scale(0.8) translate3d(-723px, 0px, 0px);
+            -moz-transform: scale(0.7) translate3d(-723px, 0px, 0px);
+            -ms-transform: scale(0.7) translate3d(-723px, 0px, 0px);
+            transform: scale(0.7) translate3d(-723px, 0px, 0px);
+            z-index: 9;
+        }
+
+        #slide4.fp-completely .animated-image-4 {
+            -webkit-transform: scale(0.7) translate3d(723px, 0px, 0px);
+            -moz-transform: scale(0.7) translate3d(723px, 0px, 0px);
+            -ms-transform: scale(0.7) translate3d(723px, 0px, 0px);
+            transform: scale(0.7) translate3d(723px, 0px, 0px);
+            z-index: 9;
+        }
+
+        #slide4:not(.active) .animated-image-1 {
+            -webkit-transform: scale(0.8) translate3d(-0px, 0px, 0px);
+            -moz-transform: scale(0.8) translate3d(-0px, 0px, 0px);
+            -ms-transform: scale(0.8) translate3d(-0px, 0px, 0px);
+            transform: scale(0.8) translate3d(-0px, 0px, 0px);
+            z-index: 10;
+        }
+
+        #slide4:not(.active) .animated-image-2 {
+            -webkit-transform: scale(0.8) translate3d(0px, 0px, 0px);
+            -moz-transform: scale(0.8) translate3d(0px, 0px, 0px);
+            -ms-transform: scale(0.8) translate3d(0px, 0px, 0px);
+            transform: scale(0.8) translate3d(0px, 0px, 0px);
+            z-index: 10;
+        }
+
+        #slide4:not(.active) .animated-image-3 {
+            -webkit-transform: scale(1) translate3d(-0px, 0px, 0px);
+            -moz-transform: scale(1) translate3d(-0px, 0px, 0px);
+            -ms-transform: scale(1) translate3d(-0px, 0px, 0px);
+            transform: scale(1) translate3d(-0px, 0px, 0px);
+            z-index: 9;
+        }
+
+        #slide4:not(.active) .animated-image-4 {
+            -webkit-transform: scale(1) translate3d(0px, 0px, 0px);
+            -moz-transform: scale(1) translate3d(0px, 0px, 0px);
+            -ms-transform: scale(1) translate3d(0px, 0px, 0px);
+            transform: scale(1) translate3d(0px, 0px, 0px);
+            z-index: 9;
+        }
+
+        .parallax-content {
+            position: relative;
+        }
+
+        .show-on-laptop {
+            display: none !important;
+        }
+
+        .gem-image-centered-box {
+            margin-bottom: 0 !important;
+        }
+
+        .title-xlarge.giant {
+            font-size: 210px;
+            line-height: 0;
+            white-space: nowrap;
+            margin-left: -12px;
+        }
+
+        #slide3 .quickfinder {
+            padding: 0;
+        }
+
+        #slide3 .quickfinder-item {
+            margin-bottom: 0;
+        }
+
+        #slide3 .quickfinder-item-box {
+            padding: 21px;
+        }
+
+        #slide3 .quickfinder-item-table .quickfinder-item-info-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        #slide3 .quickfinder-item-title {
+            text-transform: capitalize;
+        }
+
+        #slide5 .gem-counter-inner {
+            padding: 0;
+        }
+
+        #slide8 .gem-textbox-content {
+            padding: 0;
+        }
+
+            #slide8 .gem-textbox-content .gem-alert-box {
+                padding: 0;
+                display: block;
+            }
+
+        #slide8 .gem-alert-box.centered-box .gem-alert-box-content {
+            display: none;
+        }
+
+        #slide8 .gem-alert-box-buttons {
+            text-align: left;
+        }
+
+        #slide8 .gem-alert-box.centered-box .gem-alert-box-buttons .gem-button {
+            margin: 0 35px 0 0 !important;
+        }
+
+        @@media (max-height: 900px) {
+            .show-on-desctop {
+                display: none !important;
+            }
+
+            .show-on-laptop {
+                display: block !important;
+            }
+        }
+
+        @@media (max-width: 767px) {
+            .hide-on-mobile {
+                display: none !important;
+            }
+
+            #slide3 .quickfinder-item {
+                width: 50%;
+            }
+
+            .gem-counter {
+                width: 50% !important;
+            }
+
+            .title-xlarge.giant {
+                font-size: 110px;
+            }
+
+            #slide8 .gem-alert-box.centered-box .gem-alert-box-buttons .gem-button {
+                margin: 10px 0 !important;
+            }
+        }
+
+        .scroller-block {
+            height: auto;
+        }
+
+        @@media (max-height: 800px) {
+            .animated-image-container {
+                transform: scale(0.7);
+                margin-top: -7% !important;
+            }
+
+            .parallax-content.custom-transform {
+                transform: scale(0.7);
+                margin-top: -15% !important;
+            }
+
+            #slide4 .gem-divider {
+                display: none;
+            }
+        }
+
+        @@media (max-width: 370px) {
+            #slide1 .title-xlarge {
+                line-height: 44px;
+            }
+
+            #slide1 .title-xlarge {
+                font-size: 34px;
+            }
+
+            #slide1 .gem-divider {
+                margin-top: 20px !important;
+            }
+        }
+
+        @@media (max-width: 380px) {
+            .custom .fadeInLeft {
+                opacity: 1;
+            }
+
+            .mobile-hidden {
+                display: none;
+            }
+
+            .gem-counter-number {
+                line-height: 43px;
+            }
+
+            .gem-counter-number {
+                font-size: 37px;
+            }
+        }
+    </style>
+    <style type="text/css" data-type="vc_shortcodes-custom-css">
+        .vc_custom_1579783990044 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background-image: url(https://codex-themes.com/thegem/sites/app-landing/wp-content/uploads/2019/10/3.jpg) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579783998755 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background: url(~/Browser_Components/MainIndex/assets/uploads/2023/bg2.jpg) !important;
+            background: transparent;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+            position: relative;
+        }
+
+        .slide2bg {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0px;
+            left: 0px;
+            opacity: 0.85;
+            background: linear-gradient(to bottom, #5e616f 0%, #121317 100%), url(~/Browser_Components/MainIndex/assets/uploads/2023/bg2.jpg) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579784007241 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background-color: #212121 !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579871261440 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background-image: url(https://codex-themes.com/thegem/sites/app-landing/wp-content/uploads/2019/10/15.jpg) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579784029045 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background-image: url(https://codex-themes.com/thegem/sites/app-landing/wp-content/uploads/2019/10/22.jpg) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579784042217 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background-image: url(https://codex-themes.com/thegem/sites/app-landing/wp-content/uploads/2019/10/23.jpg) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579784049559 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+            background-image: url(https://codex-themes.com/thegem/sites/app-landing/wp-content/uploads/2019/10/24.jpg) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579784058122 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570199445501 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579264936683 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: contain !important;
+        }
+
+        .vc_custom_1579161660527 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579161560118 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570197406340 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579161906108 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570440993284 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579173959485 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579175855085 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570446030684 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579860119996 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: contain !important;
+        }
+
+        .vc_custom_1579175966352 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570443069849 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579871299209 {
+            margin-top: 40px !important;
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579256927250 {
+            padding-right: 0px !important;
+            padding-left: 0px !important;
+        }
+
+        .vc_custom_1579176462549 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570449985656 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570454630563 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579176971561 {
+            margin-top: 0px !important;
+            margin-bottom: -100px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            background-image: url(https://codex-themes.com/thegem/sites/app-landing/wp-content/uploads/2019/10/25.png) !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-size: cover !important;
+        }
+
+        .vc_custom_1579176823331 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1570456697291 {
+            margin-top: 0px !important;
+            margin-bottom: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+        }
+
+        .vc_custom_1579177035889 {
+            margin-bottom: 0px !important;
+            padding-bottom: 0px !important;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+          integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Oswald&display=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet"
+          id="thegem-preloader-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-preloader03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link href="~/Browser_Components/MainIndex/assets/themes/privont/css/themify-icons.css"
+          rel="stylesheet" />
+    <style id="thegem-preloader-inline-css" type="text/css">
+        body:not(.compose-mode) .gem-icon-style-gradient span,
+        body:not(.compose-mode) .gem-icon .gem-icon-half-1,
+        body:not(.compose-mode) .gem-icon .gem-icon-half-2 {
+            opacity: 0 !important;
+        }
+    </style>
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-reset03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-grid03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/style03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-header03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-widgets03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-new-css03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-perevazka-css03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat%3A700%2Cregular%7CSource+Sans+Pro%3Aregular%2C300&amp;subset=latin%2Ccyrillic-ext%2Clatin-ext%2Ccyrillic%2Cvietnamese%2Cgreek%2Cgreek-ext&amp;ver=5.3.4"
+          rel="stylesheet" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/custom-bbiHSVbV03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/plugins/js_composer/assets/css/js_composer.min52c7.css?ver=6.0.5"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-additional-blog-103ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/js/fancyBox/jquery.fancybox.min03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-vc_elements03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/plugins/contact-form-7/includes/css/stylesc6ac.css?ver=5.1.5"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-js_composer_columns03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.min.js"
+            integrity="sha512-t0ovA8ZOiDuaNN5DaQQpMn37SqIwp6avyoFQoW49hOmEYSRf8mTCY2jZkEVizDT+IZ9x+VHTZPpcaMA5t2d2zQ=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <link rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="~/Browser_Components/MainIndex/assets/uploads/favicons/favicon-32x32.png" />
+    <link rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="~/Browser_Components/MainIndex/assets/uploads/favicons/favicon-16x16.png" />
+
+    <script>
+        if (document.querySelector('[data-type="vc_custom-css"]')) {
+            document.head.appendChild(
+                document.querySelector('[data-type="vc_custom-css"]')
+            );
+        }
+    </script>
+    <noscript>
+        <style>
+            .wpb_animate_when_almost_visible {
+                opacity: 1;
+            }
+        </style>
+    </noscript>
+</head>
+<body class="home page-template-default page page-id-369 thegem-fp thegem-fp-dost-solid thegem-fp-enable-continuous thegem-fp-parallax wpb-js-composer js-comp-ver-6.0.5 vc_responsive">
+    <script type="text/javascript">
+        var gemSettings = {
+            isTouch: "",
+            forcedLasyDisabled: "",
+            tabletPortrait: "1",
+            tabletLandscape: "",
+            topAreaMobileDisable: "",
+            parallaxDisabled: "",
+            fillTopArea: "",
+            themePath:
+                "https:\/\/codex-themes.com\/thegem\/sites\/app-landing\/wp-content\/themes\/thegem",
+            rootUrl: "https:\/\/codex-themes.com\/thegem\/sites\/app-landing",
+            mobileEffectsEnabled: "",
+            isRTL: "",
+        };
+        (function () {
+            function isTouchDevice() {
+                return (
+                    "ontouchstart" in window ||
+                    navigator.MaxTouchPoints > 0 ||
+                    navigator.msMaxTouchPoints > 0
+                );
+            }
+
+            window.gemSettings.isTouch = isTouchDevice();
+
+            function userAgentDetection() {
+                var ua = navigator.userAgent.toLowerCase(),
+                    platform = navigator.platform.toLowerCase(),
+                    UA = ua.match(
+                        /(opera|ie|firefox|chrome|version)[\s\/:]([\w\d\.]+)?.*?(safari|version[\s\/:]([\w\d\.]+)|$)/
+                    ) || [null, "unknown", 0],
+                    mode = UA[1] == "ie" && document.documentMode;
+
+                window.gemBrowser = {
+                    name: UA[1] == "version" ? UA[3] : UA[1],
+                    version: UA[2],
+                    platform: {
+                        name: ua.match(/ip(?:ad|od|hone)/)
+                            ? "ios"
+                            : (ua.match(/(?:webos|android)/) ||
+                                platform.match(/mac|win|linux/) || ["other"])[0],
+                    },
+                };
+            }
+
+            window.updateGemClientSize = function () {
+                if (window.gemOptions == null || window.gemOptions == undefined) {
+                    window.gemOptions = {
+                        first: false,
+                        clientWidth: 0,
+                        clientHeight: 0,
+                        innerWidth: -1,
+                    };
+                }
+
+                window.gemOptions.clientWidth =
+                    window.innerWidth || document.documentElement.clientWidth;
+                if (document.body != null && !window.gemOptions.clientWidth) {
+                    window.gemOptions.clientWidth = document.body.clientWidth;
+                }
+
+                window.gemOptions.clientHeight =
+                    window.innerHeight || document.documentElement.clientHeight;
+                if (document.body != null && !window.gemOptions.clientHeight) {
+                    window.gemOptions.clientHeight = document.body.clientHeight;
+                }
+            };
+
+            window.updateGemInnerSize = function (width) {
+                window.gemOptions.innerWidth =
+                    width != undefined
+                        ? width
+                        : document.body != null
+                            ? document.body.clientWidth
+                            : 0;
+            };
+
+            userAgentDetection();
+            window.updateGemClientSize(true);
+
+            window.gemSettings.lasyDisabled =
+                window.gemSettings.forcedLasyDisabled ||
+                (!window.gemSettings.mobileEffectsEnabled &&
+                    (window.gemSettings.isTouch ||
+                        window.gemOptions.clientWidth <= 800));
+        })();
+        (function () {
+            if (window.gemBrowser.name == "safari") {
+                try {
+                    var safariVersion = parseInt(window.gemBrowser.version);
+                } catch (e) {
+                    var safariVersion = 0;
+                }
+                if (safariVersion >= 9) {
+                    window.gemSettings.parallaxDisabled = true;
+                    window.gemSettings.fillTopArea = true;
+                }
+            }
+        })();
+        (function () {
+            var fullwithData = {
+                page: null,
+                pageWidth: 0,
+                pageOffset: {},
+                fixVcRow: true,
+                pagePaddingLeft: 0,
+            };
+
+            function updateFullwidthData() {
+                fullwithData.pageOffset = fullwithData.page.getBoundingClientRect();
+                fullwithData.pageWidth = parseFloat(fullwithData.pageOffset.width);
+                fullwithData.pagePaddingLeft = 0;
+
+                if (fullwithData.page.className.indexOf("vertical-header") != -1) {
+                    fullwithData.pagePaddingLeft = 45;
+                    if (fullwithData.pageWidth >= 1600) {
+                        fullwithData.pagePaddingLeft = 360;
+                    }
+                    if (fullwithData.pageWidth < 980) {
+                        fullwithData.pagePaddingLeft = 0;
+                    }
+                }
+            }
+
+            function gem_fix_fullwidth_position(element) {
+                if (element == null) {
+                    return false;
+                }
+
+                if (fullwithData.page == null) {
+                    fullwithData.page = document.getElementById("page");
+                    updateFullwidthData();
+                }
+
+                if (fullwithData.pageWidth < 1170) {
+                    return false;
+                }
+
+                if (!fullwithData.fixVcRow) {
+                    return false;
+                }
+
+                if (
+                    element.previousElementSibling != null &&
+                    element.previousElementSibling != undefined &&
+                    element.previousElementSibling.className.indexOf(
+                        "fullwidth-block"
+                    ) == -1
+                ) {
+                    var elementParentViewportOffset =
+                        element.previousElementSibling.getBoundingClientRect();
+                } else {
+                    var elementParentViewportOffset =
+                        element.parentNode.getBoundingClientRect();
+                }
+
+                if (
+                    elementParentViewportOffset.top > window.gemOptions.clientHeight
+                ) {
+                    fullwithData.fixVcRow = false;
+                    return false;
+                }
+
+                if (element.className.indexOf("vc_row") != -1) {
+                    var elementMarginLeft = -21;
+                    var elementMarginRight = -21;
+                } else {
+                    var elementMarginLeft = 0;
+                    var elementMarginRight = 0;
+                }
+
+                var offset =
+                    parseInt(fullwithData.pageOffset.left + 0.5) -
+                    parseInt(
+                        (elementParentViewportOffset.left < 0
+                            ? 0
+                            : elementParentViewportOffset.left) + 0.5
+                    ) -
+                    elementMarginLeft +
+                    fullwithData.pagePaddingLeft;
+                var offsetKey = window.gemSettings.isRTL ? "right" : "left";
+
+                element.style.position = "relative";
+                element.style[offsetKey] = offset + "px";
+                element.style.width =
+                    fullwithData.pageWidth - fullwithData.pagePaddingLeft + "px";
+
+                if (element.className.indexOf("vc_row") == -1) {
+                    element.setAttribute("data-fullwidth-updated", 1);
+                }
+
+                if (
+                    element.className.indexOf("vc_row") != -1 &&
+                    !element.hasAttribute("data-vc-stretch-content")
+                ) {
+                    var el_full = element.parentNode.querySelector(
+                        ".vc_row-full-width-before"
+                    );
+                    var padding = -1 * offset;
+                    0 > padding && (padding = 0);
+                    var paddingRight =
+                        fullwithData.pageWidth -
+                        padding -
+                        el_full.offsetWidth +
+                        elementMarginLeft +
+                        elementMarginRight;
+                    0 > paddingRight && (paddingRight = 0);
+                    element.style.paddingLeft = padding + "px";
+                    element.style.paddingRight = paddingRight + "px";
+                }
+            }
+
+            window.gem_fix_fullwidth_position = gem_fix_fullwidth_position;
+
+            document.addEventListener("DOMContentLoaded", function () {
+                var classes = [];
+
+                if (window.gemSettings.isTouch) {
+                    document.body.classList.add("thegem-touch");
+                }
+
+                if (
+                    window.gemSettings.lasyDisabled &&
+                    !window.gemSettings.forcedLasyDisabled
+                ) {
+                    document.body.classList.add("thegem-effects-disabled");
+                }
+            });
+
+            if (window.gemSettings.parallaxDisabled) {
+                var head = document.getElementsByTagName("head")[0],
+                    link = document.createElement("style");
+                link.rel = "stylesheet";
+                link.type = "text/css";
+                link.innerHTML =
+                    ".fullwidth-block.fullwidth-block-parallax-fixed .fullwidth-block-background { background-attachment: scroll !important; }";
+                head.appendChild(link);
+            }
+        })();
+
+        (function () {
+            setTimeout(function () {
+                var preloader = document.getElementById("page-preloader");
+                if (preloader != null && preloader != undefined) {
+                    preloader.className += " preloader-loaded";
+                }
+            }, window.pagePreloaderHideTime || 1000);
+        })();
+    </script>
+    <div id="page-preloader"><div class="page-preloader-spin"></div></div>
+    <div id="page" class="layout-fullwidth header-style-vertical">
+        <div id="site-header-wrapper" class="site-header-wrapper-transparent">
+            <div class="hamburger-overlay"></div>
+            <header id="site-header"
+                    class="site-header animated-header mobile-menu-layout-default"
+                    role="banner">
+                <div class="transparent-header-background"
+                     style="background-color: rgba(33, 35, 49, 0)">
+                    <div class="container container-fullwidth">
+                        <div class="header-main logo-position-left header-colors-light header-layout-fullwidth_hamburger header-style-vertical">
+                            <div class="site-title">
+                                <div class="site-logo" style="width: 164px">
+                                    <a href="index.html" rel="home">
+                                        <img class="logo"
+                                             src="~/Browser_Components/MainIndex/assets/uploads/thegem-logos/logo.png"
+                                             alt="logo" />
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div style="padding-top: 0px">
+                                <a class="membersLoginBtn" href="/Home/Login">MEMBERS LOGIN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </div>
+        <div id="main" class="site-main">
+            <div id="main-content" class="main-content">
+                <div class="block-content no-bottom-margin no-top-margin">
+                    <div class="container">
+                        <div class="panel row">
+                            <div class="panel-center col-xs-12">
+                                <article id="post-369"
+                                         class="post-369 page type-page status-publish">
+                                    <div class="entry-content post-content">
+                                        <div id="thegem-fullpage">
+                                            <div class="vc_row-full-width-before"></div>
+                                            <div id="slide1"
+                                                 data-vc-full-width="true"
+                                                 data-vc-full-width-init="false"
+                                                 data-tooltip="Privont App"
+                                                 class="vc_row wpb_row vc_row-fluid scroller-block parallax-content vc_custom_1579783990044 vc_row-has-fill vc_row-o-content-middle vc_row-flex">
+                                                <script type="text/javascript">
+                                                    if (
+                                                        typeof gem_fix_fullwidth_position == "function"
+                                                    ) {
+                                                        gem_fix_fullwidth_position(
+                                                            document.getElementById("slide1")
+                                                        );
+                                                    }
+                                                </script>
+                                                <div class="wpb_column vc_column_container vc_col-sm-12 vc_col-lg-7 vc_col-md-7">
+                                                    <div class="vc_column-inner vc_custom_1570199445501">
+                                                        <div class="wpb_wrapper">
+                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInUp fadeInUp vc_custom_1579161660527">
+                                                                <div class="wpb_wrapper">
+                                                                    <div class="title-h1">
+                                                                        <span class="light">
+                                                                            A Private Members Club
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInLeft fadeInLeft vc_custom_1579161560118">
+                                                                <div class="wpb_wrapper">
+                                                                    <div class="title-xlarge"
+                                                                         style="
+                                        font-family: Cinzel;
+                                        font-weight: 400;
+                                      ">
+                                                                        Privont
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearboth"></div>
+                                                            <div class="gem-divider slide1divider"></div>
+                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInRight fadeInRight">
+                                                                <div class="wpb_wrapper">
+                                                                    <div class="styled-subtitle"
+                                                                         style="display: block; max-width: 550px">
+                                                                        Application for membership requires a
+                                                                        nomination from a current Privont member.
+                                                                        A nomination is obligatory for membership,
+                                                                        but it does not bestow acceptance.
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearboth"></div>
+                                                            <div class="gem-divider"
+                                                                 style="margin-top: 50px"></div>
+                                                            <div class="vc_row wpb_row vc_inner vc_row-fluid">
+                                                                <div class="wpb_animate_when_almost_visible fadeInDown wpb_column vc_column_container vc_col-sm-12">
+                                                                    <div class="vc_column-inner">
+                                                                        <div style="margin-bottom: 16px"
+                                                                             class="vc_hidden-xs">
+                                                                            <a class="membersLoginBtn" href="/Home/Login">
+                                                                                MEMBERS LOGIN
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="storeBtnContainer">
+                                                                            <a href="#" class="appleStore">
+                                                                                <img src="~/Browser_Components/MainIndex/assets/themes/privont/images/appstore.png"
+                                                                                     width="190px" />
+                                                                            </a>
+                                                                            <a href="#" class="googleStore">
+                                                                                <img src="~/Browser_Components/MainIndex/assets/themes/privont/images/googlestore.png"
+                                                                                     width="210px" />
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="wpb_animate_when_almost_visible wpb_fadeInDown fadeInDown wpb_column vc_column_container vc_col-sm-12 vc_col-lg-5 vc_col-md-5 vc_hidden-sm vc_hidden-xs vc_col-has-fill">
+                                                    <div class="vc_column-inner vc_custom_1579264936683">
+                                                        <div class="wpb_wrapper">
+                                                            <div class="wpb_raw_code wpb_content_element wpb_raw_html">
+                                                                <div class="wpb_wrapper">
+                                                                    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"
+                                                                            integrity="sha512-8Wy4KH0O+AuzjMm1w5QfZ5j5/y8Q/kcUktK9mPUVaUoBvh3QPUZB822W/vy7ULqri3yR8daH3F58+Y8Z08qzeg=="
+                                                                            crossorigin="anonymous"
+                                                                            referrerpolicy="no-referrer"></script>
+                                                                </div>
+                                                            </div>
+                                                            <div class="wpb_single_image wpb_content_element vc_align_center image-7">
+                                                                <figure class="wpb_wrapper vc_figure">
+                                                                    <div class="vc_single_image-wrapper vc_box_border_grey">
+                                                                        <img style="object-fit: contain"
+                                                                             width="300"
+                                                                             height="622"
+                                                                             src="~/Browser_Components/MainIndex/assets/uploads/2023/phone1.png"
+                                                                             class="vc_single_image-img attachment-full"
+                                                                             alt="" />
+                                                                    </div>
+                                                                </figure>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="vc_row-full-width vc_clearfix"></div>
+                                            <div class="vc_row-full-width-before"></div>
+                                            <div id="slide2"
+                                                 data-vc-full-width="true"
+                                                 data-vc-full-width-init="false"
+                                                 data-tooltip="Cross-Device"
+                                                 class="vc_row wpb_row vc_row-fluid scroller-block vc_custom_1579783998755 vc_row-has-fill vc_row-o-content-bottom vc_row-flex">
+                                                <script type="text/javascript">
+                                                    if (
+                                                        typeof gem_fix_fullwidth_position == "function"
+                                                    ) {
+                                                        gem_fix_fullwidth_position(
+                                                            document.getElementById("slide2")
+                                                        );
+                                                    }
+                                                </script>
+                                                <div class="slide2bg"></div>
+                                                <div class="wpb_column vc_column_container vc_col-sm-12 vc_col-lg-12 vc_col-md-12 slide2Container">
+                                                    <div class="vc_column-inner vc_custom_1570197406340">
+                                                        <div class="wpb_wrapper">
+                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInUp fadeInUp vc_custom_1579161906108">
+                                                                <div class="wpb_wrapper">
+                                                                    <div class="title-h1 slide2Heading"
+                                                                         style="text-align: center">
+                                                                        <span class="light" style="color: #fff">
+                                                                            The App Is Available For
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="slide2TextContainer">
+                                                                        <span class="light slide2Text"
+                                                                              style="color: #fff">
+                                                                            Hand-selected group of localized
+                                                                            individuals who harness the powerful
+                                                                            resources of the extraordinary members
+                                                                            elite professional’s premier network.
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="clearboth"></div>
+                                                            <div class="gem-divider show-on-desctop"
+                                                                 style="margin-top: 100px"></div>
+                                                            <div class="clearboth"></div>
+                                                            <div class="gem-divider show-on-laptop"
+                                                                 style="margin-top: 50px"></div>
+                                                            <div class="vc_row wpb_row vc_inner vc_row-fluid vc_custom_1570440993284">
+                                                                <div class="wpb_animate_when_almost_visible fadeInRight wpb_column vc_column_container vc_col-sm-4 vc_col-lg-4 vc_col-md-4 vc_col-xs-6">
+                                                                    <div class="vc_column-inner">
+                                                                        <div class="wpb_wrapper">
+                                                                            <div class="centered-box gem-image-centered-box">
+                                                                                <div class="gem-image gem-wrapbox gem-wrapbox-style-default gem-wrapbox-position-centered">
+                                                                                    <div class="gem-wrapbox-inner">
+                                                                                        <img class="gem-wrapbox-element slide2Image img-responsive"
+                                                                                             src="~/Browser_Components/MainIndex/assets/uploads/2023/laptop.png"
+                                                                                             alt="" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInRight fadeInRight">
+                                                                                <div class="wpb_wrapper">
+                                                                                    <div class="title-h5"
+                                                                                         style="text-align: center">
+                                                                                        <span style="color: #fff">
+                                                                                            PC
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="clearboth"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="wpb_animate_when_almost_visible fadeInUp wpb_column vc_column_container vc_col-sm-4 vc_col-lg-4 vc_col-md-4 vc_col-xs-6">
+                                                                    <div class="vc_column-inner">
+                                                                        <div class="wpb_wrapper">
+                                                                            <div class="centered-box gem-image-centered-box">
+                                                                                <div class="gem-image gem-wrapbox gem-wrapbox-style-default gem-wrapbox-position-centered">
+                                                                                    <div class="gem-wrapbox-inner">
+                                                                                        <img class="gem-wrapbox-element slide2Image img-responsive"
+                                                                                             src="~/Browser_Components/MainIndex/assets/uploads/2023/tablet.png"
+                                                                                             alt="" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInUp fadeInUp">
+                                                                                <div class="wpb_wrapper">
+                                                                                    <div class="title-h5"
+                                                                                         style="text-align: center">
+                                                                                        <span style="color: #fff">
+                                                                                            Tablet
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="clearboth"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="wpb_animate_when_almost_visible fadeInLeft custom wpb_column vc_column_container vc_col-sm-4">
+                                                                    <div class="vc_column-inner">
+                                                                        <div class="wpb_wrapper">
+                                                                            <div class="centered-box gem-image-centered-box">
+                                                                                <div class="gem-image gem-wrapbox gem-wrapbox-style-default gem-wrapbox-position-centered">
+                                                                                    <div class="gem-wrapbox-inner">
+                                                                                        <img height="100"
+                                                                                             class="gem-wrapbox-element slide2Image img-responsive"
+                                                                                             src="~/Browser_Components/MainIndex/assets/uploads/2023/phone.png"
+                                                                                             alt="" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="wpb_text_column wpb_content_element wpb_animate_when_almost_visible wpb_fadeInLeft fadeInLeft">
+                                                                                <div class="wpb_wrapper">
+                                                                                    <div class="title-h5"
+                                                                                         style="text-align: center">
+                                                                                        <span style="color: #fff">
+                                                                                            Smartphone
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="clearboth"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vc_row wpb_row vc_inner vc_row-fluid vc_custom_1579173959485">
+                                                                <div class="wpb_animate_when_almost_visible fadeInDown wpb_column vc_column_container vc_col-sm-12 vc_hidden-xs">
+                                                                    <div class="vc_column-inner vc_custom_1579175855085">
+                                                                        <div class="wpb_wrapper">
+                                                                            <div class="clearboth"></div>
+                                                                            <div class="gem-divider show-on-desctop"
+                                                                                 style="margin-top: 40px"></div>
+                                                                            <div class="centered-box gem-image-centered-box">
+                                                                                <div class="gem-image gem-wrapbox gem-wrapbox-style-default gem-wrapbox-position-centered"
+                                                                                     style="">
+                                                                                    <div class="gem-wrapbox-inner">
+                                                                                        <img height="100"
+                                                                                             class="gem-wrapbox-element img-responsive"
+                                                                                             src="~/Browser_Components/MainIndex/assets/uploads/2023/phone2.png"
+                                                                                             alt="" />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="clearboth"></div>
+                                                                            <div class="gem-divider"
+                                                                                 style="margin-top: -30px"></div>
+                                                                            <div class="clearboth"></div>
+                                                                            <div class="gem-divider show-on-laptop"
+                                                                                 style="margin-top: -50px"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="vc_row-full-width vc_clearfix"></div>
+                                            <div class="vc_row-full-width-before"></div>
+
+                                            <div id="slide8"
+                                                 data-vc-full-width="true"
+                                                 data-vc-full-width-init="false"
+                                                 data-tooltip="Contact"
+                                                 class="vc_row wpb_row vc_row-fluid scroller-block vc_custom_1579784058122 vc_row-has-fill vc_row-o-content-middle vc_row-flex"
+                                                 style="padding: 0px !important">
+                                                <script type="text/javascript">
+                                                    if (
+                                                        typeof gem_fix_fullwidth_position == "function"
+                                                    ) {
+                                                        gem_fix_fullwidth_position(
+                                                            document.getElementById("slide8")
+                                                        );
+                                                    }
+                                                </script>
+                                                <div class="lastSlide">
+                                                    <div class="privontMap">
+                                                        <div class="container">
+                                                            <div class="contactInfo">
+                                                                <div class="contactPhoneIco">
+                                                                    <i class="fa fa-phone"
+                                                                       aria-hidden="true"></i>
+                                                                </div>
+                                                                <a href="+2064573790" class="phoneNumber">
+                                                                    206-457-3790
+                                                                </a>
+                                                                <p class="address">
+                                                                    30 N Gould St Ste 7782 Sheridan WY 82801
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="footer">
+                                                        <h1 class="footerLogo">PRIVONT</h1>
+                                                        <div class="footerLinks">
+                                                            <span>©2014-2023</span>
+                                                            &nbsp;
+                                                            <a href="#">Privacy Policy</a>
+                                                            &nbsp;
+                                                            <a href="#">Terms & Condition</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="vc_row-full-width vc_clearfix"></div>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="lazy-loading-point"></div>
+    </div>
+
+    <link rel="stylesheet"
+          id="fullpage-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/js/fullpage/fullpage.min03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="thegem-fullpage-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-fullpage03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="vc_animate-css-css"
+          href="~/Browser_Components/MainIndex/assets/plugins/js_composer/assets/lib/bower/animate-css/animate.min52c7.css?ver=6.0.5"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="thegem-lazy-loading-animations-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-lazy-loading-animations03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="thegem-quickfinders-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/thegem-quickfinders03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="icons-material-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/icons-material03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="odometr-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/odometer-theme-default03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+    <link rel="stylesheet"
+          id="icons-fontawesome-css"
+          href="~/Browser_Components/MainIndex/assets/themes/privont/css/icons-fontawesome03ec.css?ver=5.3.4"
+          type="text/css"
+          media="all" />
+
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/jquery.dlmenu03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript">
+        var thegem_dlmenu_settings = {
+            backLabel: "Back",
+            showCurrentLabel: "Show this page",
+        };
+    </script>
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function () {
+                var timeout;
+                $(".parallax-content").mousemove(function (e) {
+                    if (timeout) clearTimeout(timeout);
+                    setTimeout(callParallax.bind(null, e), 20);
+                });
+
+                function callParallax(e) {
+                    parallaxIt(e, ".image-7 img", 25);
+                    parallaxIt(e, ".animated-image-5 img", 10);
+                    parallaxIt(e, ".animated-image-6 img", -18);
+                }
+
+                function parallaxIt(e, target, movement) {
+                    var $this = $(".parallax-content");
+                    var relX = e.pageX - $this.offset().left;
+                    var relY = e.pageY - $this.offset().top;
+
+                    TweenMax.to(target, 1, {
+                        x: ((relX - $this.width() / 2) / $this.width()) * movement,
+                        y: ((relY - $this.height() / 2) / $this.height()) * movement,
+                        ease: Power2.easeOut,
+                    });
+                }
+            });
+        })(jQuery);
+    </script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/thegem-menu_init03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/svg4everybody03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/thegem-form-elements03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/jquery.easing03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/thegem-header03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/SmoothScroll03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/functions03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/fancyBox/jquery.mousewheel.pack03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/fancyBox/jquery.fancybox.min03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/fancyBox/jquery.fancybox-init03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript">
+        var wpcf7 = {
+            apiSettings: {
+                root: "https:\/\/codex-themes.com\/thegem\/sites\/app-landing\/wp-json\/contact-form-7\/v1",
+                namespace: "contact-form-7\/v1",
+            },
+            cached: "1",
+        };
+    </script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/plugins/contact-form-7/includes/js/scriptsc6ac.js?ver=5.1.5"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/fullpage/fullpage.min03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/thegem-fullpage03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/plugins/js_composer/assets/js/dist/js_composer_front.min52c7.js?ver=6.0.5"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/plugins/js_composer/assets/lib/vc_waypoints/vc-waypoints.min52c7.js?ver=6.0.5"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/thegem-lazyLoading03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/quickfinders-effects03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/odometer03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/counters-effects03ec.js?ver=5.3.4"></script>
+    <script type="text/javascript"
+            src="~/Browser_Components/MainIndex/assets/themes/privont/js/thegem-counters03ec.js?ver=5.3.4"></script>
+</body>
+</html>

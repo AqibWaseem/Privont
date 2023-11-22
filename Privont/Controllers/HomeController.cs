@@ -11,11 +11,15 @@ namespace Privont.Controllers
     public class HomeController : Controller
     {
         UserInfo ModelUserInfo = new UserInfo();
+        public ActionResult MainIndex()
+        {
+            return View();
+        }
         public ActionResult Index()
         {
             if (System.Web.HttpContext.Current.Request.Cookies["UserID"] == null)
             {
-                return RedirectToAction("Login");
+                return RedirectToAction("MainIndex");
             }
             ViewBag.Lead = General.FetchData("select Count(LeadID)LeadID from LeadInfo").Rows[0]["LeadID"].ToString();
             ViewBag.RealEstateAgent = General.FetchData("Select Count(RealEstateAgentID)RealEstateAgentID from RealEstateAgentInfo").Rows[0]["RealEstateAgentID"].ToString();
