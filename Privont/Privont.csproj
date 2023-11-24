@@ -10605,6 +10605,7 @@
     <Content Include="Browser_Components\MainIndex\assets\themes\privont\fonts\thegem-socials.ttf" />
     <Content Include="Browser_Components\MainIndex\assets\themes\privont\fonts\thegem-socials.woff" />
     <Content Include="Browser_Components\MainIndex\assets\themes\privont\fonts\thegem-socialsd41d.eot" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\privont.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\privont.softinn.pk - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\privont.softinn.pubxml" />
