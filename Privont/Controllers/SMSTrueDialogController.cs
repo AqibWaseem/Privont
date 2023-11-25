@@ -1,4 +1,5 @@
-﻿using Privont.Models;
+﻿using Newtonsoft.Json.Linq;
+using Privont.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -204,13 +205,20 @@ namespace Privont.Controllers
             }
         }
         [HttpPost]
-        public JsonResult IncomingMessageCallback(TrueDialogIncomeMessage data)
+     
+        public ActionResult ReceiveIncomingMessage(TrueDialogIncomeMessage value)
         {
-            // Process the incoming message data here
-            // You can access the data sent by TrueDialog in the 'data' variable
-            // Perform necessary actions with the received message
-
-            return Json(""); // Respond with a success status
+            //TrueDialogIncomeMessage value = new TrueDialogIncomeMessage();
+            ////JArray userArray = (JArray)jObject["value"];
+            //value = jObject["value"].ToObject<TrueDialogIncomeMessage>();
+            string QueryInsert = $@"INSERT INTO TrueDialogIncomeMessage
+           (Message
+           ,PhoneNumber)
+     VALUES
+           ('{value.Message}'
+           ,'{value.PhoneNumber}')";
+            General.ExecuteNonQuery(QueryInsert);
+            return Json("true",JsonRequestBehavior.AllowGet);
         }
     }
 }

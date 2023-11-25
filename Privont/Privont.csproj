@@ -10746,6 +10746,7 @@
     <Folder Include="assets\vendor_components\flexslider\node_modules\jquery\dist\" />
     <Folder Include="Scripts\jstoken\bin\" />
     <Folder Include="UploadedFiles\Lead\" />
+    <Folder Include="Views\IncomingMessages\" />
     <Folder Include="Views\LeadsInfo\" />
     <Folder Include="Views\TrueDialog\" />
   </ItemGroup>
