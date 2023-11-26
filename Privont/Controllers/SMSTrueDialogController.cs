@@ -55,7 +55,7 @@ namespace Privont.Controllers
         
         private const string BaseUrl = "https://api.truedialog.com/api/v2.1/";
         private const string ApiKey = "42e7b9be42864ab9a417ac09310c61bb"; // Replace with your API key
-        private const string ApiSecret = "L+t96oD=i_5P"; // Replace with your API secret   
+        private const string ApiSecret = "Cs6!a5+XEr9?"; // Replace with your API secret   
         private const int AccountID = 22965;
         [HttpPost]
         public async Task<ActionResult> SendPushCampaignAsync(string PhoneNo,string message)
