@@ -1,4 +1,5 @@
-﻿using Privont.Models;
+﻿using Newtonsoft.Json.Linq;
+using Privont.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,7 @@ namespace Privont.Controllers
         
         private const string BaseUrl = "https://api.truedialog.com/api/v2.1/";
         private const string ApiKey = "42e7b9be42864ab9a417ac09310c61bb"; // Replace with your API key
-        private const string ApiSecret = "L+t96oD=i_5P"; // Replace with your API secret   
+        private const string ApiSecret = "Cs6!a5+XEr9?"; // Replace with your API secret   
         private const int AccountID = 22965;
         [HttpPost]
         public async Task<ActionResult> SendPushCampaignAsync(string PhoneNo,string message)
@@ -202,6 +203,22 @@ namespace Privont.Controllers
                     return "";
                 }
             }
+        }
+        [HttpPost]
+     
+        public ActionResult ReceiveIncomingMessage(TrueDialogIncomeMessage value)
+        {
+            //TrueDialogIncomeMessage value = new TrueDialogIncomeMessage();
+            ////JArray userArray = (JArray)jObject["value"];
+            //value = jObject["value"].ToObject<TrueDialogIncomeMessage>();
+            string QueryInsert = $@"INSERT INTO TrueDialogIncomeMessage
+           (Message
+           ,PhoneNumber)
+     VALUES
+           ('{value.Message}'
+           ,'{value.PhoneNumber}')";
+            General.ExecuteNonQuery(QueryInsert);
+            return Json("true",JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -27,7 +27,10 @@ namespace Privont
             {
                 try
                 {
-                    return int.Parse(System.Web.HttpContext.Current.Request.Cookies["UserID"].Value.ToString());
+                    if (System.Web.HttpContext.Current.Request.Cookies["UserID"] != null)
+                        return int.Parse(System.Web.HttpContext.Current.Request.Cookies["UserID"].Value.ToString());
+                    else
+                        return 0;
                 }
                 catch
                 {
@@ -45,7 +48,12 @@ namespace Privont
             {
                 try
                 {
-                    return int.Parse(System.Web.HttpContext.Current.Request.Cookies["UserType"].Value.ToString());
+                    if(System.Web.HttpContext.Current.Request.Cookies["UserType"]!=null)
+                    {
+                        return int.Parse(System.Web.HttpContext.Current.Request.Cookies["UserType"].Value.ToString());
+                    }
+                    else
+                        return 0;
                 }
                 catch
                 {
