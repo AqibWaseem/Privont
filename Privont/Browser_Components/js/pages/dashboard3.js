@@ -266,7 +266,7 @@ $(function () {
           width: 2,
           colors: ['transparent']
         },
-		colors: ['#5b33c9', '#8865f8', '#6cbbfa'],
+		colors: ['#5b33c9', '#8865f8', '#13c2c2'],
         xaxis: {
           categories: ['Amazon', 'Flipkart', 'Alibaba', 'G2pay', 'GoBuy', 'Snapdeal', 'ebay', 'Zamro'],
 			

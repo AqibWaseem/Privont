@@ -885,7 +885,7 @@ code {
   border: 1px solid #f3f6f9 !important; }
 
 .border-primary {
-  border-color: #6cbbfa !important; }
+  border-color: #13c2c2 !important; }
 
 .border-secondary {
   border-color: #e4e6ef !important; }
@@ -20642,7 +20642,7 @@ Height property
     box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0); }
     .main-header .push-btn:hover, .main-header .push-btn:active, .main-header .push-btn:focus, .main-header .full-screen:hover, .main-header .full-screen:active, .main-header .full-screen:focus, .main-header .svg-bt-icon:hover, .main-header .svg-bt-icon:active, .main-header .svg-bt-icon:focus {
       background-color: rgba(0, 0, 0, 0.03);
-      color: #6cbbfa; }
+      color: #13c2c2; }
   .main-header .push-btn img, .main-header .full-screen img, .main-header .svg-bt-icon img {
     height: 20px;
     width: 20px;
@@ -22262,7 +22262,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
   background-color: #F5F5F5; }
 
 .chat-logs::-webkit-scrollbar-thumb {
-  background-color: #6cbbfa; }
+  background-color: #13c2c2; }
 
 @media only screen and (max-width: 500px) {
   .chat-logs {
@@ -22291,7 +22291,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
 
 .chat-msg.self > .cm-msg-text {
   float: right;
-  background: #6cbbfa;
+  background: #13c2c2;
   color: white; }
 
 .cm-msg-button > ul > li {
@@ -22669,7 +22669,7 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
   color: #ffffff;
   font-size: 16px;
   line-height: 40px;
-  background: #6cbbfa;
+  background: #13c2c2;
   border-radius: 10px;
   padding: 10px 20px; }
 
@@ -22683,12 +22683,12 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
     bottom: -15px;
     border-left: 16px solid transparent;
     border-right: 16px solid transparent;
-    border-top: 16px solid #6cbbfa; }
+    border-top: 16px solid #13c2c2; }
   .gmaps-overlay_arrow .below {
     top: -15px;
     border-left: 16px solid transparent;
     border-right: 16px solid transparent;
-    border-bottom: 16px solid #6cbbfa; }
+    border-bottom: 16px solid #13c2c2; }
 
 /*wizard*/
 .wizard-content .wizard {
@@ -23844,9 +23844,9 @@ ul.panel-actions > li {
   top: 0px; }
 
 .alert-custom {
-  background: #6cbbfa;
+  background: #13c2c2;
   color: #ffffff;
-  border-color: #6cbbfa; }
+  border-color: #13c2c2; }
 
 .alert-inverse {
   background: #172b4c;
@@ -24341,7 +24341,7 @@ table.dataTable thead .sorting, table.dataTable thead .sorting_asc, table.dataTa
       box-shadow: none; }
     .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
       color: #ffffff;
-      background-color: #6cbbfa; }
+      background-color: #13c2c2; }
     .dataTables_wrapper .dataTables_paginate .paginate_button:active {
       outline: 0;
       background-color: #737373; }
@@ -26093,7 +26093,7 @@ time {
   padding-left: 45px;
   position: relative;
   margin-left: 28px;
-  border-left: 3px solid #6cbbfa;
+  border-left: 3px solid #13c2c2;
   min-height: 80px;
   padding-top: 1px; }
   .widget-timeline-icon li .icon {
@@ -26869,7 +26869,7 @@ textarea.form-control {
   color: #172b4c;
   white-space: nowrap; }
   .bootstrap-select .dropdown-menu li a:hover, .bootstrap-select .dropdown-menu li a:focus {
-    color: #6cbbfa;
+    color: #13c2c2;
     background: #f3f6f9; }
 .bootstrap-select .show > .dropdown-menu {
   display: block; }
@@ -30238,7 +30238,7 @@ td .label {
     position: absolute;
     content: " ";
     width: 2px;
-    background-color: #6cbbfa;
+    background-color: #13c2c2;
     left: 50%;
     margin-left: -1.5px; }
   #timeline .clearFix {
@@ -30257,7 +30257,7 @@ td .label {
     background-color: #ffffff;
     z-index: 6;
     border-radius: 50%;
-    border: 2px solid #6cbbfa; }
+    border: 2px solid #13c2c2; }
     #timeline .timeline-badge span.timeline-balloon-date-day {
       font-size: 1.4em; }
     #timeline .timeline-badge span.timeline-balloon-date-month {
@@ -30272,7 +30272,7 @@ td .label {
       width: 35px;
       top: 40px; }
       #timeline .timeline-badge .timeline-filter-movement a span {
-        color: #6cbbfa;
+        color: #13c2c2;
         font-size: 1.3em;
         top: -1px; }
     #timeline .timeline-badge .timeline-future-movement {
@@ -30282,14 +30282,14 @@ td .label {
       font-size: 1.7em;
       top: -16px;
       margin-left: -60px;
-      border: 2px solid #6cbbfa; }
+      border: 2px solid #13c2c2; }
       #timeline .timeline-badge .timeline-future-movement a span {
-        color: #6cbbfa;
+        color: #13c2c2;
         font-size: .9em;
         top: 0;
         left: 1px; }
       #timeline .timeline-badge .timeline-future-movement p {
-        color: #6cbbfa;
+        color: #13c2c2;
         position: absolute;
         top: 40px;
         left: 32px; }
@@ -32030,17 +32030,17 @@ button.btn.dropdown-toggle:after {
         border-radius: 50%;
         border: 2px solid #a45ff8; }
     .c-progress-steps li.current {
-      color: #6cbbfa;
+      color: #13c2c2;
       font-weight: 500; }
       .c-progress-steps li.current:before {
-        color: #6cbbfa;
+        color: #13c2c2;
         content: "\f192";
         width: 30px;
         height: 30px;
         display: inline-block;
         text-align: center;
         border-radius: 50%;
-        border: 2px solid #6cbbfa; }
+        border: 2px solid #13c2c2; }
     .c-progress-steps li:before {
       position: absolute;
       left: 0;
@@ -32081,13 +32081,13 @@ button.btn.dropdown-toggle:after {
         .c-progress-steps li.done {
           border-bottom-color: #a45ff8; }
         .c-progress-steps li.current {
-          color: #6cbbfa;
-          border-bottom-color: #6cbbfa; }
+          color: #13c2c2;
+          border-bottom-color: #13c2c2; }
           .c-progress-steps li.current span {
             background-color: rgba(108, 187, 250, 0.15);
-            box-shadow: 0px 0px 0px 0.25px #6cbbfa; }
+            box-shadow: 0px 0px 0px 0.25px #13c2c2; }
           .c-progress-steps li.current:before {
-            color: #6cbbfa;
+            color: #13c2c2;
             content: "\f192"; }
         .c-progress-steps li:before {
           bottom: -15px;
