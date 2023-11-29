@@ -900,7 +900,7 @@ code {
   border-color: #fbc66c !important; }
 
 .border-danger {
-  border-color: #fb5ea8 !important; }
+  border-color: #f5222d !important; }
 
 .border-dark {
   border-color: #172b4c !important; }
@@ -20754,7 +20754,7 @@ Height property
       width: 4px;
       height: 4px;
       border-radius: 100%;
-      background-color: #fb5ea8;
+      background-color: #f5222d;
       animation: beat .25s infinite alternate;
       transform-origin: center; }
     .main-header .navbar-custom-menu.r-side li.dropdown .dropdown-toggle i.animated::after {
@@ -22750,8 +22750,8 @@ body .main-header .navbar .nav > li.search-box > a:hover, body .main-header .nav
             .wizard-content .wizard > .steps > ul > li.done a:hover, .wizard-content .wizard > .steps > ul > li.done a:focus {
               color: #ffffff; }
         .wizard-content .wizard > .steps > ul > li.error {
-          border-color: #fb5ea8;
-          color: #fb5ea8; }
+          border-color: #f5222d;
+          color: #f5222d; }
   .wizard-content .wizard.vertical > .steps {
     display: inline;
     float: left;
@@ -24883,18 +24883,18 @@ time {
   color: #389e0d; }
 
 .has-error .bar:before, .has-error .bar:after {
-  background: #fb5ea8; }
+  background: #f5222d; }
 .has-error .form-control:focus ~ label, .has-error .form-control:valid ~ label {
-  color: #fb5ea8; }
+  color: #f5222d; }
 
 .has-feedback label ~ .t-0 {
   top: 0; }
 
 .form-group.error input, .form-group.error select, .form-group.error textarea {
-  border: 1px solid #fb5ea8; }
+  border: 1px solid #f5222d; }
 .form-group.error .help-block ul {
   padding: 0px;
-  color: #fb5ea8; }
+  color: #f5222d; }
   .form-group.error .help-block ul li {
     list-style: none; }
 .form-group.validate input, .form-group.validate select, .form-group.validate textarea {
@@ -25126,7 +25126,7 @@ time {
   background: #f3f6f9; }
 
 .fc-unthemed .fc-today {
-  border: 1px solid #fb5ea8;
+  border: 1px solid #f5222d;
   background: #f3f6f9 !important; }
 
 .fc-cell-overlay, .fc-state-highlight {
@@ -25633,7 +25633,7 @@ time {
       width: 5rem;
       max-width: 100%; }
   .pro-photos .item-active {
-    border-color: #fb5ea8; }
+    border-color: #f5222d; }
 
 .pro-price .old-price {
   text-decoration: line-through; }
@@ -26746,14 +26746,14 @@ input[type="color"] {
   border-color: #fbc66c;
   box-shadow: none; }
 .form-group.has-error .help-block {
-  color: #fb5ea8; }
+  color: #f5222d; }
 .form-group.has-error label {
-  color: #fb5ea8; }
+  color: #f5222d; }
 .form-group.has-error .form-control {
-  border-color: #fb5ea8;
+  border-color: #f5222d;
   box-shadow: none; }
 .form-group.has-error .input-group-addon {
-  border-color: #fb5ea8;
+  border-color: #f5222d;
   box-shadow: none; }
 
 .form-control, .form-select {
@@ -29486,7 +29486,7 @@ ul.flexbox {
     .todo-list > li .tools {
       display: none;
       float: right;
-      color: #fb5ea8; }
+      color: #f5222d; }
       .todo-list > li .tools > i {
         margin-right: 5px;
         cursor: pointer; }
@@ -29607,7 +29607,7 @@ td .label {
     .chat .item > .online {
       border: 2px solid #389e0d; }
     .chat .item > .offline {
-      border: 2px solid #fb5ea8; }
+      border: 2px solid #f5222d; }
     .chat .item > .message {
       margin-left: 55px;
       margin-top: -40px;
@@ -31980,10 +31980,10 @@ button.btn.dropdown-toggle:after {
   padding-right: 0; }
 
 .pace .pace-progress {
-  background: #fb5ea8; }
+  background: #f5222d; }
 .pace .pace-activity {
-  border-top-color: #fb5ea8;
-  border-left-color: #fb5ea8; }
+  border-top-color: #f5222d;
+  border-left-color: #f5222d; }
 
 /* Morris chart */
 .morris-chart text {
