@@ -20626,7 +20626,7 @@ Height property
     -moz-transition: -moz-transform .3s ease-in-out, width .3s ease-in-out;
     -o-transition: -o-transform .3s ease-in-out, width .3s ease-in-out;
     transition: transform .3s ease-in-out, width .3s ease-in-out;
-    background: #2f3478;
+    background: #2E353C;
     border-top-right-radius: 0px; }
   .main-header .push-btn, .main-header .full-screen, .main-header .svg-bt-icon {
     height: 45px;
@@ -20656,7 +20656,7 @@ Height property
     border-radius: 10px;
     overflow: hidden; }
     .main-header .app-menu .search-bx input[type="search"] {
-      background-color: #1b1f54;
+      background-color: #2E353C;
       color: #172b4c;
       font-size: 16px;
       padding-left: 20px;
@@ -20670,7 +20670,7 @@ Height property
     .main-header .app-menu .search-bx .input-group-append {
       margin-left: 0px; }
     .main-header .app-menu .search-bx .btn {
-      background-color: #1b1f54;
+      background-color: #2E353C;
       color: #5C607B;
       font-weight: 700;
       font-size: 18px;

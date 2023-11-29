@@ -15,7 +15,7 @@ File: horizontal menu scss
   .layout-top-nav.fixed .content-wrapper {
     margin-top: 140px; }
   .layout-top-nav.fixed .main-header {
-    background: #2f3478; } }
+    background: #2E353C; } }
 @media (max-width: 767px) {
   .layout-top-nav .content-wrapper, .layout-top-nav .main-footer, .layout-top-nav .main-nav > .navbar {
     width: 95%;
@@ -26,7 +26,7 @@ File: horizontal menu scss
   .layout-top-nav .main-header .inside-header {
     width: 95%;
     margin: 0 auto;
-    background: #2f3478; }
+    background: #2E353C; }
   .layout-top-nav .main-header .logo-box {
     border-right: none !important; }
     .layout-top-nav .main-header .logo-box .logo {
@@ -42,7 +42,7 @@ File: horizontal menu scss
   z-index: 809;
   border-radius: 0; }
 .layout-top-nav .main-nav {
-  background: #2f3478;
+  background: #2E353C;
   box-shadow: 0px 2px 5px 0px rgba(19, 23, 38, 0);
   padding: 0px 0px 5px;
   z-index: 99;

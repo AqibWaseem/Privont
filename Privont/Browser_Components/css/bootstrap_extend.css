@@ -4,6 +4,7 @@ Author: Multipurpose Themes
 File: scss
 */
 
+
 @font-face {
     font-family: 'Museo Sans';
     src: url('../fonts/MuseoSans_100.otf') format('opentype');
@@ -25,11 +26,23 @@ File: scss
     font-weight: 700;
 }
 
+
+* {
+    font-family: 'Poppins', Roboto !important;
+}
+
 input, button {
     font-family: 'Poppins', Roboto;
 }
 .btn {
     font-size: 20px;
+}
+
+.search-bx{
+    background-color: #fff;
+}
+.search-bx *{
+    background-color: #fff !important;
 }
 
 /*# sourceMappingURL=bootstrap_extend.css.map */
