@@ -79,4 +79,17 @@ th{
 .badge-success {
     /*background-color: #389e0d !important;*/
 }
+
+
+
+.btn-sm {
+/*    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 13px !important;
+    padding: 0px*/
+}
 /*# sourceMappingURL=bootstrap_extend.css.map */
