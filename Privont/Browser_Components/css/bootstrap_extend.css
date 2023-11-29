@@ -64,6 +64,7 @@ input, button {
 
 /*table styles start*/
 th{
+    color: #fff !important;
     font-weight: 600;
 }
 /*table styles end*/
