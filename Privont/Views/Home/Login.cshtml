@@ -28,7 +28,11 @@
     @*<link rel="stylesheet" href="css/style.css">*@
     <link href="~/Browser_Components/css/skin_color.css" rel="stylesheet" />
     @*<link rel="stylesheet" href="css/skin_color.css">*@
-<style>
+    <link href="~/Browser_Components/css/bootstrap_extend.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,400;0,500;0,600;0,700;1,100;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <style>
         .loader {
             border: 16px solid #f3f3f3;
             border-radius: 50%;
@@ -43,27 +47,39 @@
             transform: translate(-50%, -50%);
             padding: 10px;
         }
-    #loading {
-        color: white;
-        position: absolute;
-        top: 65%;
-        left: 55%;
-        transform: translate(-50%, -50%);
-        padding: 10px;
-    }
-    @@-webkit-keyframes spin {
-        0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
 
-@@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-</style>
+        #loading {
+            color: white;
+            position: absolute;
+            top: 65%;
+            left: 55%;
+            transform: translate(-50%, -50%);
+            padding: 10px;
+        }
+
+        @@-webkit-keyframes spin {
+            0% {
+                -webkit-transform: rotate(0deg);
+            }
+
+            100% {
+                -webkit-transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
 
-<body class="hold-transition theme-primary bg-img" style="background-color:black">
+<body class="hold-transition theme-primary bg-img" style="background-image: url(../../images/grain-texture.png); background-repeat:repeat; background-size:auto;" >
     @*style="background-image: url(../images/peakpx.jpg)"*@
     <div class="loader"></div>
     <h3 id="loading">

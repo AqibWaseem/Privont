@@ -4,4 +4,32 @@ Author: Multipurpose Themes
 File: scss
 */
 
+@font-face {
+    font-family: 'Museo Sans';
+    src: url('../fonts/MuseoSans_100.otf') format('opentype');
+    font-weight: 100;
+}
+@font-face {
+    font-family: 'Museo Sans';
+    src: url('../fonts/MuseoSans_300.otf') format('opentype');
+    font-weight: 300;
+}
+@font-face {
+    font-family: 'Museo Sans';
+    src: url('../fonts/MuseoSans_500.otf') format('opentype');
+    font-weight: 500;
+}
+@font-face {
+    font-family: 'Museo Sans';
+    src: url('../fonts/MuseoSans_700.otf') format('opentype');
+    font-weight: 700;
+}
+
+input, button {
+    font-family: 'Poppins', Roboto;
+}
+.btn {
+    font-size: 20px;
+}
+
 /*# sourceMappingURL=bootstrap_extend.css.map */
