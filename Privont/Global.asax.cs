@@ -1,4 +1,7 @@
-﻿using Privont.Models;
+﻿using Microsoft.Owin.Security.Google;
+using Microsoft.Owin;
+using Owin;
+using Privont.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,6 +10,10 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.AspNet.Identity;
+using System.Security.Claims;
+using System.Web.Helpers;
 
 namespace Privont
 {
@@ -14,11 +21,13 @@ namespace Privont
     {
         protected void Application_Start()
         {
+            //AppDomain.CurrentDomain.SetData("owin:AppStartup", typeof(StartupConfigGoogleAuth).AssemblyQualifiedName);
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             General.ConnectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ToString();
         }
+       
     }
 }

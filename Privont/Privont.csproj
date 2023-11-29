@@ -26,6 +26,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,13 +47,121 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
+      <HintPath>..\packages\Facebook.7.0.6\lib\net45\Facebook.dll</HintPath>
+    </Reference>
     <Reference Include="gfoidl.Base64, Version=1.1.1501.1, Culture=neutral, PublicKeyToken=6a1c26790d4ba8ae, processorArchitecture=MSIL">
       <HintPath>..\packages\gfoidl.Base64.1.1.1\lib\net45\gfoidl.Base64.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis, Version=1.64.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.64.0\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.64.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.64.0\lib\net461\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.64.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.64.0\lib\net461\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.64.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.64.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.64.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.64.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.4\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.4\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authentication.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Core.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authentication.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authorization, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authorization.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authorization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authorization.Policy, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authorization.Policy.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Authorization.Policy.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Hosting.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Hosting.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Hosting.Server.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Hosting.Server.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Extensions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Mvc.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Core, Version=2.2.5.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Mvc.Core.2.2.5\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.ResponseCaching.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.ResponseCaching.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Routing, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Routing.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Routing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Routing.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Routing.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Routing.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.1.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.DotNet.PlatformAbstractions.2.1.0\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.2.2.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyModel, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyModel.2.1.0\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.FileProviders.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.FileProviders.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.FileProviders.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Hosting.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Hosting.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Hosting.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.ObjectPool, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.2.2.0\lib\netstandard2.0\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.32.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.6.32.2\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
     </Reference>
@@ -65,11 +174,38 @@
     <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.32.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.Tokens.6.32.2\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Net.Http.Headers, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.Headers.2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.2.2\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.2.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.4.2.2\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Facebook, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Facebook.4.2.2\lib\net45\Microsoft.Owin.Security.Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.4.2.2\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.2.2\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json.Bson, Version=1.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.Bson.1.0.2\lib\net45\Newtonsoft.Json.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=106.6.10.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.106.6.10\lib\net452\RestSharp.dll</HintPath>
@@ -78,8 +214,18 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.CodeDom, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.CodeDom.7.0.0\lib\net462\System.CodeDom.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.4.5.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=6.32.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.6.32.2\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
@@ -89,6 +235,7 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -112,6 +259,11 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security" />
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -133,7 +285,6 @@
     <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.3.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
       <Private>True</Private>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Text.Encodings.Web, Version=4.0.5.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Encodings.Web.4.7.2\lib\net461\System.Text.Encodings.Web.dll</HintPath>
@@ -151,19 +302,34 @@
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Http, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.3.0\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Http.WebHost, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.9\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    <Reference Include="System.Web.Http.WebHost, Version=5.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.3.0\lib\net45\System.Web.Http.WebHost.dll</HintPath>
     </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -174,33 +340,10 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="TrueDialog.Client, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\TrueDialog.Client.1.0.3\lib\net461\TrueDialog.Client.dll</HintPath>
     </Reference>
@@ -214,16 +357,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
-      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\APIs\TrueDialogIncomeMessageController.cs" />
+    <Compile Include="Controllers\FacebookAuthLoginController.cs" />
     <Compile Include="Controllers\GeneralApisController.cs" />
+    <Compile Include="Controllers\GoogleAuthController.cs" />
+    <Compile Include="Controllers\GoogleAuthLoginController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LeadInfoController.cs" />
     <Compile Include="Controllers\LenderInfoController.cs" />
@@ -240,6 +381,7 @@
     </Compile>
     <Compile Include="Models\APIConfigInfo.cs" />
     <Compile Include="Models\APILeads.cs" />
+    <Compile Include="Models\ChallengeResult.cs" />
     <Compile Include="Models\LeadInfo.cs" />
     <Compile Include="Models\LenderInfo.cs" />
     <Compile Include="Models\RealEstateAgentInfo.cs" />
@@ -249,6 +391,7 @@
     <Compile Include="Models\UserInfo.cs" />
     <Compile Include="Models\VendorInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StartupConfigGoogleAuth.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\icons\cryptocoins-master\cryptocoins-colors.css" />
@@ -7803,17 +7946,24 @@
     <Content Include="Browser_Components\MainIndex\assets\uploads\2020\01\7.jpg" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2020\01\8.jpg" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\bg2.jpg" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\2023\homepage.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\laptop.png" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\2023\login.2png.png" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\2023\login.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\map.png" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\2023\membership.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\phone.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\phone1.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\phone2.png" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\2023\sss.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\2023\tablet.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\favicons\favicon-16x16.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\favicons\favicon-32x32.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\favicons\favicon.ico" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\favicons\Logo.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\favicons\mstile-150x150.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\thegem-logos\logo.png" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\thegem-logos\logo1.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\thegem-logos\logo_4cb0f8e22d7c8eb062ea4406cb7e538a_1x.png" />
     <Content Include="Browser_Components\MainIndex\assets\uploads\thegem-logos\logo_9bcb5855f9c9698eb26c30c9a390b2f3_1x.png" />
     <Content Include="Browser_Components\MainIndex\MainIndex.css" />
@@ -9366,12 +9516,6 @@
     <Content Include="images\w3.jpg" />
     <Content Include="images\w4.jpg" />
     <Content Include="images\weight.png" />
-    <Content Include="Scripts\bootstrap.bundle.js" />
-    <Content Include="Scripts\bootstrap.bundle.min.js" />
-    <Content Include="Scripts\bootstrap.esm.js" />
-    <Content Include="Scripts\bootstrap.esm.min.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Browser_Components\css\bootstrap_extend.css.map" />
     <Content Include="Browser_Components\css\color_theme.css.map" />
     <Content Include="Browser_Components\css\horizontal-menu.css.map" />
@@ -10605,10 +10749,109 @@
     <Content Include="Browser_Components\MainIndex\assets\themes\privont\fonts\thegem-socials.ttf" />
     <Content Include="Browser_Components\MainIndex\assets\themes\privont\fonts\thegem-socials.woff" />
     <Content Include="Browser_Components\MainIndex\assets\themes\privont\fonts\thegem-socialsd41d.eot" />
+    <Content Include="Browser_Components\MainIndex\.git\COMMIT_EDITMSG" />
+    <Content Include="Browser_Components\MainIndex\.git\config" />
+    <Content Include="Browser_Components\MainIndex\.git\description" />
+    <Content Include="Browser_Components\MainIndex\.git\FETCH_HEAD" />
+    <Content Include="Browser_Components\MainIndex\.git\HEAD" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\applypatch-msg.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\commit-msg.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\fsmonitor-watchman.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\post-update.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\pre-applypatch.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\pre-commit.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\pre-merge-commit.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\pre-push.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\pre-rebase.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\pre-receive.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\prepare-commit-msg.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\push-to-checkout.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\hooks\update.sample" />
+    <Content Include="Browser_Components\MainIndex\.git\index" />
+    <Content Include="Browser_Components\MainIndex\.git\info\exclude" />
+    <Content Include="Browser_Components\MainIndex\.git\logs\HEAD" />
+    <Content Include="Browser_Components\MainIndex\.git\logs\refs\heads\master" />
+    <Content Include="Browser_Components\MainIndex\.git\logs\refs\remotes\origin\HEAD" />
+    <Content Include="Browser_Components\MainIndex\.git\logs\refs\remotes\origin\master" />
+    <Content Include="Browser_Components\MainIndex\.git\logs\refs\stash" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\01\53428a2efd5d2ba82f6a1af93ef20fb6f91d91" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\01\893d5f530f0fcd648b5e0c3bf90677b00fd500" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\07\1d712259fa3c943c79e87eab0525d774e000f6" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\0b\14dfbbae4b10713caf077c1d6dd412f8599862" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\0b\9f55f36b03cac3c6e6af453ba4c47beadc34ef" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\0f\979bad84a0a8a1244c8c0dc20c318ca5319edf" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\17\576f75f8b6b01613980941b0b7e0b4d7c42d44" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\18\02d1240f85a4e9c7842714b9fee22a5767f488" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\1c\4ab007de8ccacd46946d8d1bac75d9fb2c5412" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\29\97f85f069ad2f3037f17eebdd59ba90f8d4578" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\2e\af855c3f80ae05298388c96bf7dba771abdea9" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\33\c891c616a7e6f21366a9687aed923ac456f3bf" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\37\19b0cb67e3f56c1eb184d907992283fd594c70" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\39\c6cf216efc0e055a6b14112adb53530f53e06a" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\41\fe430d03018180649bb32658ee6ae2f63fc4e5" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\45\4fef57a44003dcbbbe17fff060377a5256923b" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\4a\18fa821c8f3c932a0c06b6b3ed5bd14bdc0c40" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\4f\114da05f20c710e05e8721d993d15856ccad8a" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\55\f455926031b404481848bc250d1a08fcb3d251" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\56\1bea4f023a522559e2782d5517d18f4ed80d2e" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\5e\ecd10d19e8a28fe3f0722b22c44231f56742f0" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\63\6923a43684c044988b71767effa2a847adafd7" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\68\9ecefa5c4b97529e5d3028ec3870e255d991e1" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\72\77e710ff618c20d5e4803a8477244400207988" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\7c\ca282e82c29fc03cc264b41c89c9c2315d27e7" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\7e\1ad6876ea01334a39e53237ecaf23e4ad86b67" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\83\9a90f5a4753527eab1c1a161b962db6ccb2974" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\87\0d1887419f3af87f2086b7380165fc334c72f7" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\89\84349f4d2e5e32618d93d76df7c68e2ff3463e" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\8a\589ffab0af2d49e2b9d2f46949ac089b20af70" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\9e\92268dc3968ac5fb9481f1da6e4bb9211723ca" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\a8\8bbbe54d542e72adddbcd666a75b879e2e3c29" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\a9\d5911b1c2f26fdc5889bc11a75ecb5daf03348" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\a9\e82c4b1a138da87d0dafcf0420f1e23436934d" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\ca\2a9a442b10daf03c3aa42eb374033330ec4006" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\d2\49b91a42c5ed595abae49475bb0fc798886abb" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\d9\8c9dc49b5246d781e1ac3ccb494211d8c458d8" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\e2\6255ac5977b3511713f5369ddfff512a4c9b41" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\fb\0c76bbaa12c2f4271c46d241d78083829d127e" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\fc\c90c4aef84a837957be275bc8ea237c9d5307d" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\pack\pack-fb4483b255b64f548cdfc6647cf1b591aaea88f0.idx" />
+    <Content Include="Browser_Components\MainIndex\.git\objects\pack\pack-fb4483b255b64f548cdfc6647cf1b591aaea88f0.pack" />
+    <Content Include="Browser_Components\MainIndex\.git\ORIG_HEAD" />
+    <Content Include="Browser_Components\MainIndex\.git\packed-refs" />
+    <Content Include="Browser_Components\MainIndex\.git\refs\heads\master" />
+    <Content Include="Browser_Components\MainIndex\.git\refs\remotes\origin\HEAD" />
+    <Content Include="Browser_Components\MainIndex\.git\refs\remotes\origin\master" />
+    <Content Include="Browser_Components\MainIndex\.git\refs\stash" />
+    <Content Include="Browser_Components\MainIndex\.vscode\settings.json" />
+    <Content Include="Browser_Components\MainIndex\assets\.DS_Store" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\.DS_Store" />
+    <Content Include="Browser_Components\MainIndex\assets\uploads\2023\.DS_Store" />
+    <Content Include="Content\bootstrap.rtl.min.css.map" />
+    <Content Include="Content\bootstrap.rtl.css.map" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Content\bootstrap-utilities.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.css.map" />
+    <Content Include="Content\bootstrap-reboot.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.css.map" />
+    <Content Include="Content\bootstrap-grid.min.css.map" />
+    <Content Include="Content\bootstrap-grid.css.map" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\privont.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\privont.softinn.pk - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\privont.softinn.pubxml" />
+    <Content Include="Scripts\bootstrap.bundle.js" />
+    <Content Include="Scripts\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bootstrap.esm.js" />
+    <Content Include="Scripts\bootstrap.esm.min.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -10739,35 +10982,9 @@
     <Content Include="Views\LeadInfo\Index2.cshtml" />
     <Content Include="Views\LeadInfo\PreviousIndexforms.cshtml" />
     <Content Include="Views\Home\MainIndex.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="assets\vendor_components\flat-color-icons\PNG\512\A\" />
-    <Folder Include="assets\vendor_components\flexslider\node_modules\jquery\dist\" />
-    <Folder Include="Scripts\jstoken\bin\" />
-    <Folder Include="UploadedFiles\Lead\" />
-    <Folder Include="Views\IncomingMessages\" />
-    <Folder Include="Views\LeadsInfo\" />
-    <Folder Include="Views\TrueDialog\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Content\bootstrap.rtl.min.css.map" />
-    <Content Include="Content\bootstrap.rtl.css.map" />
-    <Content Include="Content\bootstrap.min.css.map" />
-    <Content Include="Content\bootstrap.css.map" />
-    <Content Include="Content\bootstrap-utilities.rtl.min.css.map" />
-    <Content Include="Content\bootstrap-utilities.rtl.css.map" />
-    <Content Include="Content\bootstrap-utilities.min.css.map" />
-    <Content Include="Content\bootstrap-utilities.css.map" />
-    <Content Include="Content\bootstrap-reboot.rtl.min.css.map" />
-    <Content Include="Content\bootstrap-reboot.rtl.css.map" />
-    <Content Include="Content\bootstrap-reboot.min.css.map" />
-    <Content Include="Content\bootstrap-reboot.css.map" />
-    <Content Include="Content\bootstrap-grid.rtl.min.css.map" />
-    <Content Include="Content\bootstrap-grid.rtl.css.map" />
-    <Content Include="Content\bootstrap-grid.min.css.map" />
-    <Content Include="Content\bootstrap-grid.css.map" />
-    <None Include="packages.config" />
+    <Content Include="Views\Home\PrivacyPolicy.cshtml" />
+    <Content Include="Views\Home\TermsandConditions.cshtml" />
+    <Content Include="Views\Home\Login - Copy.cshtml" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.esm.min.js.map" />
@@ -10776,6 +10993,26 @@
     <Content Include="Scripts\bootstrap.bundle.js.map" />
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
+    <Content Include="Views\Home\callback.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="assets\vendor_components\flat-color-icons\PNG\512\A\" />
+    <Folder Include="assets\vendor_components\flexslider\node_modules\jquery\dist\" />
+    <Folder Include="Browser_Components\MainIndex\.git\branches\" />
+    <Folder Include="Browser_Components\MainIndex\.git\objects\info\" />
+    <Folder Include="Browser_Components\MainIndex\.git\refs\tags\" />
+    <Folder Include="Scripts\jstoken\bin\" />
+    <Folder Include="UploadedFiles\Lead\" />
+    <Folder Include="Views\FacebookAuthLogin\" />
+    <Folder Include="Views\GoogleAuthLogin\" />
+    <Folder Include="Views\GoogleAuth\" />
+    <Folder Include="Views\IncomingMessages\" />
+    <Folder Include="Views\LeadsInfo\" />
+    <Folder Include="Views\TrueDialog\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="assets\vendor_components\moment\moment.d.ts" />

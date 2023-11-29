@@ -1,9 +1,130 @@
 ﻿@{
-    ViewBag.Title = "About";
+    ViewBag.Title = "Home Page";
+    Layout = null;
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
 
-    <p>Use this area to provide additional information.</p>
-</main>
+<html>
+<head>
+</head>
+<body>
+    <script>
+        var YOUR_CLIENT_ID = '100431486657-5brqjdjqmvc5f34aha1delvpak0hrv31.apps.googleusercontent.com';
+        var YOUR_REDIRECT_URI = 'https://localhost:44346/callback';
+        var fragmentString = location.hash.substring(1);
+
+        // Parse query string to see if page request is coming from OAuth 2.0 server.
+        var params = {};
+        var regex = /([^&=]+)=([^&]*)/g, m;
+        while (m = regex.exec(fragmentString)) {
+            params[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
+        }
+        if (Object.keys(params).length > 0) {
+            localStorage.setItem('oauth2-test-params', JSON.stringify(params));
+            if (params['state'] && params['state'] == 'try_sample_request') {
+                trySampleRequest();
+            }
+        }
+
+        // If there's an access token, try an API request.
+        // Otherwise, start OAuth 2.0 flow.
+        function trySampleRequest() {
+            var params = JSON.parse(localStorage.getItem('oauth2-test-params'));
+            if (params && params['access_token']) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET',
+                    'https://www.googleapis.com/drive/v3/about?fields=user&' +
+                    'access_token=' + params['access_token']);
+                xhr.onreadystatechange = function (e) {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        console.log(xhr.response);
+                    } else if (xhr.readyState === 4 && xhr.status === 401) {
+                        // Token invalid, so prompt for user permission.
+                        oauth2SignIn();
+                    }
+                };
+                xhr.send(null);
+            } else {
+                oauth2SignIn();
+            }
+        }
+
+        /*
+         * Create form to request access token from Google's OAuth 2.0 server.
+         */
+        function oauth2SignIn() {
+            // Google's OAuth 2.0 endpoint for requesting an access token
+            var oauth2Endpoint = 'https://accounts.google.com/o/oauth2/v2/auth';
+
+            // Create element to open OAuth 2.0 endpoint in new window.
+            var form = document.createElement('form');
+            form.setAttribute('method', 'GET'); // Send as a GET request.
+            form.setAttribute('action', oauth2Endpoint);
+
+            // Parameters to pass to OAuth 2.0 endpoint.
+            var params = {
+                'client_id': YOUR_CLIENT_ID,
+                'redirect_uri': YOUR_REDIRECT_URI,
+                'scope': 'https://www.googleapis.com/auth/drive.metadata.readonly',
+                'state': 'try_sample_request',
+                'include_granted_scopes': 'true',
+                'response_type': 'token'
+            };
+
+            // Add form parameters as hidden input values.
+            for (var p in params) {
+                var input = document.createElement('input');
+                input.setAttribute('type', 'hidden');
+                input.setAttribute('name', p);
+                input.setAttribute('value', params[p]);
+                form.appendChild(input);
+            }
+
+            // Add form to page and submit it to open the OAuth 2.0 endpoint.
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+
+    <button onclick="trySampleRequest();">Try sample request</button>
+</body>
+</html>
+<!--<!DOCTYPE html>
+<html>
+<head>
+    <title>Google OAuth with jQuery</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+    <button id="googleSignInButton">Sign in with Google</button>
+    <script>
+        // Load Google API client library
+        gapi.load('auth2', function () {
+            gapi.auth2.init({
+                client_id: '100431486657-5brqjdjqmvc5f34aha1delvpak0hrv31.apps.googleusercontent.com',
+                redirect_uri: 'https://localhost:44345/callback'
+            });
+        });
+
+        // Function to trigger Google Sign-In
+        function googleSignIn() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signIn().then(function (googleUser) {
+                var profile = googleUser.getBasicProfile();
+                console.log('Logged in as: ' + profile.getName());
+                console.log('Email: ' + profile.getEmail());
+                console.log('ID: ' + profile.getId());
+                console.log('Image URL: ' + profile.getImageUrl());
+                // Use the retrieved data as needed
+            });
+        }
+
+        // Trigger Google Sign-In on button click
+        $('#googleSignInButton').click(function () {
+            googleSignIn();
+        });
+
+    </script>-->
+<!-- Other HTML content -->
+<!--</body>
+</html>-->

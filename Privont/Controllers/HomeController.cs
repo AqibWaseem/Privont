@@ -1,4 +1,5 @@
-﻿using Privont.Models;
+﻿using Facebook;
+using Privont.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -39,8 +40,25 @@ namespace Privont.Controllers
                 return RedirectToAction("Index");
             }
             UserInfo obj = new UserInfo();
+          
             ViewBag.Message = "";
             return View(obj);
+        }
+        public ActionResult FacebookRedirect(string code)
+        {
+            var fb=new FacebookClient();
+            dynamic result = fb.Get("/oauth/access_token", new {
+                AppId = "661569036111087",
+                AppSecret = "d4e02bbe9cbf71ff671bfafc39f0adee",
+                redirect_uri = "https://localhost:44346/Home/FacebookRedirect",
+                code = code,
+            });
+
+            fb.AccessToken=result.AccessToken;
+            dynamic me = fb.Get("/me?field=name,email");
+            string Name=me.Name;
+            string email=me.email;
+            return RedirectToAction("index");
         }
         [HttpPost]
         public ActionResult Login(UserInfo obj)
@@ -88,6 +106,20 @@ namespace Privont.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            return View();
+        }
+        public ActionResult callback()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+        public ActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+        public ActionResult TermsandConditions()
+        {
             return View();
         }
     }
