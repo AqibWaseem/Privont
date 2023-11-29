@@ -505,15 +505,15 @@ body.dark-skin {
   border-color: rgba(255, 255, 255, 0.12); }
 .dark-skin .form-element .form-control {
   color: #b5b5c3;
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#fbc66c), to(#fbc66c)), -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.12)), to(rgba(255, 255, 255, 0.12)));
-  background-image: -webkit-linear-gradient(#fbc66c, #fbc66c), -webkit-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
-  background-image: -o-linear-gradient(#fbc66c, #fbc66c), -o-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
-  background-image: linear-gradient(#fbc66c, #fbc66c), linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)); }
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fadb14), to(#fadb14)), -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.12)), to(rgba(255, 255, 255, 0.12)));
+  background-image: -webkit-linear-gradient(#fadb14, #fadb14), -webkit-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+  background-image: -o-linear-gradient(#fadb14, #fadb14), -o-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+  background-image: linear-gradient(#fadb14, #fadb14), linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)); }
   .dark-skin .form-element .form-control:focus {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#fbc66c), to(#fbc66c)), -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.12)), to(rgba(255, 255, 255, 0.12)));
-    background-image: -webkit-linear-gradient(#fbc66c, #fbc66c), -webkit-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
-    background-image: -o-linear-gradient(#fbc66c, #fbc66c), -o-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
-    background-image: linear-gradient(#fbc66c, #fbc66c), linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)); }
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fadb14), to(#fadb14)), -webkit-gradient(linear, left top, left bottom, from(rgba(255, 255, 255, 0.12)), to(rgba(255, 255, 255, 0.12)));
+    background-image: -webkit-linear-gradient(#fadb14, #fadb14), -webkit-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+    background-image: -o-linear-gradient(#fadb14, #fadb14), -o-linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12));
+    background-image: linear-gradient(#fadb14, #fadb14), linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)); }
 .dark-skin .input-group .input-group-addon {
   border-color: rgba(255, 255, 255, 0.12);
   color: #b5b5c3;
@@ -714,11 +714,11 @@ body.dark-skin {
 .dark-skin :not(pre) > code[class*="language-"] {
   background: #1b3a70;
   border: 1px solid #204584;
-  border-left: 2px solid #fbc66c; }
+  border-left: 2px solid #fadb14; }
 .dark-skin pre[class*="language-"] {
   background: #1b3a70;
   border: 1px solid #204584;
-  border-left: 2px solid #fbc66c; }
+  border-left: 2px solid #fadb14; }
 .dark-skin hr {
   border-top-color: rgba(255, 255, 255, 0.1); }
 .dark-skin .icons-list-demo div {
@@ -964,13 +964,13 @@ body.dark-skin {
   .dark-skin .sm-blue {
     background-color: #1c2e4c; } }
 .chart g [fill="#6794dc"] {
-  fill: #fbc66c !important; }
+  fill: #fadb14 !important; }
 .chart g [stroke="#6794dc"] {
-  stroke: #fbc66c !important; }
+  stroke: #fadb14 !important; }
 .chart g path[fill="#6794dc"] {
-  fill: #fbc66c !important; }
+  fill: #fadb14 !important; }
 .chart g path[fill="#6794dc"] {
-  fill: #fbc66c !important; }
+  fill: #fadb14 !important; }
 
 .amcharts-main-div g [stroke="#000000"], .amcharts-main-div g [stroke="#b224ef,#7579ff"], .amcharts-main-div g [stroke="#fc6076,#ff9a44"] {
   stroke: #b5b5c3 !important; }
@@ -985,9 +985,9 @@ body.dark-skin {
 .dark-skin .chart g path [fill="#333"] {
   fill: transparent !important; }
 .dark-skin .chart g [fill="#6794dc"] {
-  fill: #fbc66c !important; }
+  fill: #fadb14 !important; }
 .dark-skin .chart g [stroke="#6794dc"] {
-  stroke: #fbc66c !important; }
+  stroke: #fadb14 !important; }
 
 .dark-skin g [fill="#000000"] {
   fill: #b5b5c3 !important; }
