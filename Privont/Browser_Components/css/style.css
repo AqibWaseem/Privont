@@ -894,7 +894,7 @@ code {
   border-color: #a45ff8 !important; }
 
 .border-success {
-  border-color: #00875a !important; }
+  border-color: #389e0d !important; }
 
 .border-warning {
   border-color: #fbc66c !important; }
@@ -24878,9 +24878,9 @@ time {
   color: #fbc66c; }
 
 .has-success .bar:before, .has-success .bar:after {
-  background: #00875a; }
+  background: #389e0d; }
 .has-success .form-control:focus ~ label, .has-success .form-control:valid ~ label {
-  color: #00875a; }
+  color: #389e0d; }
 
 .has-error .bar:before, .has-error .bar:after {
   background: #fb5ea8; }
@@ -24898,7 +24898,7 @@ time {
   .form-group.error .help-block ul li {
     list-style: none; }
 .form-group.validate input, .form-group.validate select, .form-group.validate textarea {
-  border: 1px solid #00875a; }
+  border: 1px solid #389e0d; }
 .form-group.issue .help-block ul {
   padding: 0px;
   color: #fbc66c; }
@@ -25417,7 +25417,7 @@ time {
 
 /* date-paginator */
 .dp-selected[style] {
-  background-color: #00875a !important; }
+  background-color: #389e0d !important; }
 
 .dp-item {
   position: relative;
@@ -26141,7 +26141,7 @@ time {
     background-color: #0ca773;
     border-radius: 10px; }
 .section-bx a:hover {
-  background-color: #00875a !important;
+  background-color: #389e0d !important;
   -webkit-box-shadow: 0 5px 15px 4px rgba(0, 135, 90, 0.25);
   box-shadow: 0 5px 15px 4px rgba(0, 135, 90, 0.25); }
   .section-bx a:hover .bx-dec {
@@ -26726,14 +26726,14 @@ input[type="color"] {
 .form-group label {
   font-weight: 500; }
 .form-group.has-success .help-block {
-  color: #00875a; }
+  color: #389e0d; }
 .form-group.has-success label {
-  color: #00875a; }
+  color: #389e0d; }
 .form-group.has-success .form-control {
-  border-color: #00875a;
+  border-color: #389e0d;
   box-shadow: none; }
 .form-group.has-success .input-group-addon {
-  border-color: #00875a;
+  border-color: #389e0d;
   box-shadow: none; }
 .form-group.has-warning .help-block {
   color: #fbc66c; }
@@ -29605,7 +29605,7 @@ td .label {
       border: 2px solid transparent;
       border-radius: 5px; }
     .chat .item > .online {
-      border: 2px solid #00875a; }
+      border: 2px solid #389e0d; }
     .chat .item > .offline {
       border: 2px solid #fb5ea8; }
     .chat .item > .message {

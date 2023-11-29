@@ -371,7 +371,7 @@ $(function () {
             show: false
           }
         },
-        colors: ['#2e72ff','#fb5ea8','#00875a'],
+        colors: ['#2e72ff','#fb5ea8','#389e0d'],
         dataLabels: {
           enabled: false,
         },
