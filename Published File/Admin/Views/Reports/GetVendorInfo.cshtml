@@ -1,0 +1,73 @@
+﻿@model System.Data.DataTable
+@{
+    ViewBag.Title = "Vendor Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int i = 1;
+}
+
+<div class="box">
+    <div class="box-header with-border">
+        <div>
+            <button type="button" class="btn btn-primary btn-sm">Print</button>
+            <button type="button" class="btn btn-success btn-sm">Excel</button>
+            <button type="button" class="btn btn-danger btn-sm">PDF</button>
+        </div>
+        <div class="box-controls pull-right">
+            <div class="lookup lookup-circle lookup-right">
+                <input type="text" name="s" id="filterInput">
+            </div>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body ">
+        <h4 class=""><strong>@(General.CompanyInformation)</strong></h4>
+        <h5 class="">Vendor Information</h5>
+        <div class="table-responsive">
+            <table class="table table-hover" id="myTable">
+                <thead>
+                    <tr>
+                        <th>Sr#</th>
+                        <th>Name</th>
+                        <th>Phone No</th>
+                        <th>Email</th>
+                        <th>Reg. No</th>
+                        <th>Zip Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        foreach (System.Data.DataRow item in ((System.Data.DataTable)Model).Rows)
+                        {
+                            <tr>
+                                <td>@(i++)</td>
+                                <td>@(item["VendorName"])</td>
+                                <td>@(item["Contact1"])<br />@(item["Contact2"])</td>
+                                <td>@(item["EmailAddress"])</td>
+                                <td>@(item["RegistrationNo"])</td>
+                                <td>@(item["ZipCode"])</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#filterInput').on('keyup', function () {
+            var searchText = $(this).val().toLowerCase(); // Get the value entered by the user and convert to lowercase for case-insensitive search
+            $('#myTable tbody tr').each(function () {
+                var rowText = $(this).text().toLowerCase(); // Get the text content of the row and convert to lowercase
+                if (rowText.indexOf(searchText) === -1) { // Check if the row contains the search text
+                    $(this).hide(); // If not, hide the row
+                } else {
+                    $(this).show(); // If it matches, show the row
+                }
+            });
+        });
+    });
+
+</script>
