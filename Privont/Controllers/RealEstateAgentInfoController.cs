@@ -29,6 +29,7 @@ namespace Privont.Controllers
             List<RealEstateAgentInfo> lst = General.ConvertDataTable<RealEstateAgentInfo>(Model.GetAllRecord());
             return View(lst);
         }
+      
 
         //[HttpPost]
         //public ActionResult CreateOrganizationInfo(string OrganizationName)
@@ -216,6 +217,193 @@ namespace Privont.Controllers
             }
             return Json("true");
         }
-       
+
+        // APIS
+        [HttpGet]
+        public JsonResult GetRealEstateInfo()
+        {
+            List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord());
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Real Estate Information");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [HttpPost]
+        public JsonResult PostRealEstateAgentInfo(RealEstateAgentInfo collection)
+        {
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}' union Select UserName from LenderInfo Where UserName = '{collection.username}'union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            if (dt.Rows.Count > 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "UserName Already Exist Please Use different UserName");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            int RealEstateAgentId = Model.InsertRecord(collection);
+            if(RealEstateAgentId == 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Unabled to Insert Records... Please contact to the administration!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(" where RealEstateAgentId=" + RealEstateAgentId));
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Data Saved Successfully!");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            
+        }
+        [HttpPost]
+        public JsonResult UpdateRealEstateAgentInfo(RealEstateAgentInfo collection)
+        {
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}' and RealEstateAgentId!={collection.RealEstateAgentId} union Select UserName from LenderInfo Where UserName = '{collection.username}'union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            if (dt.Rows.Count > 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "UserName Already Exist Please Use different UserName");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            int RealEstateAgentId = Model.UpdateRecord(collection);
+            if(RealEstateAgentId == 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Unabled to Update Records... Please contact to the administration!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(" where RealEstateAgentId=" + RealEstateAgentId));
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Data Updated Successfully!");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            
+        }
     }
 }

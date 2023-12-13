@@ -11009,6 +11009,7 @@
     <Folder Include="Views\GoogleAuth\" />
     <Folder Include="Views\IncomingMessages\" />
     <Folder Include="Views\LeadsInfo\" />
+    <Folder Include="Views\PaymentGatway\" />
     <Folder Include="Views\TrueDialog\" />
   </ItemGroup>
   <ItemGroup>

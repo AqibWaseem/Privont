@@ -1405,7 +1405,7 @@ Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo {WhereCl
             }
             catch
             {
-                return View("false," + collection);
+                return Json("false," + collection);
             }
         }
         [HttpGet]

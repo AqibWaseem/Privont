@@ -212,10 +212,12 @@ namespace Privont.Controllers
             ////JArray userArray = (JArray)jObject["value"];
             //value = jObject["value"].ToObject<TrueDialogIncomeMessage>();
             string QueryInsert = $@"INSERT INTO TrueDialogIncomeMessage
-           (Message
+           (,CallbackTimestamp,
+            Message
            ,PhoneNumber)
      VALUES
-           ('{value.Message}'
+           ('{value.CallbackTimestamp}'
+           ,'{value.Message}'
            ,'{value.PhoneNumber}')";
             General.ExecuteNonQuery(QueryInsert);
             return Json("true",JsonRequestBehavior.AllowGet);

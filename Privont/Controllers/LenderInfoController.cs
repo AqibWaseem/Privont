@@ -2,6 +2,7 @@
 using Privont.Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Web;
@@ -192,6 +193,281 @@ on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {L
             string sql = $@"Update LenderInfo Set IsApproved={Approved} , ApprovedRemarks='{ApprovalRemarks}' Where LenderID={LenderID}";
             General.ExecuteNonQuery(sql);
             return Json("true,");
+        }
+        // APIs Records
+        [HttpGet]
+        public JsonResult GetLenderInfo()
+        {
+            List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord());
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Lender Information");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [HttpPost]
+        public JsonResult PostLenderInfo(LenderInfo collection)
+        {
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}' union Select UserName from LenderInfo Where UserName = '{collection.username}'union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            if (dt.Rows.Count > 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "UserName Already Exist Please Use different UserName");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            collection.LenderId = Model.InsertRecord(collection);
+            if (collection.LenderId == 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Unabled to Insert Records... Please contact to the administration!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(" where LenderId=" + collection.LenderId));
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Data Saved Successfully!");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+
+        }
+        [HttpPost]
+        public JsonResult UpdateLenderInfo(LenderInfo collection)
+        {
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}'  union Select UserName from LenderInfo Where UserName = '{collection.username}' and LenderID != {collection.LenderId}union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            if (dt.Rows.Count > 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "UserName Already Exist Please Use different UserName");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            collection.LenderId = Model.UpdateRecord(collection);
+            if (collection.LenderId == 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Unabled to Update Records... Please contact to the administration!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(" where LenderId=" + collection.LenderId));
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Data Updated Successfully!");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+
+        }
+        //Favourite Lenders Information
+        public ActionResult GetFavouriteLender(int UserID)
+        {
+            DataTable dt = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)LenderName,LenderInfo.Contact1,LenderInfo.OfficeNo from favouriteLender inner join LenderInfo
+on FavouriteLender.LenderID = LenderInfo.LenderId 
+inner join RealEstateAgentInfo on RealEstateAgentId = FavouriteLender.UserID 
+
+Where RealEstateAgentId = {UserID}");
+            List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            if (JSResponse == null)
+            {
+                JSResponse.Add("Status", false);
+            }
+            else
+            {
+                JSResponse.Add("Status", true);
+            }
+            JSResponse.Add("Message", "Favourite Lenders Information!");
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [HttpPost]
+        public ActionResult PostFavouritLender(int LenderID,int UserID)
+        {
+            DataTable dt = General.FetchData($@"Select * from FavouriteLender Where LenderID={LenderID} and UserID={UserID}");
+            if (dt.Rows.Count > 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "This Lender Is already exist!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                General.ExecuteNonQuery($@"Insert Into FavouriteLender Values({LenderID},{UserID})");
+
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                if (JSResponse == null)
+                {
+                    JSResponse.Add("Status", false);
+                }
+                else
+                {
+                    JSResponse.Add("Status", true);
+                }
+                JSResponse.Add("Message", "Favourite Lenders Information!");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+           
         }
     }
 }
