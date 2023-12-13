@@ -16,11 +16,14 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using Privont.Models;
 using System.Linq.Expressions;
+using System.Configuration;
 
 namespace Privont
 {
     public class General
     {
+        public static string AccessTokenForSquareup { get { return ConfigurationManager.AppSettings["AccessTokenForSquareup"].ToString(); } }
+        public static string LocationIDForSquareup { get { return ConfigurationManager.AppSettings["LocationID"].ToString(); } }
         public static int UserID
         {
             get
