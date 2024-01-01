@@ -34,8 +34,9 @@ namespace Privont.Models
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
-            dataTable = General.FetchData($@"Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode from LenderInfo inner join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
-inner join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+            dataTable = General.FetchData($@"Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode from LenderInfo 
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
 
  Where UserName is not null " + WhereClause);
             return dataTable;
@@ -133,6 +134,27 @@ inner join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
             }
         }
 
+        public int UpdateProfileRecord(LenderInfo obj)
+        {
+            string Query = $@"UPDATE [dbo].[LenderInfo]
+   SET [FirstName] = '{obj.FirstName}'
+      ,[LastName] = '{obj.LastName}'
+      ,[StreetName] = '{obj.StreetName}'
+      ,[StreetNo] = '{obj.StreetNo}'
+      ,[Website] = '{obj.Website}'
+      ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Remarks] = '{obj.Remarks}'
+ WHERE LenderId=" + obj.LenderId;
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.LenderId;
+            }
+            catch (Exception ex)
+            {
+                return obj.LenderId;
+            }
+        }
 
     }
 }

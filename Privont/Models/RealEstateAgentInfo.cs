@@ -7,7 +7,7 @@ using System.Web;
 
 namespace Privont.Models
 {
-    public class RealEstateAgentInfo
+    public class RealEstateAgentInfo : LenderInfo
     {
         public int RealEstateAgentId { get; set; }
         public string FirstName { get; set; }
@@ -87,7 +87,7 @@ namespace Privont.Models
 ,'{obj.Contact1}'
 ,'{obj.Contact2}'
 ,'{obj.Remarks}'
-,{(obj.Inactive==true ?1:0)}
+,{(obj.Inactive == true ? 1 : 0)}
 ,'{obj.Password}'
 ,'{obj.username}'
 ,{obj.UserID}
@@ -121,7 +121,7 @@ namespace Privont.Models
       ,[Contact1] = '{obj.Contact1}'
       ,[Contact2] = '{obj.Contact2}'
       ,[Remarks] = '{obj.Remarks}'
-      ,[Inactive] = {(obj.Inactive==true?1:0)}
+      ,[Inactive] = {(obj.Inactive == true ? 1 : 0)}
       ,[Password] = '{obj.Password}'
       ,[UserName] = '{obj.username}'
  WHERE RealEstateAgentID=" + obj.RealEstateAgentId;
@@ -136,6 +136,36 @@ namespace Privont.Models
             }
         }
 
-
+        public DataTable UserExistanceInfo(string UserName)
+        {
+            DataTable dt = General.FetchData($@"select * from 
+(
+select username,Password,Inactive,2 as UserType from RealEstateAgentInfo
+union all
+select username,Password,Inactive,3 as UserType from LenderInfo
+)UserProfile where username='{UserName}'");
+            return dt;
+        }
+        public int UpdateProfileRecord(RealEstateAgentInfo obj)
+        {
+            string Query = $@"UPDATE [dbo].[RealEstateAgentInfo]
+   SET [FirstName] = '{obj.FirstName}'
+      ,[LastName] = '{obj.LastName}'
+      ,[StreetName] = '{obj.StreetName}'
+      ,[StreetNo] = '{obj.StreetNo}'
+      ,[Website] = '{obj.Website}'
+      ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Remarks] = '{obj.Remarks}'
+ WHERE RealEstateAgentID=" + obj.RealEstateAgentId;
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.RealEstateAgentId;
+            }
+            catch (Exception ex)
+            {
+                return obj.RealEstateAgentId;
+            }
+        }
     }
 }

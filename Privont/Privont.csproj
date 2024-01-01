@@ -388,6 +388,7 @@
     <Compile Include="Controllers\InvitationReferenceController.cs" />
     <Compile Include="Controllers\LeadInfoController.cs" />
     <Compile Include="Controllers\LenderInfoController.cs" />
+    <Compile Include="Controllers\OrganizationInfoController.cs" />
     <Compile Include="Controllers\PaymentGatewayController.cs" />
     <Compile Include="Controllers\RealEstateAgentInfoController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -10957,6 +10958,7 @@
     <Folder Include="Views\IncomingMessages\" />
     <Folder Include="Views\InvitationReference\" />
     <Folder Include="Views\LeadsInfo\" />
+    <Folder Include="Views\OrganizationInfo\" />
     <Folder Include="Views\PaymentGateway\" />
     <Folder Include="Views\PaymentGatway\" />
     <Folder Include="Views\TrueDialog\" />

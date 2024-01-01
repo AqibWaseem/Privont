@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Privont.Controllers
 {
@@ -29,7 +30,7 @@ namespace Privont.Controllers
             List<RealEstateAgentInfo> lst = General.ConvertDataTable<RealEstateAgentInfo>(Model.GetAllRecord());
             return View(lst);
         }
-      
+
 
         //[HttpPost]
         //public ActionResult CreateOrganizationInfo(string OrganizationName)
@@ -154,7 +155,7 @@ namespace Privont.Controllers
         //    return Json(ZipCode + ",");
         //}
 
-        public ActionResult Signup(string q,int d, int i,string y, string s)
+        public ActionResult Signup(string q, int d, int i, string y, string s)
         {
             y = General.Decrypt(y, General.key);
             List<RealEstateAgentInfo> lst = General.ConvertDataTable<RealEstateAgentInfo>(Model.GetAllRecordforSignup(" where RealEstateAgentID=" + y));
@@ -163,7 +164,7 @@ namespace Privont.Controllers
                 return Redirect("LinkExpire");
             }
             ViewBag.Organization = new DropDown().GetOrganizationList();
-            ViewBag.UserInformation = "You Have Been Invited by "+General.FetchData($@"Select (FirstName+' '+LastName)Name From RealEstateAgentInfo Where RealEstateAgentID={i}").Rows[0]["Name"].ToString();
+            ViewBag.UserInformation = "You Have Been Invited by " + General.FetchData($@"Select (FirstName+' '+LastName)Name From RealEstateAgentInfo Where RealEstateAgentID={i}").Rows[0]["Name"].ToString();
             return View(lst[0]);
 
         }
@@ -186,7 +187,7 @@ namespace Privont.Controllers
         {
             return View();
         }
-        public ActionResult ApprovalStatus(int RealEstateAgentID,int Approved,string ApprovalRemarks)
+        public ActionResult ApprovalStatus(int RealEstateAgentID, int Approved, string ApprovalRemarks)
         {
             string sql = $@"Update RealEstateAgentInfo Set IsApproved={Approved} , ApprovedRemarks='{ApprovalRemarks}' Where RealEstateAgentID={RealEstateAgentID}";
             General.ExecuteNonQuery(sql);
@@ -196,9 +197,9 @@ namespace Privont.Controllers
         public ActionResult APIConfiguration()
         {
             ViewBag.Alert = "";
-            List<APIConfigInfo> lst=new List<APIConfigInfo>();
+            List<APIConfigInfo> lst = new List<APIConfigInfo>();
             lst = General.ConvertDataTable<APIConfigInfo>(General.FetchData($@" select APITypeInfo.APITypeTitle,APIConfigInfo.* from APITypeInfo
-	left outer join APIConfigInfo on APIConfigInfo.TypeID=APITypeInfo.APITypeID  and RealEstateID="+General.UserID));
+	left outer join APIConfigInfo on APIConfigInfo.TypeID=APITypeInfo.APITypeID  and RealEstateID=" + General.UserID));
             return View(lst);
         }
         [HttpPost]
@@ -212,7 +213,7 @@ namespace Privont.Controllers
             collection[0].DeleteRecords();
             foreach (APIConfigInfo item in collection)
             {
-                if(!string.IsNullOrEmpty(item.APIConfig))
+                if (!string.IsNullOrEmpty(item.APIConfig))
                     item.InsertRecords();
             }
             return Json("true");
@@ -274,7 +275,7 @@ namespace Privont.Controllers
                 return jr;
             }
             int RealEstateAgentId = Model.InsertRecord(collection);
-            if(RealEstateAgentId == 0)
+            if (RealEstateAgentId == 0)
             {
                 Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                 if (JSResponse == null)
@@ -323,7 +324,7 @@ namespace Privont.Controllers
                 };
                 return jr;
             }
-            
+
         }
         [HttpPost]
         public JsonResult UpdateRealEstateAgentInfo(RealEstateAgentInfo collection)
@@ -354,7 +355,7 @@ namespace Privont.Controllers
                 return jr;
             }
             int RealEstateAgentId = Model.UpdateRecord(collection);
-            if(RealEstateAgentId == 0)
+            if (RealEstateAgentId == 0)
             {
                 Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                 if (JSResponse == null)
@@ -403,7 +404,135 @@ namespace Privont.Controllers
                 };
                 return jr;
             }
-            
+
+        }
+
+        //Update User Profile Information
+        [HttpPost]
+        public JsonResult UpdateUserProfile(RealEstateAgentInfo collection)
+        {
+            DataTable dt = new RealEstateAgentInfo().UserExistanceInfo(collection.username);
+            if (dt.Rows.Count > 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", 401);
+                JSResponse.Add("Message", "Username Already Exist Please Use different Username!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            int RealEstateAgentId = 0;
+            if (collection.UserType == 2)
+            {
+                RealEstateAgentId = Model.UpdateProfileRecord(collection);
+            }
+            else if (collection.UserType == 3)
+            {
+                RealEstateAgentId = new LenderInfo().UpdateProfileRecord(collection);
+            }
+            if (RealEstateAgentId == 0)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Unabled to Update Records... Please contact to the administration!");
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                List<Dictionary<string, object>> dbrows = new List<Dictionary<string, object>>();
+                if (collection.UserType == 2)
+                {
+                    dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(" and RealEstateAgentId=" + RealEstateAgentId));
+                }
+                else if (collection.UserType == 3)
+                {
+                    dbrows = new General().GetAllRowsInDictionary(new LenderInfo().GetAllRecord(" and LenderId=" + RealEstateAgentId));
+                }
+
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Data Updated Successfully!");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+
+        }
+        public JsonResult UserProfileInfo(int UserID, int UserType)
+        {
+            try
+            {
+                JsonResult jr = new JsonResult();
+                string Query = "";
+                DataTable dt = new DataTable();
+                List<Dictionary<string, object>> dbrows = new List<Dictionary<string, object>>();
+                if (UserType == 1 || UserType > 5)
+                {
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "This User not exist!", null);
+                }
+                else if (UserType == 2)//
+                {
+                    Query = $@"select * from RealEstateAgentInfo where RealEstateAgentId=" + UserID;
+                    dt = General.FetchData(Query);
+                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                }
+                else if (UserType == 3)//
+                {
+                    Query = $@"select * from LenderInfo where LenderId=" + UserID;
+                    dt = General.FetchData(Query);
+                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                }
+                else if (UserType == 4)
+                {
+                    Query = $@"select * from LeadInfo where LeadID=" + UserID;
+                    dt = General.FetchData(Query);
+                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                }
+                else if (UserType == 5)
+                {
+                    Query = $@"select * from VendorInfo where VendorInfo.VendorID=" + UserID;
+                    dt = General.FetchData(Query);
+                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                }
+                return jr;
+
+            }
+            catch (Exception ex)
+            {
+
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                return jr;
+            }
         }
     }
 }

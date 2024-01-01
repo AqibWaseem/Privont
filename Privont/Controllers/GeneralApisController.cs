@@ -1343,31 +1343,44 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Ge
         public JsonResult GetUserInfo(string UserName, string Password)
         {
             string WhereClause = $@"where UserName='{UserName}' and Password='{Password}'";
-            string sql1 = $@"select UserID,UserName,Inactive,1 as UserType from UserInfo {WhereClause}  union Select (RealEstateAgentId)UserID,UserName,Inactive,2 as UserType from RealEstateAgentInfo {WhereClause} union
-Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo {WhereClause}   ";
+            string sql1 = $@"
+Select (RealEstateAgentId)UserID,UserName,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,2 as UserType from RealEstateAgentInfo {WhereClause}
+union all
+Select (LenderId)UserID,UserName,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,3 as UserType from LenderInfo  {WhereClause}   ";
             DataTable dtproductinfo = General.FetchData(sql1);
             List<Dictionary<string, object>> dbrows = GetProductRows(dtproductinfo);
-            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-            if (JSResponse == null)
+            if (dtproductinfo.Rows.Count == 0)
             {
-                JSResponse.Add("Status", false);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Invalid Username and Password!");
+                JSResponse.Add("Data", DBNull.Value);
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
             }
             else
             {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                 JSResponse.Add("Status", true);
+                JSResponse.Add("Message", "Login successfully!");
+                JSResponse.Add("Data", dbrows);
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
             }
-            JSResponse.Add("Message", "Data for Login User");
-            JSResponse.Add("Data", dbrows);
-
-            JsonResult jr = new JsonResult()
-            {
-                Data = JSResponse,
-                ContentType = "application/json",
-                ContentEncoding = System.Text.Encoding.UTF8,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                MaxJsonLength = Int32.MaxValue
-            };
-            return jr;
         }
         [ValidateInput(false)]
         public List<Dictionary<string, object>> GetProductRows(DataTable dtData)
@@ -1457,10 +1470,10 @@ where 1=case when isbelowtime=1 and (select Count(*) from favouritelender
 where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 
 then 1  else 0 end order by LeadID desc
 ";
-//                sql = $@"Declare @LenderID int set @LenderID={UserID}
-//Declare @EntryTime int
-//Select @EntryTime=ExpiryTime from LeadExpiryTime
-//Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
+                //                sql = $@"Declare @LenderID int set @LenderID={UserID}
+                //Declare @EntryTime int
+                //Select @EntryTime=ExpiryTime from LeadExpiryTime
+                //Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
             }
             else
             {
@@ -1595,7 +1608,7 @@ Where LeadClaimInfo.LeadID= {LeadID}");
             return lstRows;
         }
 
-[HttpGet]
+        [HttpGet]
         public JsonResult GetApiLeadType()
         {
             DataTable dataTable = new DataTable();
@@ -1679,9 +1692,9 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             Name = dt.Rows[0]["Name"].ToString();
             Email = dt.Rows[0]["EmailAddress"].ToString();
             PhoneNo = dt.Rows[0]["Contact1"].ToString();
-            if(!PhoneNo.StartsWith("+1"))
+            if (!PhoneNo.StartsWith("+1"))
             {
-                PhoneNo = "+1"+PhoneNo;
+                PhoneNo = "+1" + PhoneNo;
             }
             string InvitedPersonName = General.FetchData($@"Select (FirstName+' '+LastName)Name from RealEstateAgentInfo WHere RealEstateAgentID={General.UserID}").Rows[0]["Name"].ToString();
             var subject = "Create Account";
@@ -1710,7 +1723,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                     smtpClient.Send(message);
                     testingValue = 1;
                 }
-                catch
+                catch (Exception ex)
                 {
                     testingValue = 0;
                     return Json(testingValue + ",");
@@ -1740,7 +1753,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                             return Json("false,");
                         }
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         return Json("false,");
                     }
@@ -1753,7 +1766,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             }
         }
         [HttpGet]
-        public async Task<JsonResult> SendSmsToLead(int LeadID,int UserID,int UserType)
+        public async Task<JsonResult> SendSmsToLead(int LeadID, int UserID, int UserType)
         {
             string y = EncryptLead(LeadID);
             string secretKey = "Privont@Privont";
@@ -1782,10 +1795,10 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             string userType = UserType.ToString();
             string userId = UserID.ToString();
             string generatedLink = $"{domainUrl}/GeneralApis/Lead?q={encryptedData}&d={userType}&i={userId}&y={y}&s={encryptedData2}";
-            string value = new SMSSettingController().SendSmsString(LeadID, generatedLink,UserID);
+            string value = new SMSSettingController().SendSmsString(LeadID, generatedLink, UserID);
             string[] resultArray = value.Split(',');
             int value1 = int.Parse(resultArray[0]);
-            if(value1==1)
+            if (value1 == 1)
             {
                 return Json("false,SMS Setting is not defined please Correct this first", JsonRequestBehavior.AllowGet);
             }
@@ -1795,15 +1808,15 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 string Message = resultArray[1];
                 if (await new SMSTrueDialogController().SendPushCampaignAsyncbool(PhoneNo, Message))
                 {
-                    return Json("true",JsonRequestBehavior.AllowGet);
+                    return Json("true", JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
-                    return Json("false",JsonRequestBehavior.AllowGet);
+                    return Json("false", JsonRequestBehavior.AllowGet);
                 }
             }
         }
-        public static string Encrypt(string data, string secretKey)
+        private string Encrypt(string data, string secretKey)
         {
             using (Aes aesAlg = Aes.Create())
             {
@@ -1900,10 +1913,10 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 };
                 smtpClient.Send(message);
                 ViewBag.Message = "Registration successful. Please check your email to verify your account.";
-                return Json("true," + userID,JsonRequestBehavior.AllowGet);
+                return Json("true," + userID, JsonRequestBehavior.AllowGet);
             }
         }
-        public ActionResult InvitelenderorRealEstate(int Type,string FirstName,string LastName,string PhoneNo,string EmailAddress,int UserID,int UserType)
+        public ActionResult InvitelenderorRealEstate(int Type, string FirstName, string LastName, string PhoneNo, string EmailAddress, int UserID, int UserType)
         {
             try
             {
@@ -1954,31 +1967,27 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 string userId = UserID.ToString();
                 string generatedLink = "";
                 // Function to generate a token with an expiration time of 30 minutes (1800000 milliseconds)
-
-                //if (Type == 2)
-                //{
-                //    generatedLink = domainUrl + "/InvitationReference/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
-                //}
-                //else if (Type == 3)
-                //{
-                //}
-
-                generatedLink = domainUrl + "/InvitationReference/Refer?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2 + "&uT=" + Type;
-
-                Task<string> returnvalue = SendEmailAsyncString(value, Type,generatedLink,UserID);
-
+                if (Type == 2)
+                {
+                    generatedLink = domainUrl + "/RealEstateAgentInfo/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
+                }
+                else if (Type == 3)
+                {
+                    generatedLink = domainUrl + "/LenderInfo/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
+                }
+                Task<string> returnvalue = SendEmailAsyncString(value, Type, generatedLink, UserID);
                 string answer = returnvalue.Result;
                 string[] resultArray = answer.Split(',');
                 string value1 = resultArray[0];
-                if(int.Parse(value1)==0)
+                if (int.Parse(value1) == 0)
                 {
-                    return Json($@"{value1},{"Email Sending Error"},{ID}",JsonRequestBehavior.AllowGet);
+                    return Json($@"{value1},{"Email Sending Error"},{ID}", JsonRequestBehavior.AllowGet);
                 }
                 else if (int.Parse(value1) == 3)
                 {
                     return Json($@"{value1},{"Email Successfully Send but SMS not send because you have not SMS setting"},{ID}", JsonRequestBehavior.AllowGet);
                 }
-                return Json($@"true,{ID}",JsonRequestBehavior.AllowGet);
+                return Json($@"true,{ID}", JsonRequestBehavior.AllowGet);
             }
             catch
             {
@@ -1986,7 +1995,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             }
         }
         [HttpPost]
-        public async Task<string> SendEmailAsyncString(string value, int UserType, string GeneratedLink,int UserID)
+        public async Task<string> SendEmailAsyncString(string value, int UserType, string GeneratedLink, int UserID)
         {
             int ID = int.Parse(General.Decrypt(value, General.key));
             string Name = "";
@@ -2077,7 +2086,6 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 }
             }
         }
-
         public static JsonResult ResponseMessage(HttpStatusCode StatusCode, string Message, List<Dictionary<string, object>> dbrows)
         {
             if (StatusCode == HttpStatusCode.BadRequest)

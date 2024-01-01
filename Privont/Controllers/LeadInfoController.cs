@@ -126,9 +126,9 @@ LEFT OUTER JOIN
             {
                 WhereClause = WhereClause + $@" and UserID={General.UserID}";
             }
-            if (General.UserType==3)
+            if (General.UserType == 3)
             {
-                 sql = $@"
+                sql = $@"
 Declare @LenderID int set @LenderID={General.UserID}
 Declare @EntryTime int
 Select @EntryTime=ExpiryTime from LeadExpiryTime
@@ -166,9 +166,9 @@ where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 th
 then 1  else 0 end order by LeadID desc
 ";
             }
-   else
+            else
             {
-                sql =   $@"SELECT
+                sql = $@"SELECT
     LI.LeadID,
     LI.FirstName,
     LI.LastName,
@@ -193,7 +193,7 @@ LEFT OUTER JOIN
             dataTable = General.FetchData(sql);
             List<LeadInfo> lst = General.ConvertDataTable<LeadInfo>(dataTable);
             ViewBag.PricePoint = new DropDown().GetPricePoint();
-            ViewBag.ApiLeadType = new DropDown().GetApiLeadType();            
+            ViewBag.ApiLeadType = new DropDown().GetApiLeadType();
             return View(lst);
         }
         public ActionResult GetLeadDetails(int LeadID)
@@ -631,6 +631,7 @@ Where LeadClaimInfo.LeadID={LeadID}");
             return new LeadInfo();
         }
 
+
         #region APIs
         public JsonResult GetLeadsInformation(int UserID, int UserType, int Status = 0)
         {
@@ -721,6 +722,5 @@ LEFT OUTER JOIN
             return jr;
         }
         #endregion
-
     }
 }
