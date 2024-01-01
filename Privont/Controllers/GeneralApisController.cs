@@ -1803,7 +1803,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 }
             }
         }
-        private string Encrypt(string data, string secretKey)
+        public static string Encrypt(string data, string secretKey)
         {
             using (Aes aesAlg = Aes.Create())
             {
@@ -1954,15 +1954,19 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 string userId = UserID.ToString();
                 string generatedLink = "";
                 // Function to generate a token with an expiration time of 30 minutes (1800000 milliseconds)
-                if (Type == 2)
-                {
-                    generatedLink = domainUrl + "/RealEstateAgentInfo/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
-                }
-                else if (Type == 3)
-                {
-                    generatedLink = domainUrl + "/LenderInfo/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
-                }
+
+                //if (Type == 2)
+                //{
+                //    generatedLink = domainUrl + "/InvitationReference/SignUp?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2;
+                //}
+                //else if (Type == 3)
+                //{
+                //}
+
+                generatedLink = domainUrl + "/InvitationReference/Refer?q=" + encryptedData + "&d=" + UserType + "&i=" + UserID + "&y=" + value + "&s=" + encryptedData2 + "&uT=" + Type;
+
                 Task<string> returnvalue = SendEmailAsyncString(value, Type,generatedLink,UserID);
+
                 string answer = returnvalue.Result;
                 string[] resultArray = answer.Split(',');
                 string value1 = resultArray[0];
@@ -2074,5 +2078,48 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             }
         }
 
+        public static JsonResult ResponseMessage(HttpStatusCode StatusCode, string Message, List<Dictionary<string, object>> dbrows)
+        {
+            if (StatusCode == HttpStatusCode.BadRequest)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", StatusCode);
+                JSResponse.Add("Message", Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            else
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", StatusCode);
+                JSResponse.Add("Message", Message);
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+
+        }
+        //public enum StatusCode
+        //{
+        //    Ok = 200,
+        //    BadRequest = 400,
+        //}
     }
 }

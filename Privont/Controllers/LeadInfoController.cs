@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -629,5 +630,97 @@ Where LeadClaimInfo.LeadID={LeadID}");
             }
             return new LeadInfo();
         }
+
+        #region APIs
+        public JsonResult GetLeadsInformation(int UserID, int UserType, int Status = 0)
+        {
+            DataTable dataTable = new DataTable();
+            string sql = "";
+            string whereclause = " ";
+            if (Status == 1)
+            {
+                whereclause = whereclause + " and isnull(isClaimLead,0)=0";
+            }
+            else if (Status == 2)
+            {
+                whereclause = whereclause + " and isnull(isClaimLead,0)=1";
+            }
+            if (UserType == 2)
+            {
+                whereclause = whereclause + $@" and UserID={UserID}";
+            }
+            if (UserType == 3)
+            {
+
+                sql = $@" Declare @LenderID int set @LenderID={UserID}
+Declare @EntryTime int
+Select @EntryTime=ExpiryTime from LeadExpiryTime
+Select  A.LeadID,A.ZipCode,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.FirstName  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as FirstName,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.LastName  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as LastName,
+case
+        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.PhoneNo  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as PhoneNo,
+case
+ when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.EmailAddress  -- Show LeadID if ReadytoOptin is 1
+        else '****'  -- Show **** if ReadytoOptin is not 1
+    end as EmailAddress,
+case When A.ClaimingLender is not null and ClaimingLender = @LenderID then 'Claimed'
+else '0' end as Claimed
+ from (select LeadInfo.LeadID,LeadInfo.FirstName,LeadInfo.LastName,
+isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,
+isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , LeadClaiminfo.ClaimingLender,
+case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime 
+from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID 
+inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID 
+Left outer join LeadClaimInfo on LeadInfo.LeadID = LeadClaimInfo.LeadID 
+ Where LeadInfo.EntrySource = 2  
+and LeadInfo.isClaimLead = 1 and LeadInfo.OptInSMSStatus=1 
+)A 
+where 1=case when isbelowtime=1 and (select Count(*) from favouritelender 
+where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 
+then 1  else 0 end order by LeadID desc
+";
+                //                sql = $@"Declare @LenderID int set @LenderID={UserID}
+                //Declare @EntryTime int
+                //Select @EntryTime=ExpiryTime from LeadExpiryTime
+                //Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
+            }
+            else
+            {
+                sql = $@"SELECT
+    LI.LeadID,
+    LI.FirstName,
+    LI.LastName,
+    ISNULL(LI.OptInSMSStatus, 0) AS OptInSMSStatus,
+    LI.PhoneNo,
+    LI.EmailAddress,
+    LI.EntryDateTime,
+    ISNULL(LI.ReadytoOptin, 0) AS ReadytoOptin,
+    LI.UserID,
+    LI.EntrySource AS UserType,
+    LI.PricePointID,
+    LPP.PricePoint AS PricePointName,
+    LI.isClaimLead";
+                sql = sql + $@" FROM
+    LeadInfo LI
+LEFT OUTER JOIN
+    LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID ";
+                sql = sql + $@" {whereclause} Order by LeadID desc";
+            }
+            dataTable = General.FetchData(sql); ;
+            List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
+            JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Lead Information!", dbrows);
+            return jr;
+        }
+        #endregion
+
     }
 }

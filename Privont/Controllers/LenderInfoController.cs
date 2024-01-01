@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -469,5 +470,65 @@ Where RealEstateAgentId = {UserID}");
             }
            
         }
+        #region Favourite Lenders APIs
+        //
+        [HttpGet]
+        public JsonResult GetFavouriteLenderVIARealEstateAgentId(int RealEstateAgentId)
+        {
+            try
+            {
+                string Query = $@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)LenderName,LenderInfo.Contact1,LenderInfo.OfficeNo from favouriteLender inner join LenderInfo
+on FavouriteLender.LenderID = LenderInfo.LenderId 
+inner join RealEstateAgentInfo on RealEstateAgentId = FavouriteLender.UserID 
+
+Where RealEstateAgentId = {RealEstateAgentId}";
+                DataTable dt = General.FetchData(Query);
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt);
+
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Favourite Lender Information!", dbrows);
+                return jr;
+
+            }
+            catch (Exception ex)
+            {
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                return jr;
+            }
+        }
+        //Create New Favourite Lender
+        [HttpGet]
+        public JsonResult PostFavouriteLender(int LenderID, int RealEstateAgentID)
+        {
+
+            try
+            {
+                DataTable dt = General.FetchData($@"Select * from FavouriteLender Where LenderID={LenderID} and UserID={RealEstateAgentID}");
+                if (dt.Rows.Count > 0)
+                {
+                    JsonResult res = GeneralApisController.ResponseMessage(HttpStatusCode.Conflict, "This Lender Is already Added!", null);
+                    return res;
+                }
+                General.ExecuteNonQuery($@"Insert Into FavouriteLender Values({LenderID},{RealEstateAgentID})");
+
+                DataTable dt2 = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)LenderName,LenderInfo.Contact1,LenderInfo.OfficeNo from favouriteLender inner join LenderInfo
+on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {LenderID}");
+
+
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt2);
+
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Favourite Lender Information!", dbrows);
+                return jr;
+
+            }
+            catch (Exception ex)
+            {
+
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                return jr;
+            }
+        }
+        #endregion
+#endregion
+
     }
 }

@@ -23,7 +23,7 @@ namespace Privont.Models
         [Required]
         public string Name { get; set; }
         public bool Inactive { get; set; }
-        public int UserType { get; set; }//UserInfo Master User = 1 , Realeastate Agent User = 2 , Lender Agent User = 3
+        public int UserType { get; set; }//UserInfo Master User = 1 , Realeastate Agent User = 2 , Lender Agent User = 3 , Lead = 4 , Vendor = 5
         public DataTable GetAllRecord_DataTable(string WhereClause = "")
         {
             DataTable dt = General.FetchData($@" select UserID,UserName,Inactive,1 as UserType from UserInfo {WhereClause} 
