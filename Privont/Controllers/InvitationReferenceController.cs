@@ -74,8 +74,8 @@ namespace Privont.Controllers
                 string jsonData = serializer.Serialize(dataToEncrypt);
                 string jsonData2 = serializer.Serialize(dataToEncrypt2);
                 // Encrypt the data
-                string encryptedData = GeneralApisController.Encrypt(jsonData, secretKey);
-                string encryptedData2 = GeneralApisController.Encrypt(jsonData2, secretKey);
+                string encryptedData = General.Encrypt(jsonData, secretKey);
+                string encryptedData2 = General.Encrypt(jsonData2, secretKey);
                 // Construct the URL
                 string domainUrl = Request.Url.GetLeftPart(UriPartial.Authority);
                 string userType = UserType.ToString();

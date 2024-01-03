@@ -6,7 +6,7 @@ using System.Web;
 
 namespace Privont.Models
 {
-    public class VendorInfo
+    public class VendorInfo:RealEstateAgentInfo
     {
         public int VendorID { get; set; }
         public string VendorName { get; set; }
@@ -105,5 +105,27 @@ inner join ZipCode on VendorInfo.ZipCodeID = ZipCode.ZipCodeID
         }
 
 
+        public int UpdateProfileRecord(VendorInfo obj)
+        {
+            string Query = $@"UPDATE [dbo].[VendorInfo]
+   SET [VendorName] = '{obj.VendorName}'
+      ,[StreetName] = '{obj.StreetName}'
+      ,[StreetNo] = '{obj.StreetNo}'
+      ,[Website] = '{obj.Website}'
+      ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Remarks] = '{obj.Remarks}'
+      ,[FirstName] = '{obj.FirstName}'
+      ,[LastName] = '{obj.LastName}'
+ WHERE VendorID=" + obj.VendorID;
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.VendorID;
+            }
+            catch (Exception ex)
+            {
+                return obj.VendorID;
+            }
+        }
     }
 }

@@ -198,21 +198,33 @@ on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {L
         // 
         #region APIs Records
         [HttpGet]
-        public JsonResult GetLenderInfo(int Status = 0)
+        public JsonResult GetLenderInfo(int RealEstateAgentID=0,int Status = 0)
         {
-            string WhereClause = "";
-            if (Status == 1)//For Pending Lender
+            try
             {
-                WhereClause = " and isnull(IsApproved,0)=0";
-            }
-            else if (Status == 2)// For Approved Lenders
-            {
-                WhereClause = " and isnull(IsApproved,0)=1";
-            }
-            List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(WhereClause));
+                string WhereClause = "";
+                if (Status == 1)//For Pending Lender
+                {
+                    WhereClause = "   and isnull(IsApproved,0)=0   ";
+                }
+                else if (Status == 2)// For Approved Lenders
+                {
+                    WhereClause = "   and isnull(IsApproved,0)=1   ";
+                }
+                if (RealEstateAgentID > 0)
+                {
+                    WhereClause = WhereClause + $@"  and LenderInfo.LenderId not in (select LenderID from FavouriteLender where UserID={RealEstateAgentID})  ";
+                }
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(WhereClause));
 
-            JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Lender Information!", dbrows);
-            return jr;
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Lender Information!", dbrows);
+                return jr;
+            }
+            catch (Exception ex)
+            {
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: "+ex.Message, null);
+                return jr;
+            }
         }
         [HttpPost]
         public JsonResult PostLenderInfo(LenderInfo collection)

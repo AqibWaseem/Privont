@@ -36,7 +36,8 @@ namespace Privont.Models
         {
             DataTable dataTable = new DataTable();
             dataTable = General.FetchData($@"Select RealEstateAgentInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
- from RealEstateAgentInfo inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = OrganizationInfo.OrganizationID
+ from RealEstateAgentInfo
+inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = OrganizationInfo.OrganizationID
  inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
  Where UserName is not null
   " + WhereClause);
@@ -138,12 +139,22 @@ namespace Privont.Models
 
         public DataTable UserExistanceInfo(string UserName)
         {
-            DataTable dt = General.FetchData($@"select * from 
-(
-select username,Password,Inactive,2 as UserType from RealEstateAgentInfo
-union all
-select username,Password,Inactive,3 as UserType from LenderInfo
-)UserProfile where username='{UserName}'");
+            DataTable dt = General.FetchData($@"
+SELECT        UserID, username, Password, Inactive, UserType
+FROM            (SELECT        RealEstateAgentId AS UserID, username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 2 AS UserType
+                          FROM            RealEstateAgentInfo
+                          UNION ALL
+                          SELECT        LenderId AS UserID, username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 3 AS UserType
+                          FROM            LenderInfo
+                          UNION ALL
+                          SELECT        LeadID, Username, Password, FirstName, LastName, '' AS StreetNo, '' AS StreetName, EmailAddress, PhoneNo, '' AS Website, '' AS Remarks, 0 AS Inactive, 4 AS UserType
+                          FROM            LeadInfo
+                          UNION ALL
+                          SELECT        VendorID, Username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 5 AS UserType
+                          FROM            VendorInfo) AS ProfileLogin
+
+
+where username is not null and username='{UserName}'");
             return dt;
         }
         public int UpdateProfileRecord(RealEstateAgentInfo obj)

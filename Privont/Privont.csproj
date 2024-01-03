@@ -394,6 +394,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SMSSettingController.cs" />
     <Compile Include="Controllers\SMSTrueDialogController.cs" />
+    <Compile Include="Controllers\SocialMediaInfoController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Controllers\VendorInfoController.cs" />
     <Compile Include="DropDown.cs" />
@@ -407,11 +408,14 @@
     <Compile Include="Models\CustomerSquareup.cs" />
     <Compile Include="Models\LeadInfo.cs" />
     <Compile Include="Models\LenderInfo.cs" />
+    <Compile Include="Models\OrganizationInfo.cs" />
     <Compile Include="Models\RealEstateAgentInfo.cs" />
     <Compile Include="Models\SMSSetting.cs" />
+    <Compile Include="Models\SocialMediaInfo.cs" />
     <Compile Include="Models\TrueDialogIncomeMessage.cs" />
     <Compile Include="Models\TrueDialogService.cs" />
     <Compile Include="Models\UserInfo.cs" />
+    <Compile Include="Models\UserSocialMediaInfo.cs" />
     <Compile Include="Models\VendorInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartupConfigGoogleAuth.cs" />
@@ -10961,6 +10965,7 @@
     <Folder Include="Views\OrganizationInfo\" />
     <Folder Include="Views\PaymentGateway\" />
     <Folder Include="Views\PaymentGatway\" />
+    <Folder Include="Views\SocialMediaInfo\" />
     <Folder Include="Views\TrueDialog\" />
   </ItemGroup>
   <ItemGroup>

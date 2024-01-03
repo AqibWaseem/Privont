@@ -1344,9 +1344,31 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Ge
         {
             string WhereClause = $@"where UserName='{UserName}' and Password='{Password}'";
             string sql1 = $@"
-Select (RealEstateAgentId)UserID,UserName,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,2 as UserType from RealEstateAgentInfo {WhereClause}
+select * from 
+
+(
+Select (RealEstateAgentId)UserID,UserName,Password,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,2 as UserType 
+from RealEstateAgentInfo 
+
 union all
-Select (LenderId)UserID,UserName,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,3 as UserType from LenderInfo  {WhereClause}   ";
+Select (LenderId)UserID,UserName,Password,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,3 as UserType 
+from LenderInfo  
+union all
+
+SELECT        LeadID,Username,Password, FirstName, LastName,'' as  StreetNo, '' as StreetName, EmailAddress, PhoneNo,'' as Website,'' as Remarks,0 as
+Inactive, 4 AS UserType
+FROM            LeadInfo
+
+union all
+SELECT        VendorID, Username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive
+, 5 AS UserType
+FROM            VendorInfo
+
+)ProfileLogin
+
+{WhereClause}
+
+";
             DataTable dtproductinfo = General.FetchData(sql1);
             List<Dictionary<string, object>> dbrows = GetProductRows(dtproductinfo);
             if (dtproductinfo.Rows.Count == 0)
@@ -1368,7 +1390,7 @@ Select (LenderId)UserID,UserName,FirstName,LastName,StreetNo,StreetName,EmailAdd
             else
             {
                 Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Status", true);
+                JSResponse.Add("Status", 200);
                 JSResponse.Add("Message", "Login successfully!");
                 JSResponse.Add("Data", dbrows);
                 JsonResult jr = new JsonResult()

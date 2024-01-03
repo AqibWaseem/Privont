@@ -7,8 +7,9 @@ using System.Web;
 
 namespace Privont.Models
 {
-    public class LeadInfo
+    public class LeadInfo:RealEstateAgentInfo
     {
+        #region Model
         public int LeadID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -29,6 +30,8 @@ namespace Privont.Models
         public bool SMSSent { get; set; }
         public string Claimed { get; set; }
         public List<LenderInfo> LstLenderInfo = new List<LenderInfo>();
+        #endregion
+
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
@@ -122,6 +125,25 @@ GetDate(),
    SET [FirstName] = '{obj.FirstName}'
       ,[LastName] = '{obj.LastName}'
       ,[PhoneNo] = '{obj.PhoneNo}'
+      ,[EmailAddress] = '{obj.EmailAddress}'
+ WHERE LeadID=" + obj.LeadID;
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.LeadID;
+            }
+            catch (Exception ex)
+            {
+                return obj.LeadID;
+            }
+        }
+
+        public int UpdateProfileRecord(LeadInfo obj)
+        {
+            string Query = $@"UPDATE [dbo].[LeadInfo]
+   SET [FirstName] = '{obj.FirstName}'
+      ,[LastName] = '{obj.LastName}'
+    
       ,[EmailAddress] = '{obj.EmailAddress}'
  WHERE LeadID=" + obj.LeadID;
             try

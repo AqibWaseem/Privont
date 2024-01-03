@@ -14,6 +14,8 @@ using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using Microsoft.AspNetCore.Http;
+using System.Web.Services.Description;
 
 namespace Privont.Controllers
 {
@@ -438,6 +440,14 @@ namespace Privont.Controllers
             {
                 RealEstateAgentId = new LenderInfo().UpdateProfileRecord(collection);
             }
+            else if (collection.UserType == 4)
+            {
+                RealEstateAgentId = new LeadInfo().UpdateProfileRecord(collection);
+            }
+            else if (collection.UserType == 5)
+            {
+                RealEstateAgentId = new VendorInfo().UpdateProfileRecord(collection);
+            }
             if (RealEstateAgentId == 0)
             {
                 Dictionary<string, object> JSResponse = new Dictionary<string, object>();
@@ -466,6 +476,14 @@ namespace Privont.Controllers
                 {
                     dbrows = new General().GetAllRowsInDictionary(new LenderInfo().GetAllRecord(" and LenderId=" + RealEstateAgentId));
                 }
+                else if (collection.UserType == 4)
+                {
+                    dbrows = new General().GetAllRowsInDictionary(new LeadInfo().GetAllRecord(" and LeadID=" + RealEstateAgentId));
+                }
+                else if (collection.UserType == 5)
+                {
+                    dbrows = new General().GetAllRowsInDictionary(new VendorInfo().GetAllRecord(" and VendorID=" + RealEstateAgentId));
+                }
 
                 Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                 JSResponse.Add("Status", HttpStatusCode.OK);
@@ -491,38 +509,152 @@ namespace Privont.Controllers
                 JsonResult jr = new JsonResult();
                 string Query = "";
                 DataTable dt = new DataTable();
+                DataTable dtSocialMedia = new DataTable();
                 List<Dictionary<string, object>> dbrows = new List<Dictionary<string, object>>();
+                List<Dictionary<string, object>> dbSocialMedia = new List<Dictionary<string, object>>();
                 if (UserType == 1 || UserType > 5)
                 {
                     jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "This User not exist!", null);
                 }
                 else if (UserType == 2)//
                 {
-                    Query = $@"select * from RealEstateAgentInfo where RealEstateAgentId=" + UserID;
+                    Query = $@"select RealEstateAgentInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
+ from RealEstateAgentInfo
+inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = OrganizationInfo.OrganizationID
+ inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
+ Where UserName is not null and RealEstateAgentId=" + UserID;
                     dt = General.FetchData(Query);
+                     dtSocialMedia=General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+UserSocialMediaInfo.UserTypeID 
+                         
+FROM            SocialMediaInfo LEFT OUTER JOIN
+                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+
+
                     dbrows = new General().GetAllRowsInDictionary(dt);
-                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+
+                    //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                    Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "User Profile Information!");
+                    JSResponse.Add("Data", dbrows);
+                    JSResponse.Add("SocialMedia", dbSocialMedia);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
                 }
                 else if (UserType == 3)//
                 {
-                    Query = $@"select * from LenderInfo where LenderId=" + UserID;
+                    Query = $@"Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode from LenderInfo 
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+
+ Where UserName is not null and LenderId=" + UserID;
                     dt = General.FetchData(Query);
+                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+UserSocialMediaInfo.UserTypeID 
+                         
+FROM            SocialMediaInfo LEFT OUTER JOIN
+                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+
+
                     dbrows = new General().GetAllRowsInDictionary(dt);
-                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+
+                    //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                    Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "User Profile Information!");
+                    JSResponse.Add("Data", dbrows);
+                    JSResponse.Add("SocialMedia", dbSocialMedia);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
                 }
                 else if (UserType == 4)
                 {
                     Query = $@"select * from LeadInfo where LeadID=" + UserID;
                     dt = General.FetchData(Query);
+                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+UserSocialMediaInfo.UserTypeID 
+                         
+FROM            SocialMediaInfo LEFT OUTER JOIN
+                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+
+
                     dbrows = new General().GetAllRowsInDictionary(dt);
-                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+
+                    //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                    Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "User Profile Information!");
+                    JSResponse.Add("Data", dbrows);
+                    JSResponse.Add("SocialMedia", dbSocialMedia);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
                 }
                 else if (UserType == 5)
                 {
                     Query = $@"select * from VendorInfo where VendorInfo.VendorID=" + UserID;
                     dt = General.FetchData(Query);
+                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+UserSocialMediaInfo.UserTypeID 
+                         
+FROM            SocialMediaInfo LEFT OUTER JOIN
+                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+
+
                     dbrows = new General().GetAllRowsInDictionary(dt);
-                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+
+                    //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
+                    Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "User Profile Information!");
+                    JSResponse.Add("Data", dbrows);
+                    JSResponse.Add("SocialMedia", dbSocialMedia);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
                 }
                 return jr;
 

@@ -646,6 +646,7 @@ Where LeadClaimInfo.LeadID={LeadID}");
             {
                 whereclause = whereclause + " and isnull(isClaimLead,0)=1";
             }
+
             if (UserType == 2)
             {
                 whereclause = whereclause + $@" and UserID={UserID}";
@@ -714,7 +715,7 @@ then 1  else 0 end order by LeadID desc
     LeadInfo LI
 LEFT OUTER JOIN
     LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID ";
-                sql = sql + $@" {whereclause} Order by LeadID desc";
+                sql = sql + $@" where {whereclause} Order by LeadID desc";
             }
             dataTable = General.FetchData(sql); ;
             List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
