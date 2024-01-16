@@ -686,7 +686,7 @@ ORDER BY LeadID ASC;
             }
             else
             {
-                sql = $@"  SELECT
+                sql = $@"  SELECT TOP (30) 
   * FROM
     LeadInfo LI
 LEFT OUTER JOIN
@@ -697,7 +697,20 @@ LEFT OUTER JOIN
             }
             dataTable = General.FetchData(sql); ;
             List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
-            JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Lead Information!", dbrows);
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            JSResponse.Add("Status", HttpStatusCode.OK);
+            JSResponse.Add("Message", "Lead Information!");
+            JSResponse.Add("Total Records", dataTable.Rows.Count);
+            JSResponse.Add("Data", dbrows);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
             return jr;
         }
         [HttpGet]
