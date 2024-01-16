@@ -438,15 +438,21 @@ namespace Privont.Controllers
             }
             else if (collection.UserType == 3)
             {
-                RealEstateAgentId = new LenderInfo().UpdateProfileRecord(collection);
+                LenderInfo LenderCollection = new LenderInfo();
+                General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LenderInfo>(collection, LenderCollection);
+                RealEstateAgentId = new LenderInfo().UpdateProfileRecord(LenderCollection);
             }
             else if (collection.UserType == 4)
             {
-                RealEstateAgentId = new LeadInfo().UpdateProfileRecord(collection);
+                LeadInfo LeadInfoCollection = new LeadInfo();
+                General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LeadInfo>(collection, LeadInfoCollection);
+                RealEstateAgentId = new LeadInfo().UpdateProfileRecord(LeadInfoCollection);
             }
             else if (collection.UserType == 5)
             {
-                RealEstateAgentId = new VendorInfo().UpdateProfileRecord(collection);
+                VendorInfo VendorInfoCollection = new VendorInfo();
+                General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, VendorInfo>(collection, VendorInfoCollection);
+                RealEstateAgentId = new VendorInfo().UpdateProfileRecord(VendorInfoCollection);
             }
             if (RealEstateAgentId == 0)
             {
@@ -524,6 +530,7 @@ inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = Organization
  inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
  Where UserName is not null and RealEstateAgentId=" + UserID;
                     dt = General.FetchData(Query);
+
                      dtSocialMedia=General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
 UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
 UserSocialMediaInfo.UserTypeID 
@@ -662,7 +669,20 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
             catch (Exception ex)
             {
 
-                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Error: "+ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+                JSResponse.Add("SocialMedia", DBNull.Value);
+
+                var jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
                 return jr;
             }
         }

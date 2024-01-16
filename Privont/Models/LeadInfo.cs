@@ -7,19 +7,13 @@ using System.Web;
 
 namespace Privont.Models
 {
-    public class LeadInfo:RealEstateAgentInfo
+    public class LeadInfo :BaseEntity
     {
         #region Model
         public int LeadID { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
         public string PhoneNo { get; set; }
-        public string EmailAddress { get; set; }
         public bool ReadytoOptin { get; set; }
-        public int UserID { get; set; }
-        public int UserType { get; set; }
         public DateTime EntryDateTime { get; set; }
-        public string ZipCode { get; set; }
         public int OptInSMSStatus { get; set; }
         public int PricePointID { get; set; }
         public string PricePointName { get; set; }
@@ -155,6 +149,70 @@ GetDate(),
             {
                 return obj.LeadID;
             }
+        }
+
+        public int InsertRecordsByInviation(LeadInfo obj)
+        {
+            int LeadID = 0;
+            string Query = $@"INSERT INTO [dbo].[LeadInfo]
+           ([FirstName]
+           ,[LastName]
+           ,[EmailAddress]
+           ,[Contact1]
+           ,[UserID]
+           ,[UserType]
+           ,[IsApproved]
+           ,[IsEmailVerified]
+           ,[UniqueIdentifier]
+           ,[SourceID]
+           ,[PriceRangeID]
+           ,[PricePointID]
+           ,[State]
+           ,[FirstTimeBuyer]
+           ,[IsMilitary]
+           ,[TypeID]
+           ,[BestTimeToCall],[EntryDateTime],
+[EntrySource],[ApiSource]
+           ,[ApiLeadID]
+           ,[APITypeID])
+     VALUES
+           ('{obj.FirstName}'
+           ,'{obj.LastName}'
+           ,'{obj.EmailAddress}'
+           ,'{obj.Contact1}'
+           ,'{obj.UserID}'
+           ,'{obj.UserType}'
+           ,'{obj.IsApproved}'
+           ,'{obj.IsEmailVerified}'
+           ,'{obj.UniqueIdentifier}'
+           ,'{obj.SourceID}'
+           ,'{obj.PriceRangeID}'
+           ,'{obj.PriceRangeID}'
+           ,'{obj.State}'
+           ,'{obj.FirstTimeBuyer}'
+           ,'{obj.IsMilitary}'
+           ,'{obj.TypeID}'
+           ,'{obj.BestTimeToCall}',GETDATE(),
+{obj.UserType},'{obj.ApiSource}'
+           ,{obj.ApiLeadID}
+           ,{obj.APITypeID})";
+            try
+            {
+                Query = Query + $@" SELECT SCOPE_IDENTITY() as LeadID";
+                DataTable dt = General.FetchData(Query);
+                obj.LeadID = int.Parse(dt.Rows[0]["LeadID"].ToString());
+                return obj.LeadID;
+            }
+            catch (Exception ex)
+            {
+                return LeadID;
+            }
+        }
+        public DataTable GetAllRecordsVIAPhoneNo(string PhoneNo)
+        {
+            string Query = $@"select * from LeadInfo where Contact1='{PhoneNo}'";
+            DataTable dataTable = General.FetchData(Query);
+            return dataTable;
         }
     }
 }

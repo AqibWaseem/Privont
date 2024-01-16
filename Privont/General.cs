@@ -17,11 +17,13 @@ using System.Net.Http;
 using Privont.Models;
 using System.Linq.Expressions;
 using System.Configuration;
+using System.EnterpriseServices;
 
 namespace Privont
 {
     public class General
     {
+        public static string secretKey { get { return "Privont@Privont"; } }
         public static string AccessTokenForSquareup { get { return ConfigurationManager.AppSettings["AccessTokenForSquareup"].ToString(); } }
         public static string LocationIDForSquareup { get { return ConfigurationManager.AppSettings["LocationID"].ToString(); } }
         public static int UserID
@@ -298,6 +300,80 @@ namespace Privont
             return Jsonstring;
         }
         public readonly TrueDialogService trueDialogService;
+        
+        public static string GetSubKey(int UserID,int UserType)
+        {
+            DataTable dt = General.FetchData($@"SELECT        SMSDetailInvite,  SMSDetail,SMSSubKey, SMSDetailSub
+FROM            SMSSetting
+WHERE        (UserID = {UserID}) AND (UserType = {UserType})");
+            if(dt.Rows.Count > 0)
+            {
+                string SubKey = dt.Rows[0]["SMSSubKey"].ToString();
 
+                return SubKey;
+            }
+            
+            return "";
+        }
+
+        public static void GetUserIDandUserTypeFromSubKey(string SubKey,ref int UserID,ref int UserType)
+        {
+            string query = $@"select  UserID,UserType from SMSSetting where SMSSubKey='{SubKey.Trim()}'";
+            DataTable dt = General.FetchData(query);
+            if(dt.Rows.Count > 0)
+            {
+                int.TryParse(dt.Rows[0]["UserID"].ToString(), out UserID);
+                int.TryParse(dt.Rows[0]["UserType"].ToString(), out UserType);
+            }
+            else
+            {
+                UserID = 0;
+                UserType = 0;
+            }
+        }
+        public static void GetUserIDandUserTypeFromClaimedKey(string SMSDetailKey, ref int UserID,ref int UserType)
+        {
+            string query = $@"select  UserID,UserType from SMSSetting where SMSDetailKey='{SMSDetailKey.Trim()}'";
+            DataTable dt = General.FetchData(query);
+            if(dt.Rows.Count > 0)
+            {
+                int.TryParse(dt.Rows[0]["UserID"].ToString(), out UserID);
+                int.TryParse(dt.Rows[0]["UserType"].ToString(), out UserType);
+            }
+            else
+            {
+                UserID = 0;
+                UserType = 0;
+            }
+        }
+        public enum SourceTypes
+        {
+            Refer = 1,
+            Local = 2,
+            Zillow = 3,
+            FollowUpBoss = 4
+        }
+        public enum LinkTypes
+        {
+            Refer = 1,
+            SignUp = 2,
+            Claim = 3
+        }
+        public static void MappingValueFromSourceClassToTargetClass<TSource, TTarget>(TSource source, TTarget target)
+        {
+            var sourceProperties = typeof(TSource).GetProperties();
+            var targetProperties = typeof(TTarget).GetProperties();
+
+            foreach (var sourceProperty in sourceProperties)
+            {
+                var matchingTargetProperty = targetProperties.FirstOrDefault(p => p.Name == sourceProperty.Name && p.PropertyType == sourceProperty.PropertyType);
+
+                if (matchingTargetProperty != null)
+                {
+                    var value = sourceProperty.GetValue(source);
+                    matchingTargetProperty.SetValue(target, value);
+                }
+            }
+        }
     }
 }

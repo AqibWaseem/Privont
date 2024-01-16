@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Privont.Models;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -12,9 +14,11 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.DynamicData;
 using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using static Google.Apis.Requests.BatchRequest;
 using static Privont.General;
 using static Privont.Models.APILeads;
 
@@ -633,7 +637,7 @@ Where LeadClaimInfo.LeadID={LeadID}");
 
 
         #region APIs
-        public JsonResult GetLeadsInformation(int UserID, int UserType, int Status = 0)
+        public JsonResult GetLeadsInformation(int UserID, int UserType, int Status = 0, int LastLeadID=0)
         {
             DataTable dataTable = new DataTable();
             string sql = "";
@@ -654,74 +658,260 @@ Where LeadClaimInfo.LeadID={LeadID}");
             if (UserType == 3)
             {
 
-                sql = $@" Declare @LenderID int set @LenderID={UserID}
-Declare @EntryTime int
-Select @EntryTime=ExpiryTime from LeadExpiryTime
-Select  A.LeadID,A.ZipCode,
-case
-        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.FirstName  -- Show LeadID if ReadytoOptin is 1
-        else '****'  -- Show **** if ReadytoOptin is not 1
-    end as FirstName,
-case
-        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.LastName  -- Show LeadID if ReadytoOptin is 1
-        else '****'  -- Show **** if ReadytoOptin is not 1
-    end as LastName,
-case
-        when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.PhoneNo  -- Show LeadID if ReadytoOptin is 1
-        else '****'  -- Show **** if ReadytoOptin is not 1
-    end as PhoneNo,
-case
- when ReadytoOptin = 1 and ClaimingLender = @LenderID then A.EmailAddress  -- Show LeadID if ReadytoOptin is 1
-        else '****'  -- Show **** if ReadytoOptin is not 1
-    end as EmailAddress,
-case When A.ClaimingLender is not null and ClaimingLender = @LenderID then 'Claimed'
-else '0' end as Claimed
- from (select LeadInfo.LeadID,LeadInfo.FirstName,LeadInfo.LastName,
-isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,
-isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , LeadClaiminfo.ClaimingLender,
-case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime 
-from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID 
-inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID 
-Left outer join LeadClaimInfo on LeadInfo.LeadID = LeadClaimInfo.LeadID 
- Where LeadInfo.EntrySource = 2  
-and LeadInfo.isClaimLead = 1 and LeadInfo.OptInSMSStatus=1 
-)A 
-where 1=case when isbelowtime=1 and (select Count(*) from favouritelender 
-where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 
-then 1  else 0 end order by LeadID desc
+                sql = $@" DECLARE @LenderID AS INT = {UserID}              
+DECLARE @TotalLenders AS INT = 0
+
+SELECT @TotalLenders = COUNT(*) FROM FavouriteLender WHERE LenderID = @LenderID
+
+;WITH LeadsCTE AS (
+   SELECT        CASE WHEN DATEDIFF(MINUTE, EntryDateTime, GETDATE()) <= LeadExpiryTime.ExpiryTime THEN 1 ELSE 0 END AS IsBelowTime, LeadInfo.LeadID, LeadInfo.FirstName, LeadInfo.LastName, ISNULL(LeadInfo.OptInSMSStatus, 
+                         0) AS OptInSMSStatus, LeadInfo.PhoneNo, LeadInfo.EmailAddress, LeadInfo.EntryDateTime, LeadExpiryTime.ExpiryTime, ISNULL(LeadInfo.ReadytoOptin, 0) AS ReadytoOptin, LeadInfo.UserID, 
+                         RealEstateAgentInfo.RealEstateAgentId, LeadInfo.isClaimLead, LeadInfo.SMSSent, LeadInfo.IsApproved, LeadInfo.IsEmailVerified, LeadInfo.UniqueIdentifier, LeadInfo.PriceRangeID, LeadInfo.State, LeadInfo.FirstTimeBuyer, 
+                         LeadInfo.IsMilitary, LeadInfo.TypeID, LeadInfo.BestTimeToCall, LeadInfo.IsPrivontFamily, LeadInfo.PricePointID, ZipCode.ZipCode, LeadPricePoint.PricePoint
+FROM            LeadInfo INNER JOIN
+                         RealEstateAgentInfo ON RealEstateAgentInfo.RealEstateAgentId = LeadInfo.UserID INNER JOIN
+                         LeadExpiryTime ON RealEstateAgentInfo.RealEstateAgentId = LeadExpiryTime.UserID INNER JOIN
+                         LeadPricePoint ON LeadInfo.PricePointID = LeadPricePoint.PricePointID AND LeadInfo.PriceRangeID = LeadPricePoint.PricePointID INNER JOIN
+                         ZipCode ON RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
+WHERE        (LeadInfo.LeadID > {LastLeadID}) {whereclause}
+)
+SELECT TOP 30 *
+FROM LeadsCTE
+WHERE
+    (@TotalLenders = 0 AND IsBelowTime = 0)
+    OR @TotalLenders > 0
+ORDER BY LeadID ASC;
+
 ";
-                //                sql = $@"Declare @LenderID int set @LenderID={UserID}
-                //Declare @EntryTime int
-                //Select @EntryTime=ExpiryTime from LeadExpiryTime
-                //Select * from (select LeadID,LeadInfo.FirstName,LeadInfo.LastName,isnull(OptInSMSStatus,0)OptInSMSStatus,PhoneNo,LeadInfo.EmailAddress,EntryDateTime,isNull(ReadytoOptin,0)ReadytoOptin,LeadInfo.UserID,EntrySource as UserType , ZipCode.ZipCode , case when DATEDIFF(minute, EntryDateTime, GetDATE())<=@EntryTime then 1 else 0 end IsBelowTime from leadinfo inner join RealEstateAgentInfo on RealEstateAgentInfo.RealEstateAgentID = LeadInfo.UserID inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID Where LeadInfo.EntrySource = 2 and LeadInfo.isClaimLead = 1 )A where 1=case when isbelowtime=1 and (select Count(*) from favouritelender where favouritelender.UserID=A.Userid and favouritelender.UserID=@lenderid)>1 then 1 When  isbelowtime=0 then 1  else 0 end order by LeadID desc";
             }
             else
             {
-                sql = $@"SELECT
-    LI.LeadID,
-    LI.FirstName,
-    LI.LastName,
-    ISNULL(LI.OptInSMSStatus, 0) AS OptInSMSStatus,
-    LI.PhoneNo,
-    LI.EmailAddress,
-    LI.EntryDateTime,
-    ISNULL(LI.ReadytoOptin, 0) AS ReadytoOptin,
-    LI.UserID,
-    LI.EntrySource AS UserType,
-    LI.PricePointID,
-    LPP.PricePoint AS PricePointName,
-    LI.isClaimLead";
-                sql = sql + $@" FROM
+                sql = $@"  SELECT
+  * FROM
     LeadInfo LI
 LEFT OUTER JOIN
-    LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID ";
-                sql = sql + $@" where {whereclause} Order by LeadID desc";
+    LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID 
+	 where LeadID>{LastLeadID}  {whereclause} Order by LeadID asc
+";
+             
             }
             dataTable = General.FetchData(sql); ;
             List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
             JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Lead Information!", dbrows);
             return jr;
         }
+        [HttpGet]
+        public JsonResult PostClaimedLead(int LeadID, int LenderID)
+        {
+            int ResponseCode = 0;
+            string ResponseMessage = "";
+            
+            string Value = "0";
+            bool Return = bool.Parse(General.FetchData($@"Select Isnull(ReadyToOptin,0)ReadyToOptin from LeadInfo Where LeadID = {LeadID}").Rows[0]["ReadyToOptin"].ToString());
+            string Return1 = "0";
+            string AlreadyAdded = "0";
+            DataTable dt2 = General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {LeadID} and ClaimingLender = {LenderID}");
+            if (dt2.Rows.Count == 0)
+            {
+                if (Return == false)
+                {
+                    string sql = $@"Insert Into LeadClaimInfo Values({LeadID},{LenderID},GetDate())";
+                    General.ExecuteNonQuery(sql);
+                    DataTable dt = General.FetchData($@"select Count(LeadID)LeadID from LeadClaimInfo Where LeadID = {LeadID}");
+                    if (int.Parse(dt.Rows[0]["LeadID"].ToString()) >= 3)
+                    {
+                        Value = "1";
+                        General.ExecuteNonQuery($@"Update LeadInfo Set ReadyToOptin=1 Where LeadID={LeadID}");
+                        //Send SMS For get Claimed
+                        ResponseCode = GeneralApisController.SentSMSForGetClaimed(LeadID, LenderID, 3);
+
+                    }
+                }
+                else
+                {
+                    Value = "1";
+                    Return1 = "1";
+                }
+            }
+            else
+            {
+                AlreadyAdded = "1";
+            }
+            if (ResponseCode == 0)
+            {
+                ResponseMessage = "This Lead is already claimed!";
+            }
+            else if (ResponseCode == 1)
+            {
+                ResponseMessage = "Message Sent Successfully!";
+            }
+            else if (ResponseCode == 2)
+            {
+                ResponseMessage = "SMS not send because you have not SMS setting!";
+            }
+            else if (ResponseCode == 3)
+            {
+                ResponseMessage = "Something went wrong! Unabled to send sms";
+            }
+            else if (ResponseCode == 4)
+            {
+                ResponseMessage = "This Lead is already claimed!";
+            }
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            JSResponse.Add("Status", HttpStatusCode.OK);
+            JSResponse.Add("Message", ResponseMessage);
+            JSResponse.Add("Data", DBNull.Value);
+
+            JsonResult jr = new JsonResult()
+            {
+                Data = JSResponse,
+                ContentType = "application/json",
+                ContentEncoding = System.Text.Encoding.UTF8,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue
+            };
+            return jr;
+        }
+        [HttpGet]
+        public JsonResult GetMembersInfoByLstID(int LeadID)
+        {
+            try
+            {
+                string Query = $@"select Top (20) LeadID,FirstName,LastName,EntryDateTime,ISNULL(isClaimLead,0)isClaimLead,ISNULL(SourceID,0)SourceID from LeadInfo
+where LeadID>{LeadID}
+
+order by LeadID asc
+
+
+";
+                DataTable dataTable = General.FetchData(Query);
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Lead Informaiton By last Id");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            catch(Exception ex)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Error"+ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+        }
+        [HttpGet]
+        public JsonResult GetLeadExpiry(int UserID,int UserType)
+        {
+            try
+            {
+                string Query = $@"select * From LeadExpiryTime where UserID={UserID} and UserType={UserType}
+";
+                DataTable dataTable = General.FetchData(Query);
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Lead Expiry Information");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            catch(Exception ex)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Error"+ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+        }
+        [HttpGet]
+        public JsonResult PostLeadExpiry(int ExpiryTime, int UserID,int UserType)
+        {
+            try
+            {
+                string Query = $@"delete from LeadExpiryTime
+ where UserID={UserID} and UserType={UserType}
+
+insert into LeadExpiryTime values({ExpiryTime},{UserID},{UserType})
+
+
+
+";
+                General.ExecuteNonQuery(Query);
+                 Query = $@"select * From LeadExpiryTime where UserID={UserID} and UserType={UserType}";
+                DataTable dataTable = General.FetchData(Query);
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Lead Expiry Information");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            catch(Exception ex)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Error"+ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+        }
+
         #endregion
     }
 }

@@ -7,31 +7,11 @@ using System.Web;
 
 namespace Privont.Models
 {
-    public class RealEstateAgentInfo : LenderInfo
+    public class RealEstateAgentInfo : BaseEntity 
     {
         public int RealEstateAgentId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string LicenseNo { get; set; }
-        public int OrganizationID { get; set; }
-        public int ZipCodeID { get; set; }
-        public string ZipCode { get; set; }
-        public string OfficeNo { get; set; }
-        public string StreetName { get; set; }
-        public string StreetNo { get; set; }
-        public string Website { get; set; }
-        public string EmailAddress { get; set; }
-        public string Contact1 { get; set; }
-        public string Contact2 { get; set; }
-        public string Remarks { get; set; }
-        public string Password { get; set; }
         public string username { get; set; }
-        public bool Inactive { get; set; }
-        public string OrganizationTitle { get; set; }
-        public int UserID { get; set; }
-        public int UserType { get; set; }
-        public bool IsApproved { get; set; }
-        public string ApprovedRemarks { get; set; }
+        
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
@@ -176,6 +156,55 @@ where username is not null and username='{UserName}'");
             catch (Exception ex)
             {
                 return obj.RealEstateAgentId;
+            }
+        }
+        public int InsertRecordsByInviation(RealEstateAgentInfo obj)
+        {
+            int RealEstateAgentId = 0;
+            string Query = $@"INSERT INTO [dbo].[RealEstateAgentInfo]
+           ([FirstName]
+           ,[LastName]
+           ,[EmailAddress]
+           ,[Contact1]
+           ,[UserID]
+           ,[UserType]
+           ,[IsApproved]
+           ,[IsEmailVerified]
+           ,[UniqueIdentifier]
+           ,[SourceID]
+           ,[PriceRangeID]
+           ,[State]
+           ,[FirstTimeBuyer]
+           ,[IsMilitary]
+           ,[TypeID]
+           ,[BestTimeToCall])
+     VALUES
+           ('{obj.FirstName}'
+           ,'{obj.LastName}'
+           ,'{obj.EmailAddress}'
+           ,'{obj.Contact1}'
+           ,'{obj.UserID}'
+           ,'{obj.UserType}'
+           ,'{(obj.IsApproved ? 1 : 0)}'
+           ,'{(obj.IsEmailVerified)}'
+           ,'{obj.UniqueIdentifier}'
+           ,'{obj.SourceID}'
+           ,'{obj.PriceRangeID}'
+           ,'{obj.State}'
+           ,'{obj.FirstTimeBuyer}'
+           ,'{obj.IsMilitary}'
+           ,'{obj.TypeID}'
+           ,'{obj.BestTimeToCall}')";
+            try
+            {
+                Query = Query + $@" SELECT SCOPE_IDENTITY() as RealEstateAgentId";
+                DataTable dt = General.FetchData(Query);
+                obj.RealEstateAgentId = int.Parse(dt.Rows[0]["RealEstateAgentId"].ToString());
+                return obj.RealEstateAgentId;
+            }
+            catch (Exception ex)
+            {
+                return RealEstateAgentId;
             }
         }
     }

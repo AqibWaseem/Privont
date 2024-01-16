@@ -73,5 +73,32 @@ Select (LenderId)UserID,UserName,Inactive,3 as UserType from LenderInfo {WhereCl
             }
             return UserID;
         }
+        public DataTable GetAllRecordsViaUserIDandUserType(int UserID,int UserType)
+        {
+            string Query = $@"SELECT        UserDetail.UserID, UserDetail.FirstName, UserDetail.LastName, UserDetail.EmailAddress, UserDetail.Contact1, UserDetail.IsApproved, UserDetail.IsEmailVerified, UserDetail.UniqueIdentifier, UserDetail.SourceID, 
+                         UserDetail.PriceRangeID, UserDetail.State, UserDetail.FirstTimeBuyer, UserDetail.IsMilitary, UserDetail.TypeID, UserDetail.BestTimeToCall, UserDetail.UserType, LeadPricePoint.PricePoint,  ReferTypeInfo.TypeTitle
+FROM            
+
+(SELECT        RealEstateAgentId AS UserID, FirstName, LastName, EmailAddress, Contact1, IsApproved, IsEmailVerified, UniqueIdentifier, SourceID, PriceRangeID, State, FirstTimeBuyer, IsMilitary, TypeID, BestTimeToCall, 
+                                                    2 AS UserType
+                          FROM            RealEstateAgentInfo
+                          UNION ALL
+                          SELECT        LenderId AS UserID, FirstName, LastName, EmailAddress, Contact1, IsApproved, IsEmailVerified, UniqueIdentifier, SourceID, PriceRangeID, State, FirstTimeBuyer, IsMilitary, TypeID, BestTimeToCall, 
+                                                   3 AS UserType
+                          FROM            LenderInfo
+                          UNION ALL
+                          SELECT        LeadID AS UserID, FirstName, LastName, EmailAddress, Contact1, IsApproved, IsEmailVerified, UniqueIdentifier, SourceID, PriceRangeID, State, FirstTimeBuyer, IsMilitary, TypeID, BestTimeToCall, 
+                                                   4 AS UserType
+                          FROM            LeadInfo
+                          UNION ALL
+                          SELECT        VendorID AS UserID, FirstName, LastName, EmailAddress, Contact1, IsApproved, IsEmailVerified, UniqueIdentifier, SourceID, PriceRangeID, State, FirstTimeBuyer, IsMilitary, TypeID, BestTimeToCall, 
+                                                   5 AS UserType
+                          FROM            VendorInfo) AS UserDetail LEFT OUTER JOIN
+                         LeadPricePoint ON LeadPricePoint.PricePointID = UserDetail.PriceRangeID LEFT OUTER JOIN
+                         ReferTypeInfo ON ReferTypeInfo.TypeID = UserDetail.TypeID
+WHERE        (UserDetail.UserID = {UserID}) AND (UserDetail.UserType = {UserType})";
+            DataTable dt = General.FetchData(Query);
+            return dt;
+        }
     }
 }

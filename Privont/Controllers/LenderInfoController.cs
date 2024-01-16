@@ -213,9 +213,21 @@ on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {L
                 }
                 if (RealEstateAgentID > 0)
                 {
-                    WhereClause = WhereClause + $@"  and LenderInfo.LenderId not in (select LenderID from FavouriteLender where UserID={RealEstateAgentID})  ";
+                    //WhereClause = WhereClause + $@"  and LenderInfo.LenderId not in (select LenderID from FavouriteLender where UserID={RealEstateAgentID})  ";
+                    WhereClause = WhereClause + $@"  and LenderInfo.LenderId ={RealEstateAgentID}  ";
                 }
-                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(WhereClause));
+                string Query = $@"select LenderInfo.*
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack  from LenderInfo
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID   {WhereClause}";
+
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(General.FetchData(Query));
 
                 JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Lender Information!", dbrows);
                 return jr;
@@ -293,11 +305,24 @@ on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {L
         {
             try
             {
-                string Query = $@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)LenderName,LenderInfo.Contact1,LenderInfo.OfficeNo from favouriteLender inner join LenderInfo
+                string Query = $@"
+Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack
+from LenderInfo 
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID
+ 
+inner join FavouriteLender
 on FavouriteLender.LenderID = LenderInfo.LenderId 
 inner join RealEstateAgentInfo on RealEstateAgentId = FavouriteLender.UserID 
 
-Where RealEstateAgentId = {RealEstateAgentId}";
+Where RealEstateAgentId ={RealEstateAgentId}";
                 DataTable dt = General.FetchData(Query);
                 List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt);
 
@@ -326,8 +351,53 @@ Where RealEstateAgentId = {RealEstateAgentId}";
                 }
                 General.ExecuteNonQuery($@"Insert Into FavouriteLender Values({LenderID},{RealEstateAgentID})");
 
-                DataTable dt2 = General.FetchData($@"Select (LenderInfo.FirstName+' '+LenderInfo.LastName)LenderName,LenderInfo.Contact1,LenderInfo.OfficeNo from favouriteLender inner join LenderInfo
-on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {LenderID}");
+                DataTable dt2 = General.FetchData($@"
+
+select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode ,
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack  from LenderInfo
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID
+
+where LenderInfo.LenderId in (select LenderID from FavouriteLender where UserID={RealEstateAgentID})");
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt2);
+
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Favourite Lender Information!", dbrows);
+                return jr;
+
+            }
+            catch (Exception ex)
+            {
+
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                return jr;
+            }
+        }
+        [HttpGet]
+        public JsonResult GetAllLendersExceptFavourite(int RealEstateAgentID)
+        {
+
+            try
+            {
+
+                DataTable dt2 = General.FetchData($@"
+select LenderInfo.*
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack  from LenderInfo
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID
+
+where LenderInfo.LenderId not in (select LenderID from FavouriteLender where UserID={RealEstateAgentID})");
 
 
                 List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt2);

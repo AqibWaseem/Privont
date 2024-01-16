@@ -380,7 +380,9 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\APIs\TrueDialogIncomeMessageController.cs" />
+    <Compile Include="Controllers\CardInfoController.cs" />
     <Compile Include="Controllers\FacebookAuthLoginController.cs" />
+    <Compile Include="Controllers\FeedBackInfoController.cs" />
     <Compile Include="Controllers\GeneralApisController.cs" />
     <Compile Include="Controllers\GoogleAuthController.cs" />
     <Compile Include="Controllers\GoogleAuthLoginController.cs" />
@@ -392,26 +394,35 @@
     <Compile Include="Controllers\PaymentGatewayController.cs" />
     <Compile Include="Controllers\RealEstateAgentInfoController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SMSContentController.cs" />
     <Compile Include="Controllers\SMSSettingController.cs" />
     <Compile Include="Controllers\SMSTrueDialogController.cs" />
     <Compile Include="Controllers\SocialMediaInfoController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Controllers\VendorInfoController.cs" />
     <Compile Include="DropDown.cs" />
+    <Compile Include="EasyPayPaymentIntegreation.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MaverickPaymentService.cs" />
     <Compile Include="Models\APIConfigInfo.cs" />
     <Compile Include="Models\APILeads.cs" />
+    <Compile Include="Models\BaseEntity.cs" />
+    <Compile Include="Models\CardAuthentication\Card.cs" />
+    <Compile Include="Models\CardInfo.cs" />
+    <Compile Include="Models\CardPayment.cs" />
     <Compile Include="Models\ChallengeResult.cs" />
     <Compile Include="Models\CustomerSquareup.cs" />
+    <Compile Include="Models\FeedBackInfo.cs" />
     <Compile Include="Models\LeadInfo.cs" />
     <Compile Include="Models\LenderInfo.cs" />
     <Compile Include="Models\OrganizationInfo.cs" />
     <Compile Include="Models\RealEstateAgentInfo.cs" />
     <Compile Include="Models\SMSSetting.cs" />
     <Compile Include="Models\SocialMediaInfo.cs" />
+    <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\TrueDialogIncomeMessage.cs" />
     <Compile Include="Models\TrueDialogService.cs" />
     <Compile Include="Models\UserInfo.cs" />
@@ -10796,6 +10807,7 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\privont.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\privont.softinn.pk - Web Deploy.pubxml" />
@@ -10948,15 +10960,19 @@
     <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Views\Home\callback.cshtml" />
+    <Content Include="Views\SMSContent\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\vendor_components\flat-color-icons\PNG\512\A\" />
     <Folder Include="assets\vendor_components\flexslider\node_modules\jquery\dist\" />
     <Folder Include="Data\" />
+    <Folder Include="Models\NewFolder1\" />
     <Folder Include="Scripts\jstoken\bin\" />
     <Folder Include="UploadedFiles\Lead\" />
+    <Folder Include="Views\CardInfo\" />
     <Folder Include="Views\FacebookAuthLogin\" />
+    <Folder Include="Views\FeedBackInfo\" />
     <Folder Include="Views\GoogleAuthLogin\" />
     <Folder Include="Views\GoogleAuth\" />
     <Folder Include="Views\IncomingMessages\" />

@@ -6,31 +6,11 @@ using System.Web;
 
 namespace Privont.Models
 {
-    public class LenderInfo
+    public class LenderInfo :BaseEntity
     {
         public int LenderId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string LicenseNo { get; set; }
-        public int OrganizationID { get; set; }
-        public int ZipCodeID { get; set; }
-        public string ZipCode { get; set; }
-        public string OfficeNo { get; set; }
-        public string StreetName { get; set; }
-        public string StreetNo { get; set; }
-        public string Website { get; set; }
-        public string EmailAddress { get; set; }
-        public string Contact1 { get; set; }
-        public string Contact2 { get; set; }
-        public string Remarks { get; set; }
-        public string Password { get; set; }
         public string username { get; set; }
-        public bool Inactive { get; set; }
-        public int UserID { get; set; }
-        public int UserType { get; set; }
-        public string OrganizationTitle { get; set; }
-        public bool IsApproved { get; set; }
-        public string ApprovedRemarks { get; set; }
+
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
@@ -155,6 +135,60 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
                 return obj.LenderId;
             }
         }
-
+        public int InsertRecordsByInviationLender(LenderInfo obj)
+        {
+            int LenderId = 0;
+            string Query = $@"INSERT INTO [dbo].[LenderInfo]
+           ([FirstName]
+           ,[LastName]
+           ,[EmailAddress]
+           ,[Contact1]
+           ,[UserID]
+           ,[UserType]
+           ,[IsApproved]
+           ,[IsEmailVerified]
+           ,[UniqueIdentifier]
+           ,[SourceID]
+           ,[PriceRangeID]
+           ,[State]
+           ,[FirstTimeBuyer]
+           ,[IsMilitary]
+           ,[TypeID]
+           ,[BestTimeToCall])
+     VALUES
+           ('{obj.FirstName}'
+           ,'{obj.LastName}'
+           ,'{obj.EmailAddress}'
+           ,'{obj.Contact1}'
+           ,'{obj.UserID}'
+           ,'{obj.UserType}'
+           ,'{obj.IsApproved}'
+           ,'{obj.IsEmailVerified}'
+           ,'{obj.UniqueIdentifier}'
+           ,'{obj.SourceID}'
+           ,'{obj.PriceRangeID}'
+           ,'{obj.State}'
+           ,'{obj.FirstTimeBuyer}'
+           ,'{obj.IsMilitary}'
+           ,'{obj.TypeID}'
+           ,'{obj.BestTimeToCall}')";
+            try
+            {
+                Query = Query + $@" SELECT SCOPE_IDENTITY() as LenderId";
+                DataTable dt = General.FetchData(Query);
+                obj.LenderId = int.Parse(dt.Rows[0]["LenderId"].ToString());
+                return obj.LenderId;
+            }
+            catch (Exception ex)
+            {
+                return LenderId;
+            }
+        }
+        public DataTable GetAllRecordsVIAPhoneNo(string PhoneNo)
+        {
+            string Query = $@"select * from LeadInfo where Contact1='{PhoneNo}'";
+            DataTable dataTable = General.FetchData(Query);
+            return dataTable;
+        }
     }
 }

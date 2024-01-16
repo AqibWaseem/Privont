@@ -2,6 +2,7 @@
 using Privont.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using TrueDialog.Model;
 
 namespace Privont.Controllers
 {
@@ -211,8 +213,44 @@ namespace Privont.Controllers
             //TrueDialogIncomeMessage value = new TrueDialogIncomeMessage();
             ////JArray userArray = (JArray)jObject["value"];
             //value = jObject["value"].ToObject<TrueDialogIncomeMessage>();
+            int EntryUserID = 0;
+            int EntryUserType = 0;
+
+            #region Subscription message received
+            General.GetUserIDandUserTypeFromSubKey(value.Message, ref EntryUserID, ref EntryUserType);
+            if (EntryUserID > 0 && EntryUserType > 0)
+            {
+                LeadInfo leadInfo = new LeadInfo();
+                leadInfo = General.ConvertDataTable<LeadInfo>(leadInfo.GetAllRecordsVIAPhoneNo(value.PhoneNumber))[0];
+                General.ExecuteNonQuery($@"update LeadInfo set IsPrivontFamily=1 where LeadID=" + leadInfo.LeadID);
+                var res = new InvitationReferenceController().SendSMSandEmail(leadInfo.LeadID, 4, EntryUserID, EntryUserType);
+                if(res == "true")
+                {
+                    General.ExecuteNonQuery($@"Update LeadInfo set SMSSent=1 Where LeadID={leadInfo.LeadID}");
+                }
+               
+            }
+            #endregion
+
+            #region Claimed message received
+            General.GetUserIDandUserTypeFromClaimedKey(value.Message, ref EntryUserID, ref EntryUserType);
+            if (EntryUserID > 0 && EntryUserType > 0)
+            {
+                LeadInfo leadInfo = new LeadInfo();
+                leadInfo = General.ConvertDataTable<LeadInfo>(leadInfo.GetAllRecordsVIAPhoneNo(value.PhoneNumber))[0];
+
+                General.FetchData($@"Update LeadInfo Set isClaimLead=1,OptInSMSStatus=1  Where LeadID = {leadInfo.LeadID}");
+
+            }
+            #endregion
+
+
+
+
+
+
             string QueryInsert = $@"INSERT INTO TrueDialogIncomeMessage
-           (,CallbackTimestamp,
+           (CallbackTimestamp,
             Message
            ,PhoneNumber)
      VALUES

@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Web.Helpers;
 using System.Web.DynamicData;
+using System.EnterpriseServices;
 
 namespace Privont.Controllers
 {
@@ -705,11 +706,19 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
             string UserTypeName = "";
             if (UserType == 2)
             {
-                UserTypeName = "real estate";
+                UserTypeName = "Real Estate";
             }
             if (UserType == 3)
             {
                 UserTypeName = "Lender";
+            }
+            if (UserType == 4)
+            {
+                UserTypeName = "Lead";
+            }
+            if (UserType == 5)
+            {
+                UserTypeName = "Vendor";
             }
 
             string MailBody = @"<!DOCTYPE HTML PUBLIC '-//W3C//DTD XHTML 1.0 Transitional //EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
@@ -2016,8 +2025,32 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 return Json("false,");
             }
         }
+        public DataTable GetUserDetails(int UserID,int UserType)
+        {
+            string Query = $@"select * from 
+
+(
+Select RealEstateAgentId as UserID,(FirstName+' '+LastName)Name,EmailAddress,Contact1,2 as UserType 
+from RealEstateAgentInfo 
+
+union all
+Select LenderId as UserID,(FirstName+' '+LastName)Name,EmailAddress,Contact1,3 as UserType 
+from LenderInfo  
+union all
+
+SELECT       LeadID as UserID,(FirstName+' '+LastName)Name, EmailAddress, Contact1, 4 AS UserType
+FROM            LeadInfo
+
+union all
+SELECT        VendorID as UserID,(FirstName+' '+LastName)Name, EmailAddress, Contact1, 5 AS UserType
+FROM            VendorInfo
+
+)UserDetail where UserID={UserID} and UserType={UserType}";
+            DataTable dt=General.FetchData(Query);
+            return dt;
+        }
         [HttpPost]
-        public async Task<string> SendEmailAsyncString(string value, int UserType, string GeneratedLink, int UserID)
+        public async Task<string> SendEmailAsyncString(string value, int UserType, string GeneratedLink, int EntryUserID,int EntryUserType=0)
         {
             int ID = int.Parse(General.Decrypt(value, General.key));
             string Name = "";
@@ -2026,11 +2059,19 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             DataTable dt = new DataTable();
             if (UserType == 2)
             {
-                dt = General.FetchData($@"Select (FirstName+' '+LastName)Name,EmailAddress,Contact1 from RealEstateAgentInfo Where RealEstateAgentID = {ID}");
+                dt = GetUserDetails(ID,UserType);
             }
             if (UserType == 3)
             {
-                dt = General.FetchData($@"Select (FirstName+' '+LastName)Name,EmailAddress,Contact1 From lenderInfo Where LenderID = {ID}");
+                dt = GetUserDetails(ID, UserType);
+            }
+            if (UserType == 4)
+            {
+                dt = GetUserDetails(ID, UserType);
+            }
+            if (UserType == 5)
+            {
+                dt = GetUserDetails(ID, UserType);
             }
             Name = dt.Rows[0]["Name"].ToString();
             Email = dt.Rows[0]["EmailAddress"].ToString();
@@ -2039,7 +2080,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             {
                 PhoneNo = "+1" + PhoneNo;
             }
-            string InvitedPersonName = General.FetchData($@"Select (FirstName+' '+LastName)Name from RealEstateAgentInfo WHere RealEstateAgentID={UserID}").Rows[0]["Name"].ToString();
+            string InvitedPersonName = GetUserDetails(EntryUserID, EntryUserType).Rows[0]["Name"].ToString(); //General.FetchData($@"Select (FirstName+' '+LastName)Name from RealEstateAgentInfo WHere RealEstateAgentID={UserID}").Rows[0]["Name"].ToString();
             var subject = "Create Account";
             var body = LeadBodyHtml($@"{Name}", InvitedPersonName, GeneratedLink, UserType);
             //$"Please click the following link to verify your email address: <a href='{verificationLink}'>Verify Email</a>";
@@ -2146,10 +2187,208 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             }
 
         }
-        //public enum StatusCode
-        //{
-        //    Ok = 200,
-        //    BadRequest = 400,
-        //}
+        public enum ReferSource
+        {
+            Refer = 1,
+            Local = 2,
+        }
+        public static int GenerateUniqueIdentifier(int UserType)
+        {
+            int UniqueIdentifier = 0;
+            string Query = "";
+            if (UserType == 2)
+            {
+                Query = $@"SELECT right('00' + convert(nvarchar(150), count(RealEstateAgentId)+1), 2) AS 'UniqueIdentifier' from RealEstateAgentInfo";
+            }
+            else if (UserType == 3)
+            {
+                Query = $@"SELECT right('00' + convert(nvarchar(150), count(LenderId)+1), 2) AS 'UniqueIdentifier' from LenderInfo";
+            }
+            else if (UserType == 4)
+            {
+                Query = $@"SELECT right('00' + convert(nvarchar(150), count(LeadID)+1), 2) AS 'UniqueIdentifier' from LeadInfo";
+            }
+            else if (UserType == 5)
+            {
+                Query = $@"SELECT right('00' + convert(nvarchar(150), count(VendorID)+1), 2) AS 'UniqueIdentifier' from VendorInfo";
+            }
+            string str = "";
+
+            if (string.IsNullOrEmpty(Query))
+            {
+                str = DateTime.Now.ToString("yyMMdd") + 01;
+
+            }
+            else
+            {
+                str = DateTime.Now.ToString("yyMMdd") + General.FetchData(Query).Rows[0]["UniqueIdentifier"].ToString();
+            }
+
+            int.TryParse(str, out UniqueIdentifier);
+            return UniqueIdentifier;
+        }
+        public static DataTable dtFetchAllRealEstateAgentInfo(string WhereClause = "")
+        {
+            string Query = $@"
+Select RealEstateAgentInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
+ from RealEstateAgentInfo
+inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = OrganizationInfo.OrganizationID
+ inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
+ Where RealEstateAgentInfo.UserID=1 and RealEstateAgentInfo.UserType=2
+
+{WhereClause}
+
+";
+            DataTable dt = General.FetchData(Query);
+            return dt;
+        }
+        public static DataTable dtFetchAllLenderInfo(string WhereClause = "")
+        {
+            string Query = $@"Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack
+from LenderInfo 
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID
+ 
+inner join FavouriteLender
+on FavouriteLender.LenderID = LenderInfo.LenderId 
+inner join RealEstateAgentInfo on RealEstateAgentId = FavouriteLender.UserID 
+
+{WhereClause}
+
+";
+            DataTable dt = General.FetchData(Query);
+            return dt;
+        }
+        public static DataTable dtFetchAllLeadInfo(string WhereClause = "")
+        {
+            string Query = $@"
+select LeadInfo.*,LeadPricePoint.PricePoint,ReferTypeInfo.TypeTitle from LeadInfo
+LEFT OUTER JOIN LeadPricePoint ON LeadPricePoint.PricePointID = LeadInfo.PriceRangeID
+LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
+
+{WhereClause}
+
+";
+            DataTable dt = General.FetchData(Query);
+            return dt;
+        }
+        public string GenerateLink(int UserID,int UserType,int EntryUserID,int EntryUserType, LinkTypes type)
+        {
+            string value = General.Encrypt(UserID.ToString(), General.key);
+            string secretKey = General.secretKey;
+            // Construct the data to be encrypted
+            var dataToEncrypt = new
+            {
+                userId = UserID,
+                username = "Abdullah"
+            };
+            var dataToEncrypt2 = new
+            {
+                userId = UserType,
+                username = "Abdullah"
+            };
+            var dataToEncrypt3 = new
+            {
+                userId = UserType,
+                username = value
+            };
+
+            // Serialize the data to JSON
+            var serializer = new JavaScriptSerializer();
+            string jsonData = serializer.Serialize(dataToEncrypt);
+            string jsonData2 = serializer.Serialize(dataToEncrypt2);
+            // Encrypt the data
+            string encryptedData = General.Encrypt(jsonData, secretKey);
+            string encryptedData2 = General.Encrypt(jsonData2, secretKey);
+            // Construct the URL
+            string domainUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+
+            string generatedLink = "";
+            //ti = To Invited
+            //tuti To Invited User Type
+            //fiy = From Invited
+            //futy = From Invited User Type
+
+            if (type == LinkTypes.Refer)// For SignUp 
+            {
+                string tuti = General.Encrypt(UserType.ToString(), General.key);
+                generatedLink = domainUrl + "/InvitationReference/Refer?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + dataToEncrypt3 + "&futy=" + EntryUserType;
+
+            }
+            else if (type == LinkTypes.Claim)
+            {
+                string tuti = General.Encrypt(UserType.ToString(), General.key);
+
+                generatedLink = domainUrl + "/InvitationReference/CLead?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + dataToEncrypt3 + "&futy=" + EntryUserType;
+            }
+            return generatedLink;
+        }
+        public static int CheckTotalClaimedLeadByLenders(int LeadID,int LenderID)
+        {
+            int TotalClaimedLead = 0;
+            DataTable dt = General.FetchData($@"select count(*) as TotalClaimedLead from LeadClaimInfo where LEadID={LeadID} and ClaimingLender={LenderID}");
+            if(dt.Rows.Count > 0)
+            {
+                int.TryParse(dt.Rows[0]["TotalClaimedLead"].ToString(), out TotalClaimedLead);
+            }
+            return TotalClaimedLead;
+        }
+        public static int SentSMSForGetClaimed(int LeadID, int UserID, int UserType)
+        {
+            int status = 0;
+            string generatedLink = "";
+            generatedLink = new GeneralApisController().GenerateLink(LeadID, 4, UserID, UserType, LinkTypes.Refer);
+
+            //Checking SMS Setting Exist or not
+            DataTable dt = new SMSSetting().GetSMSDetailsGetSMSDetails(UserID, UserType);// General.FetchData($@"Select SMSDetail from SMSSetting Where UserID={UserID}");
+            if (dt.Rows.Count <= 0)
+            {
+                status = 2;
+                return status;
+            }
+            else if (dt.Rows[0]["SMSDetail"] == DBNull.Value)
+            {
+                status = 2;
+                return status;
+            }
+            string SMSDetail = dt.Rows[0]["SMSDetail"].ToString();
+
+
+            //Get Lead Information
+            DataTable LeadDetail = General.FetchData($@"Select * from LeadInfo Where LeadID ={LeadID}");
+
+            //Assigning to Model
+            LeadInfo obj = new LeadInfo();
+            obj.PhoneNo = LeadDetail.Rows[0]["PhoneNo"]
+                .ToString().Trim().Replace("-", "").Replace("_", "").Replace(",", "");
+            obj.FirstName = LeadDetail.Rows[0]["FirstName"].ToString();
+            obj.LastName = LeadDetail.Rows[0]["LastName"].ToString();
+
+            SMSDetail = SMSDetail.Replace("[Name]", obj.FirstName + " " + obj.LastName);
+            SMSDetail = SMSDetail.Replace("[SMSClaimedKey]", generatedLink);
+
+            string PhoneNumber = obj.PhoneNo;
+            string Message = SMSDetail;
+            var res = new InvitationReferenceController().SendSMS(PhoneNumber, Message);
+            string answer = res.Result;
+
+            if (answer == "true")
+            {
+                status = 1;
+                return status;
+            }
+            else
+            {
+                status = 3;
+                return status;
+            }
+        }
     }
 }
