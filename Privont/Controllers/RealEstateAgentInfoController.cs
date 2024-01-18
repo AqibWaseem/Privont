@@ -16,6 +16,8 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using System.Web.Services.Description;
+using System.Collections;
+using TrueDialog.Model;
 
 namespace Privont.Controllers
 {
@@ -413,10 +415,13 @@ namespace Privont.Controllers
         [HttpPost]
         public JsonResult UpdateUserProfile(RealEstateAgentInfo collection)
         {
+            string Query = "";
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+
             DataTable dt = new RealEstateAgentInfo().UserExistanceInfo(collection.username);
             if (dt.Rows.Count > 0)
             {
-                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse = new Dictionary<string, object>();
                 JSResponse.Add("Status", 401);
                 JSResponse.Add("Message", "Username Already Exist Please Use different Username!");
                 JSResponse.Add("Data", DBNull.Value);
@@ -435,28 +440,32 @@ namespace Privont.Controllers
             if (collection.UserType == 2)
             {
                 RealEstateAgentId = Model.UpdateProfileRecord(collection);
+                bool Response = new SocialMediaInfoController().InsertSocialMediaVIAUserIDandUserType(collection.lstSocialMediaInfo, RealEstateAgentId, 2);
             }
             else if (collection.UserType == 3)
             {
                 LenderInfo LenderCollection = new LenderInfo();
                 General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LenderInfo>(collection, LenderCollection);
                 RealEstateAgentId = new LenderInfo().UpdateProfileRecord(LenderCollection);
+                bool Response = new SocialMediaInfoController().InsertSocialMediaVIAUserIDandUserType(collection.lstSocialMediaInfo, RealEstateAgentId, 2);
             }
             else if (collection.UserType == 4)
             {
                 LeadInfo LeadInfoCollection = new LeadInfo();
                 General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LeadInfo>(collection, LeadInfoCollection);
                 RealEstateAgentId = new LeadInfo().UpdateProfileRecord(LeadInfoCollection);
+                bool Response = new SocialMediaInfoController().InsertSocialMediaVIAUserIDandUserType(collection.lstSocialMediaInfo, RealEstateAgentId, 2);
             }
             else if (collection.UserType == 5)
             {
                 VendorInfo VendorInfoCollection = new VendorInfo();
                 General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, VendorInfo>(collection, VendorInfoCollection);
                 RealEstateAgentId = new VendorInfo().UpdateProfileRecord(VendorInfoCollection);
+                bool Response = new SocialMediaInfoController().InsertSocialMediaVIAUserIDandUserType(collection.lstSocialMediaInfo, RealEstateAgentId, 2);
             }
             if (RealEstateAgentId == 0)
             {
-                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse = new Dictionary<string, object>();
                 JSResponse.Add("Status", HttpStatusCode.BadRequest);
                 JSResponse.Add("Message", "Unabled to Update Records... Please contact to the administration!");
                 JSResponse.Add("Data", DBNull.Value);
@@ -476,25 +485,59 @@ namespace Privont.Controllers
                 List<Dictionary<string, object>> dbrows = new List<Dictionary<string, object>>();
                 if (collection.UserType == 2)
                 {
-                    dbrows = new General().GetAllRowsInDictionary(Model.GetAllRecord(" and RealEstateAgentId=" + RealEstateAgentId));
+
+                    Query = $@"select RealEstateAgentInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
+ from RealEstateAgentInfo
+inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = OrganizationInfo.OrganizationID
+ inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
+ Where  RealEstateAgentId=" + RealEstateAgentId;
+                    dt = General.FetchData(Query);
+                    List<RealEstateAgentInfo> ModelLst = new RealEstateAgentInfo().GetRealEstateAgentRecordsInList(dt, collection.UserType);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "Data Updated Successfully!");
+                    JSResponse.Add("Data", ModelLst);
                 }
                 else if (collection.UserType == 3)
                 {
-                    dbrows = new General().GetAllRowsInDictionary(new LenderInfo().GetAllRecord(" and LenderId=" + RealEstateAgentId));
+                    Query = $@"Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode from LenderInfo 
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+
+ Where LenderId=" + RealEstateAgentId;
+                    dt = General.FetchData(Query);
+                    List<LenderInfo> ModelLst = new LenderInfo().GetLenderInfoRecordsInList(dt, collection.UserType);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "Data Updated Successfully!");
+                    JSResponse.Add("Data", ModelLst);
                 }
                 else if (collection.UserType == 4)
                 {
-                    dbrows = new General().GetAllRowsInDictionary(new LeadInfo().GetAllRecord(" and LeadID=" + RealEstateAgentId));
+
+                    Query = $@"select * from LeadInfo where LeadID=" + RealEstateAgentId;
+                    dt = General.FetchData(Query);
+
+                    List<LeadInfo> ModelLst = new LeadInfo().GetLeadInfoRecordsInList(dt, collection.UserType);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "Data Updated Successfully!");
+                    JSResponse.Add("Data", ModelLst);
                 }
                 else if (collection.UserType == 5)
                 {
-                    dbrows = new General().GetAllRowsInDictionary(new VendorInfo().GetAllRecord(" and VendorID=" + RealEstateAgentId));
-                }
+                    Query = $@"select * from VendorInfo
+inner join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo.OrganizationID
+ inner join ZipCode on VendorInfo.ZipCodeID = ZipCode.ZipCodeID
+where VendorID=" + RealEstateAgentId;
+                    dt = General.FetchData(Query);
 
-                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Status", HttpStatusCode.OK);
-                JSResponse.Add("Message", "Data Updated Successfully!");
-                JSResponse.Add("Data", dbrows);
+                    List<VendorInfo> ModelLst = new VendorInfo().GetVendorInfoRecordsInList(dt, collection.UserType);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.OK);
+                    JSResponse.Add("Message", "Data Updated Successfully!");
+                    JSResponse.Add("Data", ModelLst);
+                }
 
                 JsonResult jr = new JsonResult()
                 {
@@ -528,27 +571,26 @@ namespace Privont.Controllers
  from RealEstateAgentInfo
 inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = OrganizationInfo.OrganizationID
  inner join ZipCode on RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
- Where UserName is not null and RealEstateAgentId=" + UserID;
+ Where  RealEstateAgentId=" + UserID;
                     dt = General.FetchData(Query);
+                    List<RealEstateAgentInfo> ModelLst= new RealEstateAgentInfo().GetRealEstateAgentRecordsInList(dt, UserType);
+                    //                     dtSocialMedia=General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+                    //UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+                    //UserSocialMediaInfo.UserTypeID 
 
-                     dtSocialMedia=General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
-UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
-UserSocialMediaInfo.UserTypeID 
-                         
-FROM            SocialMediaInfo LEFT OUTER JOIN
-                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
-						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
-                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+                    //FROM            SocialMediaInfo LEFT OUTER JOIN
+                    //                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+                    //						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+                    //                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
 
 
-                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    //dbrows = new General().GetAllRowsInDictionary(dt);
 
                     //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
                     Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                     JSResponse.Add("Status", HttpStatusCode.OK);
                     JSResponse.Add("Message", "User Profile Information!");
-                    JSResponse.Add("Data", dbrows);
-                    JSResponse.Add("SocialMedia", dbSocialMedia);
+                    JSResponse.Add("Data", ModelLst);
 
                     jr = new JsonResult()
                     {
@@ -566,26 +608,26 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
 left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
 left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
 
- Where UserName is not null and LenderId=" + UserID;
+ Where LenderId=" + UserID;
                     dt = General.FetchData(Query);
-                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
-UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
-UserSocialMediaInfo.UserTypeID 
-                         
-FROM            SocialMediaInfo LEFT OUTER JOIN
-                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
-						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
-                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+                    List<LenderInfo> ModelLst = new LenderInfo().GetLenderInfoRecordsInList(dt, UserType);
+                    //                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+                    //UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+                    //UserSocialMediaInfo.UserTypeID 
+
+                    //FROM            SocialMediaInfo LEFT OUTER JOIN
+                    //                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+                    //						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+                    //                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
 
 
-                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    //dbrows = new General().GetAllRowsInDictionary(dt);
 
                     //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
                     Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                     JSResponse.Add("Status", HttpStatusCode.OK);
                     JSResponse.Add("Message", "User Profile Information!");
-                    JSResponse.Add("Data", dbrows);
-                    JSResponse.Add("SocialMedia", dbSocialMedia);
+                    JSResponse.Add("Data", ModelLst);
 
                     jr = new JsonResult()
                     {
@@ -601,24 +643,25 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
                 {
                     Query = $@"select * from LeadInfo where LeadID=" + UserID;
                     dt = General.FetchData(Query);
-                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
-UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
-UserSocialMediaInfo.UserTypeID 
+
+                    List<LeadInfo> ModelLst = new LeadInfo().GetLeadInfoRecordsInList(dt, UserType);
+//                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+//UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+//UserSocialMediaInfo.UserTypeID 
                          
-FROM            SocialMediaInfo LEFT OUTER JOIN
-                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
-						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
-                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+//FROM            SocialMediaInfo LEFT OUTER JOIN
+//                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+//						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+//                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
 
 
-                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    //dbrows = new General().GetAllRowsInDictionary(dt);
 
                     //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
                     Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                     JSResponse.Add("Status", HttpStatusCode.OK);
                     JSResponse.Add("Message", "User Profile Information!");
-                    JSResponse.Add("Data", dbrows);
-                    JSResponse.Add("SocialMedia", dbSocialMedia);
+                    JSResponse.Add("Data", ModelLst);
 
                     jr = new JsonResult()
                     {
@@ -632,26 +675,32 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
                 }
                 else if (UserType == 5)
                 {
-                    Query = $@"select * from VendorInfo where VendorInfo.VendorID=" + UserID;
+                    Query = $@"select * from VendorInfo
+inner join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo.OrganizationID
+ inner join ZipCode on VendorInfo.ZipCodeID = ZipCode.ZipCodeID
+where VendorID=" + UserID;
                     dt = General.FetchData(Query);
-                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
-UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
-UserSocialMediaInfo.UserTypeID 
+
+                    List<VendorInfo> ModelLst = new VendorInfo().GetVendorInfoRecordsInList(dt, UserType);
+
+
+//                    dtSocialMedia = General.FetchData($@"SELECT        SocialMediaInfo.SocialMediaID, SocialMediaInfo.SocialMediaTitle, UserSocialMediaInfo.ProfileName, 
+//UserSocialMediaInfo.ProfileLink, UserSocialMediaInfo.UserID, 
+//UserSocialMediaInfo.UserTypeID 
                          
-FROM            SocialMediaInfo LEFT OUTER JOIN
-                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
-						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
-                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
+//FROM            SocialMediaInfo LEFT OUTER JOIN
+//                         UserSocialMediaInfo ON SocialMediaInfo.SocialMediaID = UserSocialMediaInfo.SocialMediaID
+//						 where UserSocialMediaInfo.UserID={UserID} and UserTypeID={UserType}");
+//                    dbSocialMedia = new General().GetAllRowsInDictionary(dtSocialMedia);
 
 
-                    dbrows = new General().GetAllRowsInDictionary(dt);
+                    //dbrows = new General().GetAllRowsInDictionary(dt);
 
                     //jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "User Profile Information!", dbrows);
                     Dictionary<string, object> JSResponse = new Dictionary<string, object>();
                     JSResponse.Add("Status", HttpStatusCode.OK);
                     JSResponse.Add("Message", "User Profile Information!");
-                    JSResponse.Add("Data", dbrows);
-                    JSResponse.Add("SocialMedia", dbSocialMedia);
+                    JSResponse.Add("Data", ModelLst);
 
                     jr = new JsonResult()
                     {

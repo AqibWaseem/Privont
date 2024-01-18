@@ -12,6 +12,9 @@ namespace Privont.Models
         public string VendorName { get; set; }
         public string PhoneNo { get; set; }
         public string RegistrationNo { get; set; }
+        public string Longitude { get; set; }
+        public string Latitude { get; set; }
+        public string CompanyName { get; set; }
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();
@@ -99,14 +102,22 @@ left outer join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo
         public int UpdateProfileRecord(VendorInfo obj)
         {
             string Query = $@"UPDATE [dbo].[VendorInfo]
-   SET [VendorName] = '{obj.VendorName}'
-      ,[StreetName] = '{obj.StreetName}'
-      ,[StreetNo] = '{obj.StreetNo}'
+   SET [FirstName] = '{obj.FirstName}'
+      ,[LastName] = '{obj.LastName}'
+      ,[LicenseNo] = '{obj.LicenseNo}'
+      ,[OfficeNo] = '{obj.OfficeNo}'
       ,[Website] = '{obj.Website}'
       ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Contact1] = '{obj.Contact1}'
+      ,[Contact2] = '{obj.Contact2}'
+      ,[OrganizationID] = '{obj.OrganizationID}'
+      ,[ZipCodeID] = '{obj.ZipCodeID}'
+      ,[StreetNo] = '{obj.StreetNo}'
+      ,[StreetName] = '{obj.StreetName}'
       ,[Remarks] = '{obj.Remarks}'
-      ,[FirstName] = '{obj.FirstName}'
-      ,[LastName] = '{obj.LastName}'
+      ,[CompanyName] = '{obj.CompanyName}'
+      ,[Longitude] = '{obj.Longitude}'
+      ,[Latitude] = '{obj.Latitude}'
  WHERE VendorID=" + obj.VendorID;
             try
             {
@@ -167,6 +178,18 @@ left outer join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo
             {
                 return VendorID;
             }
+        }
+        public List<VendorInfo> GetVendorInfoRecordsInList(DataTable dt, int UserType)
+        {
+            List<VendorInfo> lst = new List<VendorInfo>();
+            lst = General.ConvertDataTable<VendorInfo>(dt);
+            foreach (var dr in lst)
+            {
+                DataTable dtSocialMediaAccount = new SocialMediaInfo().GetAllRecordsInDataTable(dr.VendorID, UserType);
+                List<SocialMediaInfo> lstSocialMedia = new SocialMediaInfo().GetAllRecordsInList(dtSocialMediaAccount);
+                dr.lstSocialMediaInfo = lstSocialMedia;
+            }
+            return lst;
         }
     }
 }

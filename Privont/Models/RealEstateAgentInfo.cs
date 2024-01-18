@@ -142,10 +142,16 @@ where username is not null and username='{UserName}'");
             string Query = $@"UPDATE [dbo].[RealEstateAgentInfo]
    SET [FirstName] = '{obj.FirstName}'
       ,[LastName] = '{obj.LastName}'
-      ,[StreetName] = '{obj.StreetName}'
-      ,[StreetNo] = '{obj.StreetNo}'
+      ,[LicenseNo] = '{obj.LicenseNo}'
+      ,[OfficeNo] = '{obj.OfficeNo}'
       ,[Website] = '{obj.Website}'
       ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Contact1] = '{obj.Contact1}'
+      ,[Contact2] = '{obj.Contact2}'
+      ,[OrganizationID] = '{obj.OrganizationID}'
+      ,[ZipCodeID] = '{obj.ZipCodeID}'
+      ,[StreetNo] = '{obj.StreetNo}'
+      ,[StreetName] = '{obj.StreetName}'
       ,[Remarks] = '{obj.Remarks}'
  WHERE RealEstateAgentID=" + obj.RealEstateAgentId;
             try
@@ -206,6 +212,18 @@ where username is not null and username='{UserName}'");
             {
                 return RealEstateAgentId;
             }
+        }
+        public List<RealEstateAgentInfo>GetRealEstateAgentRecordsInList(DataTable dt,int UserType)
+        {
+            List<RealEstateAgentInfo> lst=new List<RealEstateAgentInfo>();
+            lst = General.ConvertDataTable<RealEstateAgentInfo>(dt);
+            foreach (var dr in lst)
+            {
+                DataTable dtSocialMediaAccount = new SocialMediaInfo().GetAllRecordsInDataTable(dr.RealEstateAgentId, UserType);
+                List <SocialMediaInfo> lstSocialMedia = new SocialMediaInfo().GetAllRecordsInList(dtSocialMediaAccount);
+                dr.lstSocialMediaInfo = lstSocialMedia;
+            }
+            return lst;
         }
     }
 }

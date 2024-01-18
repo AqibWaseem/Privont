@@ -137,8 +137,11 @@ GetDate(),
             string Query = $@"UPDATE [dbo].[LeadInfo]
    SET [FirstName] = '{obj.FirstName}'
       ,[LastName] = '{obj.LastName}'
+      ,[Contact1] = '{obj.Contact1}'
+      ,[PhoneNo] = '{obj.PhoneNo}'
     
       ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Remarks] = '{obj.Remarks}'
  WHERE LeadID=" + obj.LeadID;
             try
             {
@@ -214,5 +217,22 @@ GetDate(),
             DataTable dataTable = General.FetchData(Query);
             return dataTable;
         }
+
+
+
+        public List<LeadInfo> GetLeadInfoRecordsInList(DataTable dt, int UserType)
+        {
+            List<LeadInfo> lst = new List<LeadInfo>();
+            lst = General.ConvertDataTable<LeadInfo>(dt);
+            foreach (var dr in lst)
+            {
+                DataTable dtSocialMediaAccount = new SocialMediaInfo().GetAllRecordsInDataTable(dr.LeadID, UserType);
+                List<SocialMediaInfo> lstSocialMedia = new SocialMediaInfo().GetAllRecordsInList(dtSocialMediaAccount);
+                dr.lstSocialMediaInfo = lstSocialMedia;
+            }
+            return lst;
+        }
+
+
     }
 }

@@ -400,6 +400,7 @@
     <Compile Include="Controllers\SocialMediaInfoController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
     <Compile Include="Controllers\VendorInfoController.cs" />
+    <Compile Include="Controllers\ZipCodeController.cs" />
     <Compile Include="DropDown.cs" />
     <Compile Include="EasyPayPaymentIntegreation.cs" />
     <Compile Include="General.cs" />
@@ -10983,6 +10984,7 @@
     <Folder Include="Views\PaymentGatway\" />
     <Folder Include="Views\SocialMediaInfo\" />
     <Folder Include="Views\TrueDialog\" />
+    <Folder Include="Views\ZipCode\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

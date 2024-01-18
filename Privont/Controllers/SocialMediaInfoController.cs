@@ -35,7 +35,7 @@ namespace Privont.Controllers
             return jr;
         }
         [HttpPost]
-        public JsonResult POSTSocialMediaInfo(List<UserSocialMediaInfo> collection)
+        public JsonResult POSTSocialMediaInfo(List<SocialMediaInfo> collection)
         {
             DataTable dt = new DataTable();
 
@@ -86,12 +86,12 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
             }
             
         }
-        public bool InsertSocialMediaVIAUserIDandUserType(List<UserSocialMediaInfo> collection)
+        public bool InsertSocialMediaVIAUserIDandUserType(List<SocialMediaInfo> collection,int UserID=0,int UserTypeID=0)
         {
             try
             {
-                string Query = $@" delete from UserSocialMediaInfo where UserTypeID=" + collection[0].UserTypeID + " and UserID=" + collection[0].UserID;
-                foreach (UserSocialMediaInfo item in collection)
+                string Query = $@" delete from UserSocialMediaInfo where UserTypeID=" + UserTypeID + " and UserID=" + UserTypeID;
+                foreach (SocialMediaInfo item in collection)
                 {
                     Query = Query + Environment.NewLine;
                     Query = Query + $@"      INSERT INTO [dbo].[UserSocialMediaInfo]
@@ -104,8 +104,8 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
            ({item.SocialMediaID}
            ,'{item.ProfileName}'
            ,'{item.ProfileLink}'
-           ,{item.UserID}
-           ,{item.UserTypeID})";
+           ,{UserID}
+           ,{UserTypeID})";
                     Query = Query + Environment.NewLine;
                 }
                 General.ExecuteNonQuery(Query);

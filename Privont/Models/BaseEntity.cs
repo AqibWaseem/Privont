@@ -38,6 +38,7 @@ namespace Privont.Models
         public int IsMilitary { get; set; }
         public int TypeID { get; set; }
         public int BestTimeToCall { get; set; }
+        public List<SocialMediaInfo> lstSocialMediaInfo { get;set; }
         
     }
 }

@@ -119,10 +119,16 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
             string Query = $@"UPDATE [dbo].[LenderInfo]
    SET [FirstName] = '{obj.FirstName}'
       ,[LastName] = '{obj.LastName}'
-      ,[StreetName] = '{obj.StreetName}'
-      ,[StreetNo] = '{obj.StreetNo}'
+      ,[LicenseNo] = '{obj.LicenseNo}'
+      ,[OfficeNo] = '{obj.OfficeNo}'
       ,[Website] = '{obj.Website}'
       ,[EmailAddress] = '{obj.EmailAddress}'
+      ,[Contact1] = '{obj.Contact1}'
+      ,[PhoneNo] = '{obj.Contact2}'
+      ,[OrganizationID] = '{obj.OrganizationID}'
+      ,[ZipCodeID] = '{obj.ZipCodeID}'
+      ,[StreetNo] = '{obj.StreetNo}'
+      ,[StreetName] = '{obj.StreetName}'
       ,[Remarks] = '{obj.Remarks}'
  WHERE LenderId=" + obj.LenderId;
             try
@@ -189,6 +195,19 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
             string Query = $@"select * from LeadInfo where Contact1='{PhoneNo}'";
             DataTable dataTable = General.FetchData(Query);
             return dataTable;
+        }
+
+        public List<LenderInfo> GetLenderInfoRecordsInList(DataTable dt, int UserType)
+        {
+            List<LenderInfo> lst = new List<LenderInfo>();
+            lst = General.ConvertDataTable<LenderInfo>(dt);
+            foreach (var dr in lst)
+            {
+                DataTable dtSocialMediaAccount = new SocialMediaInfo().GetAllRecordsInDataTable(dr.LenderId, UserType);
+                List<SocialMediaInfo> lstSocialMedia = new SocialMediaInfo().GetAllRecordsInList(dtSocialMediaAccount);
+                dr.lstSocialMediaInfo = lstSocialMedia;
+            }
+            return lst;
         }
     }
 }
