@@ -72,7 +72,7 @@ namespace Privont.Controllers
                 if (collection.LenderId == 0)
                 {
                     collection.UserID = 0;
-                    DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}' union Select UserName from LenderInfo Where UserName = '{collection.username}'union Select UserName from USerInfo Where UserName = '{collection.username}'");
+                    DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.Username}' union Select UserName from LenderInfo Where UserName = '{collection.Username}'union Select UserName from USerInfo Where UserName = '{collection.Username}'");
                     if (dt.Rows.Count > 0)
                     {
                         ViewBag.Organization = new DropDown().GetOrganizationList("", collection.OrganizationID);
@@ -84,7 +84,7 @@ namespace Privont.Controllers
                 }
                 else
                 {
-                    DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}'  union Select UserName from LenderInfo Where UserName = '{collection.username}' and LenderID != {collection.LenderId}union Select UserName from USerInfo Where UserName = '{collection.username}'");
+                    DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.Username}'  union Select UserName from LenderInfo Where UserName = '{collection.Username}' and LenderID != {collection.LenderId}union Select UserName from USerInfo Where UserName = '{collection.Username}'");
                     if (dt.Rows.Count > 0)
                     {
                         ViewBag.Organization = new DropDown().GetOrganizationList("", collection.OrganizationID);
@@ -173,7 +173,7 @@ on FavouriteLender.LenderID = LenderInfo.LenderId Where LenderInfo.LenderId=  {L
         [HttpPost]
         public ActionResult SignUp(LenderInfo collection)
         {
-            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}' union Select UserName from LenderInfo Where UserName = '{collection.username}'union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.Username}' union Select UserName from LenderInfo Where UserName = '{collection.Username}'union Select UserName from USerInfo Where UserName = '{collection.Username}'");
             if (dt.Rows.Count > 0)
             {
                 ViewBag.Organization = new DropDown().GetOrganizationList("", collection.OrganizationID);
@@ -241,7 +241,7 @@ GROUP BY UserID
         [HttpPost]
         public JsonResult PostLenderInfo(LenderInfo collection)
         {
-            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}' union Select UserName from LenderInfo Where UserName = '{collection.username}'union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.Username}' union Select UserName from LenderInfo Where UserName = '{collection.Username}'union Select UserName from USerInfo Where UserName = '{collection.Username}'");
             if (dt.Rows.Count > 0)
             {
                 JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.Conflict, "UserName Already Exist Please Use different UserName!", null);
@@ -270,7 +270,7 @@ GROUP BY UserID
         [HttpPost]
         public JsonResult UpdateLenderInfo(LenderInfo collection)
         {
-            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.username}'  union Select UserName from LenderInfo Where UserName = '{collection.username}' and LenderID != {collection.LenderId}union Select UserName from USerInfo Where UserName = '{collection.username}'");
+            DataTable dt = General.FetchData($@"Select USerName from RealEstateAgentInfo Where UserName = '{collection.Username}'  union Select UserName from LenderInfo Where UserName = '{collection.Username}' and LenderID != {collection.LenderId}union Select UserName from USerInfo Where UserName = '{collection.Username}'");
             if (dt.Rows.Count > 0)
             {
 

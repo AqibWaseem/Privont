@@ -247,11 +247,11 @@ QUnit.test( "test descriptive label used alongside error label", function( asser
 QUnit.test( "test custom errorElement", function( assert ) {
 	assert.expect( 4 );
 	var form = $( "#userForm" ),
-		field = $( "#username" );
+		field = $( "#Username" );
 
 	form.validate( {
 		messages: {
-			username: "missing"
+			Username: "missing"
 		},
 		errorElement: "label"
 	} );

@@ -46,7 +46,7 @@ $(function () {
 	});
 	
 	//Username 8 character
-	$('#username').formatter({
+	$('#Username').formatter({
 	  'pattern': '{{aaaaaaaa}}',
 	  'persistent': true
 	});

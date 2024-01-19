@@ -637,8 +637,9 @@ Where LeadClaimInfo.LeadID={LeadID}");
 
 
         #region APIs
-        public JsonResult GetLeadsInformation(int UserID, int UserType, int Status = 0, int LastLeadID=0)
+        public JsonResult GetLeadsInformation(int UserID, int UserType, int Status = 0, int PageNo=1)
         {
+            int TotalRowsShow = 30;
             DataTable dataTable = new DataTable();
             string sql = "";
             string whereclause = " ";
@@ -657,50 +658,83 @@ Where LeadClaimInfo.LeadID={LeadID}");
             }
             if (UserType == 3)
             {
-
-                sql = $@" DECLARE @LenderID AS INT = {UserID}              
+                sql = $@"DECLARE @LenderID AS INT = {UserID}             
 DECLARE @TotalLenders AS INT = 0
+DECLARE @PageSize AS INT = {TotalRowsShow} 
+DECLARE @PageNumber AS INT = {PageNo}
 
 SELECT @TotalLenders = COUNT(*) FROM FavouriteLender WHERE LenderID = @LenderID
 
 ;WITH LeadsCTE AS (
-   SELECT        CASE WHEN DATEDIFF(MINUTE, EntryDateTime, GETDATE()) <= LeadExpiryTime.ExpiryTime THEN 1 ELSE 0 END AS IsBelowTime, LeadInfo.LeadID, LeadInfo.FirstName, LeadInfo.LastName, ISNULL(LeadInfo.OptInSMSStatus, 
-                         0) AS OptInSMSStatus, LeadInfo.PhoneNo, LeadInfo.EmailAddress, LeadInfo.EntryDateTime, LeadExpiryTime.ExpiryTime, ISNULL(LeadInfo.ReadytoOptin, 0) AS ReadytoOptin, LeadInfo.UserID, 
-                         RealEstateAgentInfo.RealEstateAgentId, LeadInfo.isClaimLead, LeadInfo.SMSSent, LeadInfo.IsApproved, LeadInfo.IsEmailVerified, LeadInfo.UniqueIdentifier, LeadInfo.PriceRangeID, LeadInfo.State, LeadInfo.FirstTimeBuyer, 
-                         LeadInfo.IsMilitary, LeadInfo.TypeID, LeadInfo.BestTimeToCall, LeadInfo.IsPrivontFamily, LeadInfo.PricePointID, ZipCode.ZipCode, LeadPricePoint.PricePoint
-FROM            LeadInfo INNER JOIN
-                         RealEstateAgentInfo ON RealEstateAgentInfo.RealEstateAgentId = LeadInfo.UserID INNER JOIN
-                         LeadExpiryTime ON RealEstateAgentInfo.RealEstateAgentId = LeadExpiryTime.UserID INNER JOIN
-                         LeadPricePoint ON LeadInfo.PricePointID = LeadPricePoint.PricePointID AND LeadInfo.PriceRangeID = LeadPricePoint.PricePointID INNER JOIN
-                         ZipCode ON RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
-WHERE        (LeadInfo.LeadID > {LastLeadID}) {whereclause}
+   SELECT
+        CASE WHEN DATEDIFF(MINUTE, EntryDateTime, GETDATE()) <= LeadExpiryTime.ExpiryTime THEN 1 ELSE 0 END AS IsBelowTime,
+        LeadInfo.LeadID, LeadInfo.FirstName, LeadInfo.LastName, ISNULL(LeadInfo.OptInSMSStatus, 0) AS OptInSMSStatus,
+        LeadInfo.PhoneNo, LeadInfo.EmailAddress, LeadInfo.EntryDateTime, LeadExpiryTime.ExpiryTime, ISNULL(LeadInfo.ReadytoOptin, 0) AS ReadytoOptin,
+        LeadInfo.UserID, RealEstateAgentInfo.RealEstateAgentId, LeadInfo.isClaimLead, LeadInfo.SMSSent, LeadInfo.IsApproved, LeadInfo.IsEmailVerified,
+        LeadInfo.UniqueIdentifier, LeadInfo.PriceRangeID, LeadInfo.State, LeadInfo.FirstTimeBuyer, LeadInfo.IsMilitary, LeadInfo.TypeID,
+        LeadInfo.BestTimeToCall, LeadInfo.IsPrivontFamily, LeadInfo.PricePointID, ZipCode.ZipCode, LeadPricePoint.PricePoint
+   FROM
+        LeadInfo
+        INNER JOIN RealEstateAgentInfo ON RealEstateAgentInfo.RealEstateAgentId = LeadInfo.UserID
+        INNER JOIN LeadExpiryTime ON RealEstateAgentInfo.RealEstateAgentId = LeadExpiryTime.UserID and LeadExpiryTime.UserType=2
+        INNER JOIN LeadPricePoint ON LeadInfo.PricePointID = LeadPricePoint.PricePointID AND LeadInfo.PriceRangeID = LeadPricePoint.PricePointID
+        INNER JOIN ZipCode ON RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
+   WHERE
+           (LeadInfo.LeadID > 0) {whereclause}
 )
-SELECT TOP 30 *
+
+
+
+SELECT  *,((SELECT  COUNT(*) FROM LeadsCTE) /  @PageSize )TotalPages,@PageNumber+1 as NextPageNo
 FROM LeadsCTE
 WHERE
     (@TotalLenders = 0 AND IsBelowTime = 0)
     OR @TotalLenders > 0
-ORDER BY LeadID ASC;
-
+ORDER BY LeadID DESC
+OFFSET (@PageNumber - 1) * @PageSize ROWS
+FETCH NEXT @PageSize ROWS ONLY;
 ";
             }
             else
             {
-                sql = $@"  SELECT TOP (30) 
-  * FROM
-    LeadInfo LI
-LEFT OUTER JOIN
-    LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID 
-	 where LeadID>{LastLeadID}  {whereclause} Order by LeadID asc
+                sql = $@"DECLARE @PageSize INT = {TotalRowsShow};
+DECLARE @PageNumber INT =  {PageNo};
+
+with LeadsDetails as (
+        SELECT
+            LI.*,
+            LPP.PricePoint  
+        FROM
+            LeadInfo LI
+        LEFT OUTER JOIN
+            LeadPricePoint LPP ON LI.PricePointID = LPP.PricePointID and LI.PriceRangeID=LPP.PricePointID
+        WHERE
+            LeadID > 0  {whereclause}
+    )
+
+SELECT
+    *,((SELECT  COUNT(*) FROM LeadsDetails) /  @PageSize )TotalPages,@PageNumber+1 as NextPageNo
+FROM
+   LeadsDetails
+WHERE 1=1
+ORDER BY
+    LeadID DESC
+	
+	OFFSET (@PageNumber - 1) * @PageSize ROWS
+FETCH NEXT @PageSize ROWS ONLY
+;
 ";
              
             }
-            dataTable = General.FetchData(sql); ;
+            dataTable = General.FetchData(sql); 
             List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
             Dictionary<string, object> JSResponse = new Dictionary<string, object>();
             JSResponse.Add("Status", HttpStatusCode.OK);
             JSResponse.Add("Message", "Lead Information!");
-            JSResponse.Add("Total Records", dataTable.Rows.Count);
+            JSResponse.Add("Total Records Showing", dataTable.Rows.Count);
+            JSResponse.Add("Total Page", (dataTable.Rows.Count> 0 ? dataTable.Rows[0]["TotalPages"].ToString() : "No more page exist"));
+            JSResponse.Add("Next Page", (dataTable.Rows.Count > 0 ? 
+                (int.Parse(dataTable.Rows[0]["TotalPages"].ToString()) >= int.Parse(dataTable.Rows[0]["NextPageNo"].ToString()) ? dataTable.Rows[0]["NextPageNo"].ToString(): "No more page exist") : "No more page exist"));
             JSResponse.Add("Data", dbrows);
 
             JsonResult jr = new JsonResult()

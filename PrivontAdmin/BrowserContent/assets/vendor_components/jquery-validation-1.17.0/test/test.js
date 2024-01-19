@@ -14,7 +14,7 @@ $.mockjax( {
 $.mockjax( {
 	url: "users.php",
 	data: {
-		username: /Peter2?|asdf/
+		Username: /Peter2?|asdf/
 	},
 	responseText: "false",
 	responseStatus: 200,
@@ -24,7 +24,7 @@ $.mockjax( {
 $.mockjax( {
 	url: "users2.php",
 	data: {
-		username: "asdf"
+		Username: "asdf"
 	},
 	responseText: "\"asdf is already taken, please try something else\"",
 	responseStatus: 200,
@@ -115,7 +115,7 @@ QUnit.test( "validate() without elements, with non-form elements", function( ass
 
 QUnit.test( "valid() plugin method", function( assert ) {
 	var form = $( "#userForm" ),
-		input = $( "#username" );
+		input = $( "#Username" );
 
 	form.validate();
 	assert.ok( !form.valid(), "Form isn't valid yet" );
@@ -418,7 +418,7 @@ QUnit.test( "submitHandler keeps submitting button", function( assert ) {
 			assert.deepEqual( hidden.name, button.name );
 		}
 	} );
-	$( "#username" ).val( "bla" );
+	$( "#Username" ).val( "bla" );
 	button = $( "#userForm :submit" )[ 0 ];
 	event = $.Event( "click" );
 	event.preventDefault();
@@ -457,7 +457,7 @@ QUnit.test( "handle() should ensure the value of the used submit button is passe
 	var v = $form.validate( {
 		debug: true,
 		rules: {
-			username: {
+			Username: {
 				remote: {
 					url: "issue1508.php"
 				}
@@ -494,7 +494,7 @@ QUnit.test( "handle() should ensure the value of the used submit button is passe
 		return false;
 	} );
 
-	$( "input[name='username']", $form ).val( "something" );
+	$( "input[name='Username']", $form ).val( "something" );
 
 	// Submit the form
 	$( button ).click();
@@ -625,28 +625,28 @@ QUnit.test( "showErrors()", function( assert ) {
 QUnit.test( "showErrors(), allow empty string and null as default message", function( assert ) {
 	$( "#userForm" ).validate( {
 		rules: {
-			username: {
+			Username: {
 				required: true,
 				minlength: 3
 			}
 		},
 		messages: {
-			username: {
+			Username: {
 				required: "",
 				minlength: "too short"
 			}
 		}
 	} );
-	assert.ok( !$( "#username" ).valid() );
-	assert.equal( $( "#username" ).next( ".error:not(input)" ).text(), "" );
+	assert.ok( !$( "#Username" ).valid() );
+	assert.equal( $( "#Username" ).next( ".error:not(input)" ).text(), "" );
 
-	$( "#username" ).val( "ab" );
-	assert.ok( !$( "#username" ).valid() );
-	assert.equal( $( "#username" ).next( ".error:not(input)" ).text(), "too short" );
+	$( "#Username" ).val( "ab" );
+	assert.ok( !$( "#Username" ).valid() );
+	assert.equal( $( "#Username" ).next( ".error:not(input)" ).text(), "too short" );
 
-	$( "#username" ).val( "abc" );
-	assert.ok( $( "#username" ).valid() );
-	assert.ok( $( "#username" ).next( ".error:not(input)" ).is( ":hidden" ) );
+	$( "#Username" ).val( "abc" );
+	assert.ok( $( "#Username" ).valid() );
+	assert.ok( $( "#Username" ).next( ".error:not(input)" ).is( ":hidden" ) );
 } );
 
 QUnit.test( "showErrors() - external messages", function( assert ) {
@@ -784,9 +784,9 @@ QUnit.test( "option: focusCleanup default false", function( assert ) {
 	var form = $( "#userForm" );
 	form.validate();
 	form.valid();
-	assert.ok( form.find( "#username" ).next( ".error:not(input)" ).is( ":visible" ) );
-	$( "#username" ).focus();
-	assert.ok( form.find( "#username" ).next( ".error:not(input)" ).is( ":visible" ) );
+	assert.ok( form.find( "#Username" ).next( ".error:not(input)" ).is( ":visible" ) );
+	$( "#Username" ).focus();
+	assert.ok( form.find( "#Username" ).next( ".error:not(input)" ).is( ":visible" ) );
 } );
 
 QUnit.test( "option: focusCleanup true", function( assert ) {
@@ -795,9 +795,9 @@ QUnit.test( "option: focusCleanup true", function( assert ) {
 		focusCleanup: true
 	} );
 	form.valid();
-	assert.ok( form.find( "#username" ).next( ".error:not(input)" ).is( ":visible" ) );
-	$( "#username" ).focus().trigger( "focusin" );
-	assert.ok( !form.find( "#username" ).next( ".error:not(input)" ).is( ":visible" ) );
+	assert.ok( form.find( "#Username" ).next( ".error:not(input)" ).is( ":visible" ) );
+	$( "#Username" ).focus().trigger( "focusin" );
+	assert.ok( !form.find( "#Username" ).next( ".error:not(input)" ).is( ":visible" ) );
 } );
 
 QUnit.test( "option: focusCleanup with wrapper", function( assert ) {
@@ -807,9 +807,9 @@ QUnit.test( "option: focusCleanup with wrapper", function( assert ) {
 		wrapper: "span"
 	} );
 	form.valid();
-	assert.ok( form.is( ":has(span:visible:has(.error#username-error))" ) );
-	$( "#username" ).focus().trigger( "focusin" );
-	assert.ok( !form.is( ":has(span:visible:has(.error#username-error))" ) );
+	assert.ok( form.is( ":has(span:visible:has(.error#Username-error))" ) );
+	$( "#Username" ).focus().trigger( "focusin" );
+	assert.ok( !form.is( ":has(span:visible:has(.error#Username-error))" ) );
 } );
 
 QUnit.test( "option: errorClass with multiple classes", function( assert ) {
@@ -820,27 +820,27 @@ QUnit.test( "option: errorClass with multiple classes", function( assert ) {
 		errorClass: "error error1 error2"
 	} );
 	form.valid();
-	assert.ok( form.is( ":has(span:visible:has(.error#username-error))" ) );
-	assert.ok( form.is( ":has(span:visible:has(.error1#username-error))" ) );
-	assert.ok( form.is( ":has(span:visible:has(.error2#username-error))" ) );
-	$( "#username" ).focus().trigger( "focusin" );
-	assert.ok( !form.is( ":has(span:visible:has(.error#username-error))" ) );
-	assert.ok( !form.is( ":has(span:visible:has(.error1#username-error))" ) );
-	assert.ok( !form.is( ":has(span:visible:has(.error2#username-error))" ) );
+	assert.ok( form.is( ":has(span:visible:has(.error#Username-error))" ) );
+	assert.ok( form.is( ":has(span:visible:has(.error1#Username-error))" ) );
+	assert.ok( form.is( ":has(span:visible:has(.error2#Username-error))" ) );
+	$( "#Username" ).focus().trigger( "focusin" );
+	assert.ok( !form.is( ":has(span:visible:has(.error#Username-error))" ) );
+	assert.ok( !form.is( ":has(span:visible:has(.error1#Username-error))" ) );
+	assert.ok( !form.is( ":has(span:visible:has(.error2#Username-error))" ) );
 } );
 
 QUnit.test( "defaultMessage(), empty title is ignored", function( assert ) {
 	var v = $( "#userForm" ).validate();
-	assert.equal( v.defaultMessage( $( "#username" )[ 0 ], { method: "required", parameters: true } ), "This field is required." );
+	assert.equal( v.defaultMessage( $( "#Username" )[ 0 ], { method: "required", parameters: true } ), "This field is required." );
 
 	// Using the old way when we pass the name of a method as the second parameters.
-	assert.equal( v.defaultMessage( $( "#username" )[ 0 ], "required" ), "This field is required." );
+	assert.equal( v.defaultMessage( $( "#Username" )[ 0 ], "required" ), "This field is required." );
 } );
 
 QUnit.test( "previousValue()", function( assert ) {
 	assert.expect( 2 );
 
-	var e = $( "#username" ),
+	var e = $( "#Username" ),
 		v = $( "#userForm" ).validate(),
 		expectedRemote = {
 			old: null,
@@ -926,7 +926,7 @@ QUnit.test( "option invalidHandler", function( assert ) {
 			done();
 		}
 	} );
-	$( "#usernamec" ).val( "asdf" ).rules( "add", { required: true, minlength: 5 } );
+	$( "#Usernamec" ).val( "asdf" ).rules( "add", { required: true, minlength: 5 } );
 	$( "#testForm1clean" ).submit();
 } );
 
@@ -1479,10 +1479,10 @@ QUnit.test( "success callback with element", function( assert ) {
 	assert.expect( 1 );
 	var v = $( "#userForm" ).validate( {
 		success: function( label, element ) {
-			assert.equal( element, $( "#username" ).get( 0 ) );
+			assert.equal( element, $( "#Username" ).get( 0 ) );
 		}
 	} );
-	$( "#username" ).val( "hi" );
+	$( "#Username" ).val( "hi" );
 	v.form();
 } );
 
@@ -2019,13 +2019,13 @@ QUnit.test( "ignore hidden elements", function( assert ) {
 	var form = $( "#userForm" ),
 		validate = form.validate( {
 			rules: {
-				"username": "required"
+				"Username": "required"
 			}
 		} );
 
 	form.get( 0 ).reset();
 	assert.ok( !validate.form(), "form should be initially invalid" );
-	$( "#userForm [name=username]" ).hide();
+	$( "#userForm [name=Username]" ).hide();
 	assert.ok( validate.form(), "hidden elements should be ignored by default" );
 } );
 
@@ -2033,14 +2033,14 @@ QUnit.test( "ignore hidden elements at start", function( assert ) {
 	var form = $( "#userForm" ),
 		validate = form.validate( {
 			rules: {
-				"username": "required"
+				"Username": "required"
 			}
 		} );
 
 	form.get( 0 ).reset();
-	$( "#userForm [name=username]" ).hide();
+	$( "#userForm [name=Username]" ).hide();
 	assert.ok( validate.form(), "hidden elements should be ignored by default" );
-	$( "#userForm [name=username]" ).show();
+	$( "#userForm [name=Username]" ).show();
 	assert.ok( !validate.form(), "form should be invalid when required element is visible" );
 } );
 
@@ -2489,7 +2489,7 @@ QUnit.test( "addMethod, reusing remote in custom method", function( assert ) {
 		}, "workemail" );
 	}, "work email custom message" );
 
-	var e = $( "#add-method-username" ),
+	var e = $( "#add-method-Username" ),
 		v = $( "#add-method-remote" ).validate(),
 		done = assert.async();
 

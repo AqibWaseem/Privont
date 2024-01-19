@@ -390,6 +390,7 @@
     <Compile Include="Controllers\InvitationReferenceController.cs" />
     <Compile Include="Controllers\LeadInfoController.cs" />
     <Compile Include="Controllers\LenderInfoController.cs" />
+    <Compile Include="Controllers\MemberAPIsController.cs" />
     <Compile Include="Controllers\OrganizationInfoController.cs" />
     <Compile Include="Controllers\PaymentGatewayController.cs" />
     <Compile Include="Controllers\RealEstateAgentInfoController.cs" />
@@ -399,6 +400,7 @@
     <Compile Include="Controllers\SMSTrueDialogController.cs" />
     <Compile Include="Controllers\SocialMediaInfoController.cs" />
     <Compile Include="Controllers\UserInfoController.cs" />
+    <Compile Include="Controllers\UserProfileController.cs" />
     <Compile Include="Controllers\VendorInfoController.cs" />
     <Compile Include="Controllers\ZipCodeController.cs" />
     <Compile Include="DropDown.cs" />
@@ -10979,11 +10981,13 @@
     <Folder Include="Views\IncomingMessages\" />
     <Folder Include="Views\InvitationReference\" />
     <Folder Include="Views\LeadsInfo\" />
+    <Folder Include="Views\MemberAPIs\" />
     <Folder Include="Views\OrganizationInfo\" />
     <Folder Include="Views\PaymentGateway\" />
     <Folder Include="Views\PaymentGatway\" />
     <Folder Include="Views\SocialMediaInfo\" />
     <Folder Include="Views\TrueDialog\" />
+    <Folder Include="Views\UserProfile\" />
     <Folder Include="Views\ZipCode\" />
   </ItemGroup>
   <ItemGroup>

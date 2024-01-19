@@ -61,7 +61,7 @@ if ( xhrSupported ) {
 						id = ++xhrId;
 
 					// Open the socket
-					xhr.open( options.type, options.url, options.async, options.username, options.password );
+					xhr.open( options.type, options.url, options.async, options.Username, options.password );
 
 					// Apply custom fields if provided
 					if ( options.xhrFields ) {

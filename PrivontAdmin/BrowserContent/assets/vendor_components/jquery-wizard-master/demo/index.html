@@ -168,7 +168,7 @@ section {
                         <div class="form-group">
                             <label class="col-xs-3 control-label">Username</label>
                             <div class="col-xs-5">
-                                <input type="text" class="form-control" name="username" />
+                                <input type="text" class="form-control" name="Username" />
                             </div>
                         </div>
                     </div>
@@ -198,19 +198,19 @@ section {
             $('#validation').formValidation({
                 framework: 'bootstrap',
                 fields: {
-                    username: {
+                    Username: {
                         validators: {
                             notEmpty: {
-                                message: 'The username is required'
+                                message: 'The Username is required'
                             },
                             stringLength: {
                                 min: 6,
                                 max: 30,
-                                message: 'The username must be more than 6 and less than 30 characters long'
+                                message: 'The Username must be more than 6 and less than 30 characters long'
                             },
                             regexp: {
                                 regexp: /^[a-zA-Z0-9_\.]+$/,
-                                message: 'The username can only consist of alphabetical, number, dot and underscore'
+                                message: 'The Username can only consist of alphabetical, number, dot and underscore'
                             }
                         }
                     },
@@ -230,8 +230,8 @@ section {
                                 message: 'The password is required'
                             },
                             different: {
-                                field: 'username',
-                                message: 'The password cannot be the same as username'
+                                field: 'Username',
+                                message: 'The password cannot be the same as Username'
                             }
                         }
                     }

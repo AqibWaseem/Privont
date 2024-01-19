@@ -309,12 +309,12 @@ QUnit.test( "rules(), rangelength attribute as array", function( assert ) {
 } );
 
 QUnit.test( "rules(), global/local normalizer", function( assert ) {
-	var username = $( "#usernamec" ),
+	var Username = $( "#Usernamec" ),
 		urlc = $( "#urlc" ),
 		lastname = $( "#lastnamec" ),
 		v;
 
-	username.val( "\t\t \r" );
+	Username.val( "\t\t \r" );
 	urlc.val( "" );
 
 	v = $( "#testForm1clean" ).validate( {
@@ -322,16 +322,16 @@ QUnit.test( "rules(), global/local normalizer", function( assert ) {
 		// Using the normalizer to trim the value of all elements before validating them.
 		normalizer: function( value ) {
 
-			// This normalizer should only be called for the username element, and nothing else.
+			// This normalizer should only be called for the Username element, and nothing else.
 			assert.notEqual( this, urlc[ 0 ], "This normalizer should not be called for urlc element." );
-			assert.equal( this, username[ 0 ], "`this` in this normalizer should be the username element." );
+			assert.equal( this, Username[ 0 ], "`this` in this normalizer should be the Username element." );
 
 			// Trim the value of the input
 			return $.trim( value );
 		},
 
 		rules: {
-			username: {
+			Username: {
 				required: true
 			},
 			urlc: {
@@ -373,19 +373,19 @@ QUnit.test( "rules(), global/local normalizer", function( assert ) {
 		}
 	} );
 
-	// Validate only the username and the url elements.
-	username.valid();
-	assert.equal( v.invalidElements()[ 0 ], username[ 0 ], "The username should be invalid" );
+	// Validate only the Username and the url elements.
+	Username.valid();
+	assert.equal( v.invalidElements()[ 0 ], Username[ 0 ], "The Username should be invalid" );
 
 	urlc.valid();
 	assert.equal( v.invalidElements()[ 0 ], urlc[ 0 ], "The url should be invalid" );
 
 	assert.equal( v.numberOfInvalids(), 2, "There is two invalid elements" );
 
-	username.val( "something" );
+	Username.val( "something" );
 	urlc.val( "google.com" );
 
-	username.trigger( "keyup" );
+	Username.trigger( "keyup" );
 	urlc.trigger( "keyup" );
 
 	assert.equal( v.numberOfInvalids(), 0, "All elements are valid" );

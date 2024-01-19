@@ -24619,7 +24619,7 @@ time {
   margin-top: -20px; }
 
 /*---widget---*/
-.widget-user .widget-user-username, .widget-user-2 .widget-user-username, .widget-user-3 .widget-user-username, .widget-user-4 .widget-user-username {
+.widget-user .widget-user-Username, .widget-user-2 .widget-user-Username, .widget-user-3 .widget-user-Username, .widget-user-4 .widget-user-Username {
   margin-bottom: 5px;
   font-size: 1.714rem; }
 
@@ -24632,7 +24632,7 @@ time {
   height: 140px;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px; }
-.widget-user .widget-user-username {
+.widget-user .widget-user-Username {
   margin-top: 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
 .widget-user .widget-user-desc {
@@ -24653,7 +24653,7 @@ time {
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   padding: 20px; }
-.widget-user-2 .widget-user-username {
+.widget-user-2 .widget-user-Username {
   margin-top: 5px;
   margin-left: 75px; }
 .widget-user-2 .widget-user-desc {
@@ -24668,7 +24668,7 @@ time {
   border-top-right-radius: 10px;
   border-top-left-radius: 10px;
   padding: 20px; }
-.widget-user-3 .widget-user-username {
+.widget-user-3 .widget-user-Username {
   margin-top: 5px;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
 .widget-user-3 .widget-user-desc {
@@ -24686,7 +24686,7 @@ time {
   text-align: center;
   border-top-right-radius: 10px;
   border-top-left-radius: 10px; }
-.widget-user-4 .widget-user-username {
+.widget-user-4 .widget-user-Username {
   margin-top: 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
 .widget-user-4 .widget-user-desc {
@@ -25005,19 +25005,19 @@ time {
   width: 40px;
   height: 40px;
   float: left; }
-.user-block .comment, .user-block .description, .user-block .username {
+.user-block .comment, .user-block .description, .user-block .Username {
   display: block;
   margin-left: 50px; }
-.user-block .username {
+.user-block .Username {
   font-size: 1.143rem;
   font-weight: 600; }
 .user-block .description {
   color: #737373;
   font-size: 1rem; }
-.user-block.user-block-sm .username {
+.user-block.user-block-sm .Username {
   font-size: 1rem; }
 
-.img-sm + .img-push, .user-block.user-block-sm .comment, .user-block.user-block-sm .description, .user-block.user-block-sm .username {
+.img-sm + .img-push, .user-block.user-block-sm .comment, .user-block.user-block-sm .description, .user-block.user-block-sm .Username {
   margin-left: 40px; }
 
 /*calendar*/
@@ -27481,7 +27481,7 @@ textarea.form-control {
   .box-comments .comment-text {
     margin-left: 40px;
     color: #2f579a; }
-  .box-comments .username {
+  .box-comments .Username {
     color: #172b4c;
     display: block;
     font-weight: 600; }

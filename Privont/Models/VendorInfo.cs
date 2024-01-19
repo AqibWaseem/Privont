@@ -8,13 +8,6 @@ namespace Privont.Models
 {
     public class VendorInfo:BaseEntity
     {
-        public int VendorID { get; set; }
-        public string VendorName { get; set; }
-        public string PhoneNo { get; set; }
-        public string RegistrationNo { get; set; }
-        public string Longitude { get; set; }
-        public string Latitude { get; set; }
-        public string CompanyName { get; set; }
         public DataTable GetAllRecord(string WhereClause = "")
         {
             DataTable dataTable = new DataTable();

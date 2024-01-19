@@ -8,8 +8,6 @@ namespace Privont.Models
 {
     public class LenderInfo :BaseEntity
     {
-        public int LenderId { get; set; }
-        public string username { get; set; }
 
         public DataTable GetAllRecord(string WhereClause = "")
         {
@@ -67,7 +65,7 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
 ,'{obj.Remarks}'
 ,{(obj.Inactive == true ? 1 : 0)}
 ,'{obj.Password}'
-,'{obj.username}'
+,'{obj.Username}'
 ,{obj.UserID}
 ,{obj.UserType}
 )";
@@ -101,7 +99,7 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
       ,[Remarks] = '{obj.Remarks}'
       ,[Inactive] = {(obj.Inactive == true ? 1 : 0)}
       ,[Password] = '{obj.Password}'
-      ,[UserName] = '{obj.username}'
+      ,[UserName] = '{obj.Username}'
  WHERE LenderId=" + obj.LenderId;
             try
             {
@@ -124,7 +122,7 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
       ,[Website] = '{obj.Website}'
       ,[EmailAddress] = '{obj.EmailAddress}'
       ,[Contact1] = '{obj.Contact1}'
-      ,[PhoneNo] = '{obj.Contact2}'
+      ,[Contact2] = '{obj.Contact2}'
       ,[OrganizationID] = '{obj.OrganizationID}'
       ,[ZipCodeID] = '{obj.ZipCodeID}'
       ,[StreetNo] = '{obj.StreetNo}'

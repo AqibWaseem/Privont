@@ -327,9 +327,9 @@ body.dark-skin {
     color: #b5b5c3; }
     .dark-skin .box-profile.nav-tabs-custom > .nav-tabs > li > a.active:hover {
       color: #b5b5c3; }
-.dark-skin .box-comments .username {
+.dark-skin .box-comments .Username {
   color: #ffffff; }
-  .dark-skin .box-comments .username .comment-text {
+  .dark-skin .box-comments .Username .comment-text {
     color: #a1bbe8; }
 .dark-skin .box-comments .box-comment {
   border-color: rgba(255, 255, 255, 0.12); }

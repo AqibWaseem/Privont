@@ -235,8 +235,8 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         @Html.Label("User Name", htmlAttributes: new { @class = "form-label" })<span class="text-danger">*</span>
-                                                        @Html.EditorFor(model => model.username, new { htmlAttributes = new { @class = "form-control", required = "required" } })
-                                                        @Html.ValidationMessageFor(model => model.username, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                                                        @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
                                                         <p><span class="text-danger">@ViewBag.Message</span></p>
                                                     </div>
                                                 </div>

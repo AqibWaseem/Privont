@@ -22,7 +22,7 @@
 			rules: {
 				firstname: "required",
 				lastname: "required",
-				username: {
+				Username: {
 					required: true,
 					minlength: 2
 				},
@@ -48,9 +48,9 @@
 			messages: {
 				firstname: "Please enter your firstname",
 				lastname: "Please enter your lastname",
-				username: {
-					required: "Please enter a username",
-					minlength: "Your username must consist of at least 2 characters"
+				Username: {
+					required: "Please enter a Username",
+					minlength: "Your Username must consist of at least 2 characters"
 				},
 				password: {
 					required: "Please provide a password",
@@ -67,8 +67,8 @@
 			}
 		});
 
-		// propose username by combining first- and lastname
-		$("#username").focus(function() {
+		// propose Username by combining first- and lastname
+		$("#Username").focus(function() {
 			var firstname = $("#firstname").val();
 			var lastname = $("#lastname").val();
 			if (firstname && lastname && !this.value) {
@@ -153,8 +153,8 @@
 				<input id="lastname" name="lastname" type="text">
 			</p>
 			<p>
-				<label for="username">Username</label>
-				<input id="username" name="username" type="text">
+				<label for="Username">Username</label>
+				<input id="Username" name="Username" type="text">
 			</p>
 			<p>
 				<label for="password">Password</label>

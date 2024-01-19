@@ -10,19 +10,6 @@ namespace Privont.Models
     public class LeadInfo :BaseEntity
     {
         #region Model
-        public int LeadID { get; set; }
-        public string PhoneNo { get; set; }
-        public bool ReadytoOptin { get; set; }
-        public DateTime EntryDateTime { get; set; }
-        public int OptInSMSStatus { get; set; }
-        public int PricePointID { get; set; }
-        public string PricePointName { get; set; }
-        public int isClaimLead { get; set; }
-        public int APITypeID { get; set; }
-        public int ApiLeadID { get; set; }
-        public string ApiSource { get; set; }
-        public bool SMSSent { get; set; }
-        public string Claimed { get; set; }
         public List<LenderInfo> LstLenderInfo = new List<LenderInfo>();
         #endregion
 
@@ -138,7 +125,7 @@ GetDate(),
    SET [FirstName] = '{obj.FirstName}'
       ,[LastName] = '{obj.LastName}'
       ,[Contact1] = '{obj.Contact1}'
-      ,[PhoneNo] = '{obj.PhoneNo}'
+      ,[PhoneNo] = '{obj.Contact2}'
     
       ,[EmailAddress] = '{obj.EmailAddress}'
       ,[Remarks] = '{obj.Remarks}'

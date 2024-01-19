@@ -414,16 +414,16 @@ QUnit.test( "extension", function( assert ) {
 
 QUnit.test( "remote", function( assert ) {
 	assert.expect( 7 );
-	var e = $( "#username" ),
+	var e = $( "#Username" ),
 		v = $( "#userForm" ).validate( {
 			rules: {
-				username: {
+				Username: {
 					required: true,
 					remote: "users.php"
 				}
 			},
 			messages: {
-				username: {
+				Username: {
 					required: "Please",
 					remote: jQuery.validator.format( "{0} in use" )
 				}
@@ -455,11 +455,11 @@ QUnit.test( "remote", function( assert ) {
 
 QUnit.test( "remote, pending class added to element while call outstanding", function( assert ) {
 	assert.expect( 3 );
-	var e = $( "#username" ),
+	var e = $( "#Username" ),
 		done = assert.async(),
 		v = $( "#userForm" ).validate( {
 			rules: {
-				username: {
+				Username: {
 					remote: {
 						url: "users.php",
 						complete: function() {
@@ -483,14 +483,14 @@ QUnit.test( "remote, customized ajax options", function( assert ) {
 	var done = assert.async();
 	$( "#userForm" ).validate( {
 		rules: {
-			username: {
+			Username: {
 				required: true,
 				remote: {
 					url: "users.php",
 					type: "POST",
 					beforeSend: function( request, settings ) {
 						assert.deepEqual( settings.type, "POST" );
-						assert.deepEqual( settings.data, "username=asdf&email=email.com" );
+						assert.deepEqual( settings.data, "Username=asdf&email=email.com" );
 					},
 					data: {
 						email: function() {
@@ -504,22 +504,22 @@ QUnit.test( "remote, customized ajax options", function( assert ) {
 			}
 		}
 	} );
-	$( "#username" ).val( "asdf" );
+	$( "#Username" ).val( "asdf" );
 	$( "#userForm" ).valid();
 } );
 
 QUnit.test( "remote extensions", function( assert ) {
 	assert.expect( 5 );
-	var e = $( "#username" ),
+	var e = $( "#Username" ),
 		v = $( "#userForm" ).validate( {
 			rules: {
-				username: {
+				Username: {
 					required: true,
 					remote: "users2.php"
 				}
 			},
 			messages: {
-				username: {
+				Username: {
 					required: "Please"
 				}
 			},
@@ -687,13 +687,13 @@ QUnit.test( "remote, unhighlighted should be invoked after being highlighted/inv
 } );
 
 QUnit.test( "Fix #697: remote validation uses wrong error messages", function( assert ) {
-	var e = $( "#username" ),
+	var e = $( "#Username" ),
 		done1 = assert.async(),
 		done2 = assert.async(),
 		done3 = assert.async(),
 		v = $( "#userForm" ).validate( {
 			rules: {
-				username: {
+				Username: {
 					required: true,
 					remote: {
 						url: "users.php"
@@ -701,7 +701,7 @@ QUnit.test( "Fix #697: remote validation uses wrong error messages", function( a
 				}
 			},
 			messages: {
-				username: {
+				Username: {
 					remote: $.validator.format( "{0} in use" )
 				}
 			}

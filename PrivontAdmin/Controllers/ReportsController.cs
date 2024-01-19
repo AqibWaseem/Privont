@@ -43,7 +43,7 @@ namespace PrivontAdmin.Controllers
                 LenderType = 0;
             }
             string Query = $@"SELECT LenderInfo.LenderId, LenderInfo.FirstName, LenderInfo.LastName, LenderInfo.LicenseNo, LenderInfo.OrganizationID, LenderInfo.ZipCodeID, LenderInfo.OfficeNo, LenderInfo.StreetNo, LenderInfo.StreetName, LenderInfo.Website, 
-                  LenderInfo.EmailAddress, LenderInfo.Contact1, LenderInfo.Contact2, LenderInfo.Remarks, LenderInfo.Inactive, LenderInfo.Password, LenderInfo.username, LenderInfo.UserID, LenderInfo.UserType, LenderInfo.IsApproved, 
+                  LenderInfo.EmailAddress, LenderInfo.Contact1, LenderInfo.Contact2, LenderInfo.Remarks, LenderInfo.Inactive, LenderInfo.Password, LenderInfo.Username, LenderInfo.UserID, LenderInfo.UserType, LenderInfo.IsApproved, 
                   LenderInfo.ApprovedRemarks, LenderInfo.IsEmailVerified, ZipCode.ZipCode, OrganizationInfo.OrganizationTitle
 FROM     LenderInfo INNER JOIN
                   ZipCode ON LenderInfo.ZipCodeID = ZipCode.ZipCodeID INNER JOIN

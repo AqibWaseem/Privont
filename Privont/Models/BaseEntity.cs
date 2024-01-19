@@ -7,6 +7,31 @@ namespace Privont.Models
 {
     public class BaseEntity
     {
+        public int RealEstateAgentId { get; set; }
+
+        //public string Username { get; set; }
+        public int LeadID { get; set; }
+
+        public string PhoneNo { get; set; }
+        public bool ReadytoOptin { get; set; }
+        public DateTime EntryDateTime { get; set; }
+        public int OptInSMSStatus { get; set; }
+        public int PricePointID { get; set; }
+        public string PricePointName { get; set; }
+        public int isClaimLead { get; set; }
+        public int APITypeID { get; set; }
+        public int ApiLeadID { get; set; }
+        public string ApiSource { get; set; }
+        public bool SMSSent { get; set; }
+        public string Claimed { get; set; }
+        public int LenderId { get; set; }
+
+        public int VendorID { get; set; }
+        public string VendorName { get; set; }
+        public string RegistrationNo { get; set; }
+        public string Longitude { get; set; }
+        public string Latitude { get; set; }
+        public string CompanyName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string LicenseNo { get; set; }

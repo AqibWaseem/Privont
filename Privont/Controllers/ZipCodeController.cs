@@ -51,5 +51,17 @@ namespace Privont.Controllers
             }
 
         }
+        public static int GetZipCodeIDVIACodeName(string ZipCode)
+        {
+            DataTable dt = General.FetchData($@"select ZipCodeID from ZipCode where ZipCode='{ZipCode}'");
+            if(dt.Rows.Count > 0)
+            {
+                if (dt.Rows[0][0]!=DBNull.Value)
+                {
+                    return int.Parse(dt.Rows[0][0].ToString());
+                }
+            }
+            return 0;
+        }
     }
 }

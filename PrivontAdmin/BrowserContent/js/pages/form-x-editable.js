@@ -6,11 +6,11 @@ $(function () {
 		
 	 $(function() {
         //editables 
-        $('#username').editable({
+        $('#Username').editable({
             type: 'text',
             pk: 1,
-            name: 'username',
-            title: 'Enter username'
+            name: 'Username',
+            title: 'Enter Username'
         });
 
         $('#firstname').editable({
@@ -61,11 +61,11 @@ $(function () {
         //inline
 
 
-        $('#inline-username').editable({
+        $('#inline-Username').editable({
             type: 'text',
             pk: 1,
-            name: 'username',
-            title: 'Enter username',
+            name: 'Username',
+            title: 'Enter Username',
             mode: 'inline'
         });
 

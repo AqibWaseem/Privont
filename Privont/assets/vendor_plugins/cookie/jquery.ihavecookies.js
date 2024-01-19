@@ -30,7 +30,7 @@
                 {
                     type: 'Site Preferences',
                     value: 'preferences',
-                    description: 'These are cookies that are related to your site preferences, e.g. remembering your username, site colours, etc.'
+                    description: 'These are cookies that are related to your site preferences, e.g. remembering your Username, site colours, etc.'
                 },
                 {
                     type: 'Analytics',

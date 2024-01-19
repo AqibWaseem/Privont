@@ -2593,7 +2593,7 @@ Margin property
   margin-right: 0; }
 .rtl .user-block img {
   float: right; }
-.rtl .user-block .comment, .rtl .user-block .description, .rtl .user-block .username {
+.rtl .user-block .comment, .rtl .user-block .description, .rtl .user-block .Username {
   margin-left: 0;
   margin-right: 50px; }
 .rtl .todo-list > li .tools {

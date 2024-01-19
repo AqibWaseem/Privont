@@ -23,15 +23,15 @@ describe('encoding', function() {
   });
 
   it('should return the same result when decoding', function () {
-    var username = '測試';
+    var Username = '測試';
 
     var token = jwt.sign({
-      username: username
+      Username: Username
     }, 'test');
 
     var payload = jwt.verify(token, 'test');
 
-    expect(payload.username).to.equal(username);
+    expect(payload.Username).to.equal(Username);
   });
 
 });

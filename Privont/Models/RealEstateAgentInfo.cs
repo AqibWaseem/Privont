@@ -9,8 +9,7 @@ namespace Privont.Models
 {
     public class RealEstateAgentInfo : BaseEntity 
     {
-        public int RealEstateAgentId { get; set; }
-        public string username { get; set; }
+       
         
         public DataTable GetAllRecord(string WhereClause = "")
         {
@@ -70,7 +69,7 @@ inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = Organization
 ,'{obj.Remarks}'
 ,{(obj.Inactive == true ? 1 : 0)}
 ,'{obj.Password}'
-,'{obj.username}'
+,'{obj.Username}'
 ,{obj.UserID}
 ,{obj.UserType}
 )";
@@ -104,7 +103,7 @@ inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = Organization
       ,[Remarks] = '{obj.Remarks}'
       ,[Inactive] = {(obj.Inactive == true ? 1 : 0)}
       ,[Password] = '{obj.Password}'
-      ,[UserName] = '{obj.username}'
+      ,[UserName] = '{obj.Username}'
  WHERE RealEstateAgentID=" + obj.RealEstateAgentId;
             try
             {
@@ -120,11 +119,11 @@ inner join OrganizationInfo on RealEstateAgentInfo.OrganizationID = Organization
         public DataTable UserExistanceInfo(string UserName)
         {
             DataTable dt = General.FetchData($@"
-SELECT        UserID, username, Password, Inactive, UserType
-FROM            (SELECT        RealEstateAgentId AS UserID, username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 2 AS UserType
+SELECT        UserID, Username, Password, Inactive, UserType
+FROM            (SELECT        RealEstateAgentId AS UserID, Username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 2 AS UserType
                           FROM            RealEstateAgentInfo
                           UNION ALL
-                          SELECT        LenderId AS UserID, username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 3 AS UserType
+                          SELECT        LenderId AS UserID, Username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive, 3 AS UserType
                           FROM            LenderInfo
                           UNION ALL
                           SELECT        LeadID, Username, Password, FirstName, LastName, '' AS StreetNo, '' AS StreetName, EmailAddress, PhoneNo, '' AS Website, '' AS Remarks, 0 AS Inactive, 4 AS UserType
@@ -134,7 +133,7 @@ FROM            (SELECT        RealEstateAgentId AS UserID, username, Password, 
                           FROM            VendorInfo) AS ProfileLogin
 
 
-where username is not null and username='{UserName}'");
+where Username is not null and Username='{UserName}'");
             return dt;
         }
         public int UpdateProfileRecord(RealEstateAgentInfo obj)

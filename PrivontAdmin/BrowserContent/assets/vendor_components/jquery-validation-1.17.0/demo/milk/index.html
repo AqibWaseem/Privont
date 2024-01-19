@@ -25,7 +25,7 @@
 		$.mockjax({
 			url: "users.action",
 			response: function(settings) {
-				var user = settings.data.username,
+				var user = settings.data.Username,
 					users = ["asdf", "Peter", "Peter2", "George"];
 				this.responseText = "true";
 				if ($.inArray(user, users) !== -1) {
@@ -40,7 +40,7 @@
 			rules: {
 				firstname: "required",
 				lastname: "required",
-				username: {
+				Username: {
 					required: true,
 					minlength: 2,
 					remote: "users.action"
@@ -65,8 +65,8 @@
 			messages: {
 				firstname: "Enter your firstname",
 				lastname: "Enter your lastname",
-				username: {
-					required: "Enter a username",
+				Username: {
+					required: "Enter a Username",
 					minlength: jQuery.validator.format("Enter at least {0} characters"),
 					remote: jQuery.validator.format("{0} is already in use")
 				},
@@ -110,8 +110,8 @@
 			}
 		});
 
-		// propose username by combining first- and lastname
-		$("#username").focus(function() {
+		// propose Username by combining first- and lastname
+		$("#Username").focus(function() {
 			var firstname = $("#firstname").val();
 			var lastname = $("#lastname").val();
 			if (firstname && lastname && !this.value) {
@@ -164,10 +164,10 @@
 							</tr>
 							<tr>
 								<td class="label">
-									<label id="lusername" for="username">Username</label>
+									<label id="lUsername" for="Username">Username</label>
 								</td>
 								<td class="field">
-									<input id="username" name="username" type="text" value="" maxlength="50">
+									<input id="Username" name="Username" type="text" value="" maxlength="50">
 								</td>
 								<td class="status"></td>
 							</tr>

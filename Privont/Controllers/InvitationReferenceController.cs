@@ -538,13 +538,13 @@ namespace Privont.Controllers
                 var dataToEncrypt = new
                 {
                     userId = UserID,
-                    username = "Abdullah"
+                    Username = "Abdullah"
                 };
 
                 var dataToEncrypt2 = new
                 {
                     userId = UserType,
-                    username = "Abdullah"
+                    Username = "Abdullah"
                 };
 
                 // Serialize the data to JSON

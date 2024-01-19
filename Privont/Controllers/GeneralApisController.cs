@@ -1805,13 +1805,13 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             var dataToEncrypt = new
             {
                 userId = UserID,
-                username = "Abdullah"
+                Username = "Abdullah"
             };
 
             var dataToEncrypt2 = new
             {
                 userId = UserType,
-                username = "Abdullah"
+                Username = "Abdullah"
             };
 
             // Serialize the data to JSON
@@ -1976,13 +1976,13 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                 var dataToEncrypt = new
                 {
                     userId = UserID,
-                    username = "Abdullah"
+                    Username = "Abdullah"
                 };
 
                 var dataToEncrypt2 = new
                 {
                     userId = UserType,
-                    username = "Abdullah"
+                    Username = "Abdullah"
                 };
 
                 // Serialize the data to JSON
@@ -2287,17 +2287,17 @@ LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
             var dataToEncrypt = new
             {
                 userId = UserID,
-                username = "Abdullah"
+                Username = "Abdullah"
             };
             var dataToEncrypt2 = new
             {
                 userId = UserType,
-                username = "Abdullah"
+                Username = "Abdullah"
             };
             var dataToEncrypt3 = new
             {
                 userId = UserType,
-                username = value
+                Username = value
             };
 
             // Serialize the data to JSON
