@@ -162,7 +162,7 @@ namespace Privont.Controllers
         public ActionResult Signup(string q, int d, int i, string y, string s)
         {
             y = General.Decrypt(y, General.key);
-            List<RealEstateAgentInfo> lst = General.ConvertDataTable<RealEstateAgentInfo>(Model.GetAllRecordforSignup(" where RealEstateAgentID=" + y));
+            List<RealEstateAgentInfo> lst = General.ConvertDataTable<RealEstateAgentInfo>(Model.GetAllRecordforSignup(" where RealEstateAgentID=" + 1086));
             if (lst.Count <= 0)
             {
                 return Redirect("LinkExpire");

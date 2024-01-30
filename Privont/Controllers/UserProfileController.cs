@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using TrueDialog.Model;
 
 namespace Privont.Controllers
 {
@@ -46,7 +47,7 @@ namespace Privont.Controllers
             else
             {
                 JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Status", 402);
+                JSResponse.Add("Status", HttpStatusCode.NotFound);
                 JSResponse.Add("Message", "Zip Code Not exist!");
                 JSResponse.Add("Data", DBNull.Value);
 
@@ -359,6 +360,43 @@ where VendorID=" + UserID;
                 };
                 return jr;
             }
+        }
+        public static DataTable GetUserInformation(int UserID,int UserType)
+        {
+            string WhereClause = $@"where UserID='{UserID}' and UserType='{UserType}' ";
+            string sql1 = $@"
+select * from 
+
+(
+Select (RealEstateAgentId)UserID,UserName,Password,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,2 as UserType 
+from RealEstateAgentInfo 
+
+union all
+Select (LenderId)UserID,UserName,Password,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,3 as UserType 
+from LenderInfo  
+union all
+
+SELECT        LeadID,Username,Password, FirstName, LastName,'' as  StreetNo, '' as StreetName, EmailAddress, PhoneNo,'' as Website,'' as Remarks,0 as
+Inactive, 4 AS UserType
+FROM            LeadInfo
+
+union all
+SELECT        VendorID, Username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive
+, 5 AS UserType
+FROM            VendorInfo
+
+)ProfileLogin
+
+{WhereClause}
+
+";
+            DataTable dt = General.FetchData(sql1);
+            return dt;
+        }
+        public JsonResult GetSMSDetails(int MemberID,int MemberType,int EntryUserID,int EntryUserType,int SMSType)
+        {
+            JsonResult josn=new JsonResult();
+            return josn;
         }
     }
 }

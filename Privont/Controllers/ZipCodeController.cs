@@ -12,14 +12,19 @@ namespace Privont.Controllers
     {
         // GET: ZipCode
         [HttpGet]
-        public JsonResult GetZipCodeInfo(int ZipCodeID)
+        public JsonResult GetZipCodeInfo(string ZipCodeID)
         {
             try
             {
-               DataTable dataTable = General.FetchData($@"select top (30) * from ZipCode where ZipCodeID>{ZipCodeID} order by ZipCodeID");
+                if (string.IsNullOrEmpty(ZipCodeID))
+                {
+                    ZipCodeID = 0.ToString();
+                }
+               DataTable dataTable = General.FetchData($@"select top (30) * from ZipCode where ZipCode like '%{ZipCodeID}%' order by ZipCodeID");
+
                 List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dataTable);
                 Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Status", (dataTable.Rows.Count == 0 ? HttpStatusCode.NotFound : HttpStatusCode.OK));
                 JSResponse.Add("Message", "Zip Code Information");
                 JSResponse.Add("Data", dbrows);
                 JsonResult jr = new JsonResult()
@@ -53,7 +58,7 @@ namespace Privont.Controllers
         }
         public static int GetZipCodeIDVIACodeName(string ZipCode)
         {
-            DataTable dt = General.FetchData($@"select ZipCodeID from ZipCode where ZipCode='{ZipCode}'");
+            DataTable dt = General.FetchData($@"select ZipCodeID from ZipCode where ZipCode = '{ZipCode}'");
             if(dt.Rows.Count > 0)
             {
                 if (dt.Rows[0][0]!=DBNull.Value)

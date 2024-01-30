@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Antlr.Runtime;
+using Newtonsoft.Json.Linq;
 using Privont.Models;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Configuration;
+using System.Net.Http;
 using System.Net.Mail;
 using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
@@ -33,107 +35,314 @@ namespace Privont.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Invite(int TypeUser, RealEstateAgentInfo collection)
+        public JsonResult Invite(int TypeUser, RealEstateAgentInfo collection)
         {
-            int UserType = TypeUser;
-            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
-            var jr = new JsonResult();
-            string Query = "";
-            DataTable dt = new DataTable();
-            var ID = 0;
-            //Unique Identifier
-            collection.UniqueIdentifier = GeneralApisController.GenerateUniqueIdentifier(UserType);
-            if (UserType == 2)//Real Estate Agent 
+            try
             {
-                ID = RealEstateAgentModel.InsertRecordsByInviation(collection);
-            }
-            else if (UserType == 3)//Lender
-            {
-                LenderInfo LenderCollection = new LenderInfo();
-                General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LenderInfo>(collection, LenderCollection);
-                ID = LenderModel.InsertRecordsByInviationLender(LenderCollection);
-            }
-            else if (UserType == 4)//Lead
-            {
-                LeadInfo Target = new LeadInfo();
-                General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LeadInfo>(collection, Target);
-                ID = LeadModel.InsertRecordsByInviation(Target);
-                ////SMS Request To Join Privont
-                //var Response = SendSubMessageToLead(ID.ToString(), UserType, collection.UserID, collection.UserType);
-                //if(Response == "3")
-                //{
-                //    JSResponse = new Dictionary<string, object>();
-                //    JSResponse.Add("Status", 0003);
-                //    JSResponse.Add("Message", "SMS not send because you have not SMS setting!");
-                //    JSResponse.Add("Data", DBNull.Value);
-
-                //    jr = new JsonResult()
-                //    {
-                //        Data = JSResponse,
-                //        ContentType = "application/json",
-                //        ContentEncoding = System.Text.Encoding.UTF8,
-                //        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                //        MaxJsonLength = Int32.MaxValue
-                //    };
-                //    return jr;
-                //}
-                //else if(Response == "4")
-                //{
-                //    JSResponse = new Dictionary<string, object>();
-                //    JSResponse.Add("Status", 0004);
-                //    JSResponse.Add("Message", "Failed to sent sms!");
-                //    JSResponse.Add("Data", DBNull.Value);
-
-                //    jr = new JsonResult()
-                //    {
-                //        Data = JSResponse,
-                //        ContentType = "application/json",
-                //        ContentEncoding = System.Text.Encoding.UTF8,
-                //        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                //        MaxJsonLength = Int32.MaxValue
-                //    };
-                //    return jr;
-                //}
-            }
-            else if (UserType == 5)//Vendor
-            {
-                VendorInfo Target = new VendorInfo();
-                General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, VendorInfo>(collection, Target);
-                ID = VendorModel.InsertRecordsByInviationVendor(Target);
-            }
-          
-            string value1 = "0";
-          
-            //value1 = SendSMSandEmail(ID, UserType, collection.UserID, collection.UserType).ToString();
-            UserInfo objUser = new UserInfo();
-            DataTable dtUserDetauls = objUser.GetAllRecordsViaUserIDandUserType(ID, UserType);
-            List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dtUserDetauls);
-
-
-            if ((value1) == 0.ToString())
-            {
-                //return Json($@"{value1},{"Email Sending Error"},{ID}", JsonRequestBehavior.AllowGet);
-                JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Status", 0001);
-                JSResponse.Add("Message", "Email Sending Error!" );
-                JSResponse.Add("Data", dbrows);
-
-                 jr = new JsonResult()
+                List<Dictionary<string, object>> dbrows = new List<Dictionary<string, object>>();
+                int UserType = TypeUser;
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                var jr = new JsonResult();
+                string Query = "";
+                DataTable dt = new DataTable();
+                var ID = 0;
+                DataTable dtcheckIfUserExistance = dtCheckUserExistance(collection.Contact1, collection.UserID, collection.UserType, TypeUser);
+                if (dtcheckIfUserExistance.Rows.Count == 0)
                 {
-                    Data = JSResponse,
-                    ContentType = "application/json",
-                    ContentEncoding = System.Text.Encoding.UTF8,
-                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                    MaxJsonLength = Int32.MaxValue
-                };
-                return jr;
-            }
-            else if (value1 == 3.ToString())
-            {
-                //return Json($@"{value1},{"Email Successfully Send but SMS not send because you have not SMS setting"},{ID}", JsonRequestBehavior.AllowGet);
+                    //Unique Identifier
+                    collection.UniqueIdentifier = GeneralApisController.GenerateUniqueIdentifier(UserType);
+                    if (UserType == 2)//Real Estate Agent 
+                    {
+                        ID = RealEstateAgentModel.InsertRecordsByInviation(collection);
+                    }
+                    else if (UserType == 3)//Lender
+                    {
+                        LenderInfo LenderCollection = new LenderInfo();
+                        General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LenderInfo>(collection, LenderCollection);
+                        ID = LenderModel.InsertRecordsByInviationLender(LenderCollection);
+                    }
+                    else if (UserType == 4)//Lead
+                    {
+                        LeadInfo Target = new LeadInfo();
+                        General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LeadInfo>(collection, Target);
+                        ID = LeadModel.InsertRecordsByInviation(Target);
+                        //SMS Request To Join Privont
+                        var Response = SendSubMessageToLead(ID.ToString(), UserType, collection.UserID, collection.UserType);
+                        if (Response == "3")
+                        {
+                            JSResponse = new Dictionary<string, object>();
+                            JSResponse.Add("Status", 0003);
+                            JSResponse.Add("Message", "SMS not send because you have not SMS setting!");
+                            JSResponse.Add("Data", DBNull.Value);
+
+                            jr = new JsonResult()
+                            {
+                                Data = JSResponse,
+                                ContentType = "application/json",
+                                ContentEncoding = System.Text.Encoding.UTF8,
+                                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                                MaxJsonLength = Int32.MaxValue
+                            };
+                            return jr;
+                        }
+                        else if (Response == "4")
+                        {
+                            JSResponse = new Dictionary<string, object>();
+                            JSResponse.Add("Status", 0004);
+                            JSResponse.Add("Message", "Failed to sent sms!");
+                            JSResponse.Add("Data", DBNull.Value);
+
+                            jr = new JsonResult()
+                            {
+                                Data = JSResponse,
+                                ContentType = "application/json",
+                                ContentEncoding = System.Text.Encoding.UTF8,
+                                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                                MaxJsonLength = Int32.MaxValue
+                            };
+                            return jr;
+                        }
+                        UserInfo newobjUser = new UserInfo();
+                        DataTable newDt = newobjUser.GetAllRecordsViaUserIDandUserType(ID, UserType);
+                        dbrows = new General().GetAllRowsInDictionary(newDt);
+                        JSResponse = new Dictionary<string, object>();
+                        JSResponse.Add("Status", HttpStatusCode.OK);
+                        JSResponse.Add("Message", "Invitation Send Successfully!");
+                        JSResponse.Add("Data", dbrows);
+
+                        jr = new JsonResult()
+                        {
+                            Data = JSResponse,
+                            ContentType = "application/json",
+                            ContentEncoding = System.Text.Encoding.UTF8,
+                            JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                            MaxJsonLength = Int32.MaxValue
+                        };
+                        return jr;
+
+                    }
+                    else if (UserType == 5)//Vendor
+                    {
+                        VendorInfo Target = new VendorInfo();
+                        General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, VendorInfo>(collection, Target);
+                        ID = VendorModel.InsertRecordsByInviationVendor(Target);
+                    }
+                }
+                else if (dtcheckIfUserExistance.Rows.Count > 0)
+                {
+                    int.TryParse(dtcheckIfUserExistance.Rows[0]["LoginID"].ToString(), out ID);
+                    collection.RealEstateAgentId = ID;
+                    collection.LenderId = ID;
+                    collection.LeadID = ID;
+                    collection.VendorID = ID;
+
+                    if (UserType == 2)//Real Estate Agent 
+                    {
+                        ID = RealEstateAgentModel.UpdateProfileRecord(collection);
+                    }
+                    else if (UserType == 3)//Lender
+                    {
+                        LenderInfo LenderCollection = new LenderInfo();
+                        General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LenderInfo>(collection, LenderCollection);
+                        ID = LenderModel.UpdateProfileRecord(LenderCollection);
+                    }
+                    else if (UserType == 4)//Lead
+                    {
+                        LeadInfo Target = new LeadInfo();
+                        General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, LeadInfo>(collection, Target);
+                        ID = LeadModel.UpdateProfileRecord(Target);
+                        //SMS Request To Join Privont
+                        var Response = SendSubMessageToLead(ID.ToString(), UserType, collection.UserID, collection.UserType);
+                        if (Response == "3")
+                        {
+                            JSResponse = new Dictionary<string, object>();
+                            JSResponse.Add("Status", 0003);
+                            JSResponse.Add("Message", "SMS not send because you have not SMS setting!");
+                            JSResponse.Add("Data", DBNull.Value);
+
+                            jr = new JsonResult()
+                            {
+                                Data = JSResponse,
+                                ContentType = "application/json",
+                                ContentEncoding = System.Text.Encoding.UTF8,
+                                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                                MaxJsonLength = Int32.MaxValue
+                            };
+                            return jr;
+                        }
+                        else if (Response == "4")
+                        {
+                            JSResponse = new Dictionary<string, object>();
+                            JSResponse.Add("Status", 0004);
+                            JSResponse.Add("Message", "Failed to sent sms!");
+                            JSResponse.Add("Data", DBNull.Value);
+
+                            jr = new JsonResult()
+                            {
+                                Data = JSResponse,
+                                ContentType = "application/json",
+                                ContentEncoding = System.Text.Encoding.UTF8,
+                                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                                MaxJsonLength = Int32.MaxValue
+                            };
+                            return jr;
+                        }
+                        UserInfo newobjUser = new UserInfo();
+                        DataTable newDt = newobjUser.GetAllRecordsViaUserIDandUserType(ID, UserType);
+                        dbrows = new General().GetAllRowsInDictionary(newDt);
+                        JSResponse = new Dictionary<string, object>();
+                        JSResponse.Add("Status", HttpStatusCode.OK);
+                        JSResponse.Add("Message", "Invitation Send Successfully!");
+                        JSResponse.Add("Data", dbrows);
+
+                        jr = new JsonResult()
+                        {
+                            Data = JSResponse,
+                            ContentType = "application/json",
+                            ContentEncoding = System.Text.Encoding.UTF8,
+                            JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                            MaxJsonLength = Int32.MaxValue
+                        };
+                        return jr;
+
+                    }
+                    else if (UserType == 5)//Vendor
+                    {
+                        VendorInfo Target = new VendorInfo();
+                        General.MappingValueFromSourceClassToTargetClass<RealEstateAgentInfo, VendorInfo>(collection, Target);
+                        ID = VendorModel.UpdateProfileRecord(Target);
+                    }
+                }
+                //else if (UserType == 4 && dtcheckIfUserExistance.Rows.Count > 0)
+                //{
+                //    //SMS Request To Join Privont
+                //    var Response = SendSubMessageToLead(ID.ToString(), UserType, collection.UserID, collection.UserType);
+                //    if (Response == "3")
+                //    {
+                //        JSResponse = new Dictionary<string, object>();
+                //        JSResponse.Add("Status", 0003);
+                //        JSResponse.Add("Message", "SMS not send because you have not SMS setting!");
+                //        JSResponse.Add("Data", DBNull.Value);
+
+                //        jr = new JsonResult()
+                //        {
+                //            Data = JSResponse,
+                //            ContentType = "application/json",
+                //            ContentEncoding = System.Text.Encoding.UTF8,
+                //            JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                //            MaxJsonLength = Int32.MaxValue
+                //        };
+                //        return jr;
+                //    }
+                //    else if (Response == "4")
+                //    {
+                //        JSResponse = new Dictionary<string, object>();
+                //        JSResponse.Add("Status", 0004);
+                //        JSResponse.Add("Message", "Failed to sent sms!");
+                //        JSResponse.Add("Data", DBNull.Value);
+
+                //        jr = new JsonResult()
+                //        {
+                //            Data = JSResponse,
+                //            ContentType = "application/json",
+                //            ContentEncoding = System.Text.Encoding.UTF8,
+                //            JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                //            MaxJsonLength = Int32.MaxValue
+                //        };
+                //        return jr;
+                //    }
+                //    UserInfo newobjUser = new UserInfo();
+                //    DataTable newDt = newobjUser.GetAllRecordsViaUserIDandUserType(ID, UserType);
+                //    dbrows = new General().GetAllRowsInDictionary(newDt);
+                //    JSResponse = new Dictionary<string, object>();
+                //    JSResponse.Add("Status", HttpStatusCode.OK);
+                //    JSResponse.Add("Message", "Invitation Send Successfully!");
+                //    JSResponse.Add("Data", dbrows);
+
+                //    jr = new JsonResult()
+                //    {
+                //        Data = JSResponse,
+                //        ContentType = "application/json",
+                //        ContentEncoding = System.Text.Encoding.UTF8,
+                //        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                //        MaxJsonLength = Int32.MaxValue
+                //    };
+                //    return jr;
+                //}
+                string value1 = "0";
+
+                if (ID == 0 && dtcheckIfUserExistance.Rows.Count > 0)
+                {
+                    int.TryParse(dtcheckIfUserExistance.Rows[0]["LoginID"].ToString(), out ID);
+                }
+                int EntryUserID = collection.UserID;
+                int EntryUserType = collection.UserType;
+                value1 = SendSMSandEmail(ID, UserType, EntryUserID, EntryUserType).ToString();
+
+                UserInfo objUser = new UserInfo();
+                DataTable dtUserDetauls = objUser.GetAllRecordsViaUserIDandUserType(ID, UserType);
+                dbrows = new General().GetAllRowsInDictionary(dtUserDetauls);
+
+
+                if ((value1) == 0.ToString())
+                {
+                    //return Json($@"{value1},{"Email Sending Error"},{ID}", JsonRequestBehavior.AllowGet);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", 0001);
+                    JSResponse.Add("Message", "Email Sending Error!");
+                    JSResponse.Add("Data", dbrows);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                else if (value1 == 3.ToString())
+                {
+                    //return Json($@"{value1},{"Email Successfully Send but SMS not send because you have not SMS setting"},{ID}", JsonRequestBehavior.AllowGet);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", 0002);
+                    JSResponse.Add("Message", "Email Successfully Send but SMS not send because you have not SMS setting!");
+                    JSResponse.Add("Data", dbrows);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                else if (value1 == "false")
+                {
+                    //return Json($@"{value1},{"Email Successfully Send but SMS not send because you have not SMS setting"},{ID}", JsonRequestBehavior.AllowGet);
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", 0002);
+                    JSResponse.Add("Message", "Email Successfully Send but SMS not send!");
+                    JSResponse.Add("Data", dbrows);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+
+
                 JSResponse = new Dictionary<string, object>();
-                JSResponse.Add("Status", 0002);
-                JSResponse.Add("Message", "Email Successfully Send but SMS not send because you have not SMS setting!");
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Invitation Send Successfully!");
                 JSResponse.Add("Data", dbrows);
 
                 jr = new JsonResult()
@@ -146,22 +355,23 @@ namespace Privont.Controllers
                 };
                 return jr;
             }
-        
-
-            JSResponse = new Dictionary<string, object>();
-            JSResponse.Add("Status", HttpStatusCode.OK);
-            JSResponse.Add("Message", "Invitation Send Successfully!");
-            JSResponse.Add("Data", dbrows);
-
-            jr = new JsonResult()
+            catch(Exception ex)
             {
-                Data = JSResponse,
-                ContentType = "application/json",
-                ContentEncoding = System.Text.Encoding.UTF8,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                MaxJsonLength = Int32.MaxValue
-            };
-            return jr;
+                var JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Error:"+ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                var jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
         }
         public ActionResult SMSSubscribeMessageToLead()
         {
@@ -177,11 +387,11 @@ namespace Privont.Controllers
         //Encrypt 
         public string SendSMSandEmail(int ID, int IDUserType, int UserID,int UserType)
         {
-            var value = General.Encrypt(ID.ToString(), General.key);
+            var value = Encryption.StringCipher.Encrypt(ID.ToString(), General.key);
             
             string generatedLink = "";
             generatedLink = new GeneralApisController().GenerateLink(ID, IDUserType, UserID, UserType, LinkTypes.Refer);
-            Task<string> returnvalue = SendEmailAsyncString(value, UserType, generatedLink, UserID, UserType);
+            Task<string> returnvalue = SendEmailAsyncString(value, IDUserType, generatedLink, UserID, UserType);
             string answer = returnvalue.Result;
             string[] resultArray = answer.Split(',');
             string value1 = resultArray[0];
@@ -298,7 +508,7 @@ namespace Privont.Controllers
         [HttpPost]
         public async Task<string> SendEmailAsyncString(string value, int UserType, string GeneratedLink, int EntryUserID, int EntryUserType = 0)
         {
-            int ID = int.Parse(General.Decrypt(value, General.key));
+            int ID = int.Parse(Encryption.StringCipher.Decrypt(value, General.key));
             string Name = "";
             string Email = "";
             string PhoneNo = "";
@@ -313,51 +523,24 @@ namespace Privont.Controllers
             {
                 PhoneNo = "+1" + PhoneNo;
             }
-            string InvitedPersonName = new GeneralApisController().GetUserDetails(EntryUserID, EntryUserType).Rows[0]["Name"].ToString(); 
-            
-            //Email
-            var subject = "Create Account";
-            var body = new GeneralApisController().LeadBodyHtml($@"{Name}", InvitedPersonName, GeneratedLink, UserType);
-            using (var smtpClient = new SmtpClient())
+            //Sending Email
+            var ResponseEmail = SendEmail("Create Account", Name, Email, GeneratedLink, UserType, EntryUserID, EntryUserType);
+            if(ResponseEmail == 0)
             {
-                var smtpSection = System.Configuration.ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
-                smtpClient.Host = smtpSection.Network.Host;
-                smtpClient.Port = smtpSection.Network.Port;
-                smtpClient.EnableSsl = smtpSection.Network.EnableSsl;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
-                var fromAddress = new MailAddress(smtpSection.From, "Privont");
-                var toAddress = new MailAddress(Email);
-                var message = new MailMessage(fromAddress, toAddress)
-                {
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-                int testingValue = 0;
-                try
-                {
-                    smtpClient.Send(message);
-                    testingValue = 1;
-                }
-                catch
-                {
-                    testingValue = 0;
-                    return $@"{testingValue},";
-                }
-                //Send SMS
-                Task<string> returnvalue = SendSMSAsyncString(value, UserType, GeneratedLink, EntryUserID, EntryUserType);
-                string answer = returnvalue.Result;
-                string[] resultArray = answer.Split(',');
-                string value1 = resultArray[0];
-                return $@"{testingValue},";
+                //return $@"{ResponseEmail},";
             }
+            //Send SMS
+            Task<string> returnvalue = SendSMSAsyncString(value, UserType, GeneratedLink, EntryUserID, EntryUserType);
+            string answer = returnvalue.Result;
+            string[] resultArray = answer.Split(',');
+            string value1 = resultArray[0];
+            return $@"{value1},";
         }
 
         [HttpPost]
         public async Task<string> SendSMSAsyncString(string value, int UserType, string GeneratedLink, int EntryUserID, int EntryUserType = 0)
         {
-            int ID = int.Parse(General.Decrypt(value, General.key));
+            int ID = int.Parse(Encryption.StringCipher.Decrypt(value, General.key));
             string Name = "";
             string Email = "";
             string PhoneNo = "";
@@ -473,12 +656,14 @@ namespace Privont.Controllers
                 return $@"{testingValue}";
             }
         }
+
+
         public async Task<string> SendSMS(string PhoneNo,string Message)
         {
             var SMSTrueDialog = new SMSTrueDialogController();
             try
             {
-                if (await SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, Message))
+                if (SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, Message))
                 {
                     return $@"true";
                 }
@@ -492,7 +677,45 @@ namespace Privont.Controllers
                 return $@"false";
             }
         }
-        
+        //Sending Email
+        [HttpPost]
+        public int SendEmail(string Subject, string Name, string Email, string GeneratedLink, int UserType,int EntryUserID,int EntryUserType )
+        {
+           
+            string InvitedPersonName = new GeneralApisController().GetUserDetails(EntryUserID, EntryUserType).Rows[0]["Name"].ToString();
+
+            //Email
+            var subject = Subject;// "Create Account";
+            var body = new GeneralApisController().LeadBodyHtml($@"{Name}", InvitedPersonName, GeneratedLink, UserType);
+            using (var smtpClient = new SmtpClient())
+            {
+                var smtpSection = System.Configuration.ConfigurationManager.GetSection("system.net/mailSettings/smtp") as SmtpSection;
+                smtpClient.Host = "privont.com";//smtpSection.Network.Host;
+                smtpClient.Port = 465;//smtpSection.Network.Port;
+                smtpClient.EnableSsl = false;// smtpSection.Network.EnableSsl;
+                smtpClient.UseDefaultCredentials = false;
+                smtpClient.Credentials = new NetworkCredential(smtpSection.Network.UserName, smtpSection.Network.Password);
+                var fromAddress = new MailAddress(smtpSection.From, "Privont");
+                var toAddress = new MailAddress(Email);
+                var message = new MailMessage(fromAddress, toAddress)
+                {
+                    Subject = subject,
+                    Body = body,
+                    IsBodyHtml = true
+                };
+                int testingValue = 0;
+                try
+                {
+                    smtpClient.Send(message);
+                    testingValue = 1;
+                }
+                catch(Exception ex)
+                {
+                    testingValue = 0;
+                }
+                return testingValue;
+            }
+        }
         #endregion
 
         public ActionResult ReferInvite(int Type, string FirstName, string LastName, string PhoneNo, string EmailAddress, int UserID, int UserType)
@@ -774,6 +997,246 @@ where VendorInfo.UserID={UserID} and UserType={UserType}
                 return jr;
             }
         }
-     
+        ///InvitationReference/Refer?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + dataToEncrypt3 + "&futy=" + EntryUserType
+        [HttpGet]
+        public JsonResult Refer(string q,string d,string ti,string fiy, string s,string tuti,string v,string futy)
+        {
+            //ti = To Invited
+            //tuti To Invited User Type
+            //fiy = From Invited
+            //futy = From Invited User Type
+            try
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                Dictionary<string, object> JSChildResponse = new Dictionary<string, object>();
+                JsonResult jr = new JsonResult();
+                if (!Request.Headers["Accept"].Contains("application/json"))
+                {
+                    jr = new JsonResult()
+                    {
+                        Data = "Something went wrong please try again later!",
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                
+
+                ti = Encryption.StringCipher.Decrypt(ti, General.key);// General.Decrypt(ti, General.key); //User ID
+                tuti = Encryption.StringCipher.Decrypt(tuti, General.key);//General.Decrypt(tuti, General.key); //User Type
+
+                string EntryUserID = fiy;
+                string EntryUserType = futy;
+
+                DataTable dtcheck = UserProfileController.GetUserInformation(int.Parse(ti), int.Parse(tuti));
+                if (dtcheck.Rows.Count <= 0)
+                {
+                    JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                    JSResponse.Add("Message", "Link Expire");
+                    JSResponse.Add("Data", DBNull.Value);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                if (dtcheck.Rows.Count > 0)
+                {
+                    if (!string.IsNullOrEmpty(dtcheck.Rows[0]["Username"].ToString()))
+                    {
+                        JSResponse.Add("Status", HttpStatusCode.Found);
+                        JSResponse.Add("Message", "User already exist. Please Sign In!");
+                        JSResponse.Add("Data", DBNull.Value);
+
+                        jr = new JsonResult()
+                        {
+                            Data = JSResponse,
+                            ContentType = "application/json",
+                            ContentEncoding = System.Text.Encoding.UTF8,
+                            JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                            MaxJsonLength = Int32.MaxValue
+                        };
+                        return jr;
+                    }
+                }
+                //Invitation from Person Information
+                DataTable dtInvitedPersonInformation = UserProfileController.GetUserInformation(int.Parse(EntryUserID), int.Parse(EntryUserType));
+                List<Dictionary<string, object>> dbInvitedTo = new General().GetAllRowsInDictionary(dtcheck);
+                List<Dictionary<string, object>> dbInvitedFrom = new General().GetAllRowsInDictionary(dtInvitedPersonInformation);
+
+                //Child json Response
+                JSChildResponse.Add("InvitedFrom", dbInvitedFrom);
+                JSChildResponse.Add("dbInvitedTo", dbInvitedTo);
+                //Parent Json Format
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "SignUp User Information");
+                JSResponse.Add("Data", JSChildResponse);
+
+                jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            catch(Exception ex)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Error: " + ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+        }
+        [HttpGet]
+        public JsonResult PostSignUp(string UserName, string Password, int UserID,int UserType)
+        {
+            try
+            {
+
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JsonResult jr = new JsonResult();
+                DataTable dtcheck = UserProfileController.GetUserInformation(UserID, UserType);
+                if (dtcheck.Rows.Count <= 0)
+                {
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                    JSResponse.Add("Message", "Link Expire");
+                    JSResponse.Add("Data", DBNull.Value);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                DataTable dtCheckUsernameExistance = new RealEstateAgentInfo().UserExistanceInfo(UserName);
+                if (dtCheckUsernameExistance.Rows.Count > 0)
+                {
+                    JSResponse = new Dictionary<string, object>();
+                    JSResponse.Add("Status", HttpStatusCode.Conflict);
+                    JSResponse.Add("Message", "Username already Exist");
+                    JSResponse.Add("Data", DBNull.Value);
+
+                    jr = new JsonResult()
+                    {
+                        Data = JSResponse,
+                        ContentType = "application/json",
+                        ContentEncoding = System.Text.Encoding.UTF8,
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                        MaxJsonLength = Int32.MaxValue
+                    };
+                    return jr;
+                }
+                try
+                {
+                    if(UserType == 2)
+                    {
+                        General.ExecuteNonQuery($@" update  RealEstateAgentInfo set Username='{UserName}', Password='{Password}',IsApproved=1 where RealEstateAgentId={UserID} ");
+                    }
+                    else if (UserType == 3)
+                    {
+                        General.ExecuteNonQuery($@" update  LenderInfo set Username='{UserName}', Password='{Password}',IsApproved=1 where LenderId={UserID} ");
+                    }
+                    else if (UserType == 4)
+                    {
+                        General.ExecuteNonQuery($@" update  LeadInfo set Username='{UserName}', Password='{Password}',IsApproved=1 where LeadID={UserID} ");
+                    }
+                    else if (UserType == 5)
+                    {
+                        General.ExecuteNonQuery($@" update  VendorInfo set Username='{UserName}', Password='{Password}',IsApproved=1 where VendorID={UserID} ");
+                    }
+                }
+                catch
+                {
+                    throw new Exception("Unabled to set Username and Password");
+                }
+
+
+                DataTable dtData = UserProfileController.GetUserInformation(UserID, UserType);
+                List<Dictionary<string, object>> dbInvitedTo = new General().GetAllRowsInDictionary(dtData);
+
+                //Parent Json Format
+                JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Sign Up User Information");
+                JSResponse.Add("Data", dbInvitedTo);
+
+                jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            catch (Exception ex)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Error: " + ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+        }
+        public DataTable dtCheckUserExistance(string PhoneNo,int UserID,int UserType,int TypeOfUser)
+        {
+            string sql1 = $@"
+
+select * from 
+(select RealEstateAgentId as LoginID,UserID,UserType,Contact1,2 TypeOfUser from RealEstateAgentInfo
+
+union all
+select LenderId as LoginID,UserID,UserType,Contact1,3 TypeOfUser  from LenderInfo
+
+union all
+
+select LeadID as LoginID,UserID,UserType,Contact1,4 TypeOfUser  from LeadInfo
+
+union all
+
+select VendorID as LoginID,UserID,UserType,Contact1,5 TypeOfUser  from VendorInfo
+)UserInfo where Contact1='{PhoneNo}' and UserID={UserID} and UserType={UserType} and TypeOfUser={TypeOfUser}
+
+";
+            DataTable dt = General.FetchData(sql1);
+            return dt;
+        }
     }
 }

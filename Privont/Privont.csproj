@@ -381,9 +381,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\APIs\TrueDialogIncomeMessageController.cs" />
     <Compile Include="Controllers\CardInfoController.cs" />
+    <Compile Include="Controllers\ChangePasswordController.cs" />
+    <Compile Include="Controllers\EmailContentController.cs" />
     <Compile Include="Controllers\FacebookAuthLoginController.cs" />
     <Compile Include="Controllers\FeedBackInfoController.cs" />
     <Compile Include="Controllers\GeneralApisController.cs" />
+    <Compile Include="Controllers\GenerateLinkController.cs" />
     <Compile Include="Controllers\GoogleAuthController.cs" />
     <Compile Include="Controllers\GoogleAuthLoginController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -391,9 +394,12 @@
     <Compile Include="Controllers\LeadInfoController.cs" />
     <Compile Include="Controllers\LenderInfoController.cs" />
     <Compile Include="Controllers\MemberAPIsController.cs" />
+    <Compile Include="Controllers\NotificationInfoController.cs" />
     <Compile Include="Controllers\OrganizationInfoController.cs" />
+    <Compile Include="Controllers\OTPCodeGeneratorController.cs" />
     <Compile Include="Controllers\PaymentGatewayController.cs" />
     <Compile Include="Controllers\RealEstateAgentInfoController.cs" />
+    <Compile Include="Controllers\RecentsActivityController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SMSContentController.cs" />
     <Compile Include="Controllers\SMSSettingController.cs" />
@@ -405,6 +411,7 @@
     <Compile Include="Controllers\ZipCodeController.cs" />
     <Compile Include="DropDown.cs" />
     <Compile Include="EasyPayPaymentIntegreation.cs" />
+    <Compile Include="Encryption.cs" />
     <Compile Include="General.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -418,14 +425,18 @@
     <Compile Include="Models\CardPayment.cs" />
     <Compile Include="Models\ChallengeResult.cs" />
     <Compile Include="Models\CustomerSquareup.cs" />
+    <Compile Include="Models\EasyPayDirectResponse.cs" />
     <Compile Include="Models\FeedBackInfo.cs" />
     <Compile Include="Models\LeadInfo.cs" />
     <Compile Include="Models\LenderInfo.cs" />
+    <Compile Include="Models\NotificationInfo.cs" />
     <Compile Include="Models\OrganizationInfo.cs" />
+    <Compile Include="Models\OTPCodeGenerator.cs" />
     <Compile Include="Models\RealEstateAgentInfo.cs" />
     <Compile Include="Models\SMSSetting.cs" />
     <Compile Include="Models\SocialMediaInfo.cs" />
     <Compile Include="Models\Transaction.cs" />
+    <Compile Include="Models\TransactionDetails.cs" />
     <Compile Include="Models\TrueDialogIncomeMessage.cs" />
     <Compile Include="Models\TrueDialogService.cs" />
     <Compile Include="Models\UserInfo.cs" />
@@ -10811,6 +10822,7 @@
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
+    <None Include="Properties\PublishProfiles\Default Settings1.pubxml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\privont.com - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\privont.softinn.pk - Web Deploy.pubxml" />
@@ -10964,6 +10976,7 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
     <Content Include="Views\Home\callback.cshtml" />
     <Content Include="Views\SMSContent\Create.cshtml" />
+    <Content Include="Views\EmailContent\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -10974,17 +10987,22 @@
     <Folder Include="Scripts\jstoken\bin\" />
     <Folder Include="UploadedFiles\Lead\" />
     <Folder Include="Views\CardInfo\" />
+    <Folder Include="Views\ChangePassword\" />
     <Folder Include="Views\FacebookAuthLogin\" />
     <Folder Include="Views\FeedBackInfo\" />
+    <Folder Include="Views\GenerateLink\" />
     <Folder Include="Views\GoogleAuthLogin\" />
     <Folder Include="Views\GoogleAuth\" />
     <Folder Include="Views\IncomingMessages\" />
     <Folder Include="Views\InvitationReference\" />
     <Folder Include="Views\LeadsInfo\" />
     <Folder Include="Views\MemberAPIs\" />
+    <Folder Include="Views\NotificationInfo\" />
     <Folder Include="Views\OrganizationInfo\" />
+    <Folder Include="Views\OTPCodeGenerator\" />
     <Folder Include="Views\PaymentGateway\" />
     <Folder Include="Views\PaymentGatway\" />
+    <Folder Include="Views\RecentsActivity\" />
     <Folder Include="Views\SocialMediaInfo\" />
     <Folder Include="Views\TrueDialog\" />
     <Folder Include="Views\UserProfile\" />

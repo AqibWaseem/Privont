@@ -108,6 +108,15 @@ FROM            CardInfo INNER JOIN
         {
             try
             {
+                JsonResult jr = new JsonResult();
+                //Get Card Validation Information
+                var api = new EasyPayPaymentIntegreation();
+                var validateResponse = api.ValidateCard(collection.CardNumber, collection.ExpiryDate.ToString("yyMM"), collection.CVV.ToString());
+                if (!validateResponse.IsSuccess)
+                {
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.NotFound, "Card are not valid", null);
+                    return jr;
+                }
                 General.ExecuteNonQuery($@"Delete from CardInfo where CardInfo.UserID={collection.UserID} and CardInfo.UserType={collection.UserType} ");
                 General.ExecuteNonQuery($@"INSERT INTO [dbo].[CardInfo]
            ([CardNumber]
@@ -138,7 +147,7 @@ FROM            CardInfo INNER JOIN
                 JSResponse.Add("Message", "Card Information");
                 JSResponse.Add("Data", dbrows);
 
-                JsonResult jr = new JsonResult()
+                jr = new JsonResult()
                 {
                     Data = JSResponse,
                     ContentType = "application/json",

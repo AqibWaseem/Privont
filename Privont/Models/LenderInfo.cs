@@ -166,14 +166,14 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
            ,'{obj.Contact1}'
            ,'{obj.UserID}'
            ,'{obj.UserType}'
-           ,'{obj.IsApproved}'
+           ,'{(obj.IsApproved ? 1 : 0)}'
            ,'{obj.IsEmailVerified}'
            ,'{obj.UniqueIdentifier}'
-           ,'{obj.SourceID}'
+           ,'{((int)General.SourceTypes.Refer)}'
            ,'{obj.PriceRangeID}'
            ,'{obj.State}'
-           ,'{obj.FirstTimeBuyer}'
-           ,'{obj.IsMilitary}'
+           ,'{(obj.FirstTimeBuyer ? 1 : 0)}'
+           ,'{(obj.IsMilitary ? 1 : 0)}'
            ,'{obj.TypeID}'
            ,'{obj.BestTimeToCall}')";
             try
@@ -186,6 +186,37 @@ left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
             catch (Exception ex)
             {
                 return LenderId;
+            }
+        }
+        public int UpdateRecordsByInviationLender(LenderInfo obj)
+        {
+            int LenderId = 0;
+            string Query = $@"UPDATE [dbo].[LenderInfo]
+SET
+   [FirstName] = '{obj.FirstName}',
+   [LastName] = '{obj.LastName}',
+   [EmailAddress] = '{obj.EmailAddress}',
+   [Contact1] = '{obj.Contact1}',
+   [UserType] = '{obj.UserType}',
+   [IsApproved] = '{(obj.IsApproved ? 1 : 0)}',
+   [IsEmailVerified] = '{obj.IsEmailVerified}',
+   [PriceRangeID] = '{obj.PriceRangeID}',
+   [State] = '{obj.State}',
+   [FirstTimeBuyer] = '{(obj.FirstTimeBuyer ? 1 : 0)}',
+   [IsMilitary] = '{(obj.IsMilitary ? 1 : 0)}',
+   [TypeID] = '{obj.TypeID}',
+   [BestTimeToCall] = '{obj.BestTimeToCall}'
+WHERE
+   [LenderId] = '{obj.LenderId}';
+";
+            try
+            {
+                 General.ExecuteNonQuery(Query);
+                return obj.LenderId;
+            }
+            catch (Exception ex)
+            {
+                return obj.LenderId;
             }
         }
         public DataTable GetAllRecordsVIAPhoneNo(string PhoneNo)

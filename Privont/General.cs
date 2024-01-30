@@ -23,6 +23,7 @@ namespace Privont
 {
     public class General
     {
+        public static string DomainName = "https://privont.com";
         public static string secretKey { get { return "Privont@Privont"; } }
         public static string AccessTokenForSquareup { get { return ConfigurationManager.AppSettings["AccessTokenForSquareup"].ToString(); } }
         public static string LocationIDForSquareup { get { return ConfigurationManager.AppSettings["LocationID"].ToString(); } }
@@ -89,7 +90,8 @@ namespace Privont
             }
         }
 
-        public static string key = "HisabdaarPrivont";
+        //public static string key = "@Privont!1";
+        public static string key { get { return "Privont!!"; } }
         public static string ConnectionString { get; set; }
         public static DataTable FetchData(string query)
         {
@@ -185,7 +187,8 @@ namespace Privont
         {
             using (Aes aesAlg = Aes.Create())
             {
-                aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                // Ensure a valid key size by using a key derivation function (e.g., PBKDF2)
+                aesAlg.Key = GenerateValidKey(key, aesAlg.KeySize);
                 aesAlg.IV = new byte[16]; // IV (Initialization Vector) should be unique and unpredictable, but it's a constant for simplicity here.
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
@@ -203,27 +206,54 @@ namespace Privont
                 }
             }
         }
-
+        private static byte[] GenerateValidKey(string key, int keySize)
+        {
+            // Use a key derivation function (e.g., PBKDF2) to ensure a valid key size
+            using (Rfc2898DeriveBytes keyDerivation = new Rfc2898DeriveBytes(key, new byte[] { 0, 1, 2, 3, 4, 5, 6, 7 }, 10000))
+            {
+                return keyDerivation.GetBytes(keySize / 8);
+            }
+        }
         public static string Decrypt(string cipherText, string key)
         {
-            using (Aes aesAlg = Aes.Create())
+            try
             {
-                aesAlg.Key = Encoding.UTF8.GetBytes(key);
-                aesAlg.IV = new byte[16]; // IV (Initialization Vector) should match the one used for encryption.
-
-                ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-                using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
+                using (Aes aesAlg = Aes.Create())
                 {
-                    using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
+                    aesAlg.Key = Encoding.UTF8.GetBytes(key);
+                    aesAlg.IV = new byte[16];
+
+                    ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
+
+                    // Ensure proper padding and handle invalid Base64 string
+                    cipherText = EnsureBase64Padding(cipherText);
+
+                    using (MemoryStream msDecrypt = new MemoryStream(Convert.FromBase64String(cipherText)))
                     {
-                        using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                        using (CryptoStream csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
                         {
-                            return srDecrypt.ReadToEnd();
+                            using (StreamReader srDecrypt = new StreamReader(csDecrypt))
+                            {
+                                return srDecrypt.ReadToEnd();
+                            }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                // Log or handle the exception appropriately
+                Console.WriteLine($"Error decrypting: {ex.Message}");
+                return null;
+            }
+        }
+        private static string EnsureBase64Padding(string base64String)
+        {
+            while (base64String.Length % 4 != 0)
+            {
+                base64String += "=";
+            }
+            return base64String;
         }
         public static string FetchDataFromAPIs(string APIsPath,string Auth)
         {
@@ -272,8 +302,9 @@ namespace Privont
         }
         public enum LogSource
         {
-            FollowUpBoss,
-            Zillow
+            FollowUpBoss = 1,
+            Zillow = 2,
+            Referred = 3
         }
         public static string PostFromAPIs(string APIsPath, string Auth)
         {

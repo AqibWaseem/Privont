@@ -150,14 +150,14 @@ left outer join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo
            ,'{obj.Contact1}'
            ,'{obj.UserID}'
            ,'{obj.UserType}'
-           ,'{obj.IsApproved}'
+           ,'{(obj.IsApproved ? 1 : 0)}'
            ,'{obj.IsEmailVerified}'
            ,'{obj.UniqueIdentifier}'
-           ,'{obj.SourceID}'
+           ,'{((int)General.SourceTypes.Refer)}'
            ,'{obj.PriceRangeID}'
            ,'{obj.State}'
-           ,'{obj.FirstTimeBuyer}'
-           ,'{obj.IsMilitary}'
+           ,'{(obj.FirstTimeBuyer ? 1 : 0)}'
+           ,'{(obj.IsMilitary ? 1 : 0)}'
            ,'{obj.TypeID}'
            ,'{obj.BestTimeToCall}')";
             try
@@ -170,6 +170,37 @@ left outer join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo
             catch (Exception ex)
             {
                 return VendorID;
+            }
+        }
+        public int UpdateRecordsByInviationVendor(VendorInfo obj)
+        {
+            int VendorID = 0;
+            string Query = $@"UPDATE [dbo].[VendorInfo]
+SET
+    [FirstName] = '{obj.FirstName}',
+    [LastName] = '{obj.LastName}',
+    [EmailAddress] = '{obj.EmailAddress}',
+    [Contact1] = '{obj.Contact1}',
+    [UserType] = '{obj.UserType}',
+    [IsApproved] = '{(obj.IsApproved ? 1 : 0)}',
+    [IsEmailVerified] = '{obj.IsEmailVerified}',
+    [PriceRangeID] = '{obj.PriceRangeID}',
+    [State] = '{obj.State}',
+    [FirstTimeBuyer] = '{(obj.FirstTimeBuyer ? 1 : 0)}',
+    [IsMilitary] = '{(obj.IsMilitary ? 1 : 0)}',
+    [TypeID] = '{obj.TypeID}',
+    [BestTimeToCall] = '{obj.BestTimeToCall}'
+WHERE
+    [VendorID] = '{obj.VendorID}';
+";
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.VendorID;
+            }
+            catch (Exception ex)
+            {
+                return obj.VendorID;
             }
         }
         public List<VendorInfo> GetVendorInfoRecordsInList(DataTable dt, int UserType)

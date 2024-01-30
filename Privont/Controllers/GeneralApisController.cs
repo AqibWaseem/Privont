@@ -1299,7 +1299,7 @@ table, td { color: #000000; } a { color: #075e55; text-decoration: underline; }
                 return false;
             }
         }
-        public string LastAddedLink_APILog(LogSource Source)
+        public string LastAddedLink_APILog(int Source)
         {
             string Query = $@"select NextLink from APIsLogs  
 where SourceID in (select LeadID from LeadInfo where ApiSource is not null)  and Source='{Source.ToString()}'
@@ -1315,6 +1315,22 @@ order by LogID desc
                 return "";
             }
         }
+//        public string LastAddedLink_APILog(LogSource Source)
+//        {
+//            string Query = $@"select NextLink from APIsLogs  
+//where SourceID in (select LeadID from LeadInfo where ApiSource is not null)  and Source='{Source.ToString()}'
+//order by LogID desc
+//";
+//            DataTable dt = General.FetchData(Query);
+//            if (dt.Rows.Count > 0)
+//            {
+//                return dt.Rows[0]["NextLink"].ToString();
+//            }
+//            else
+//            {
+//                return "";
+//            }
+//        }
         public string GetSourceOfAPI(int SourceID)
         {
             string Query = $@"
@@ -1775,7 +1791,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
                     var SMSTrueDialog = new SMSTrueDialogController();
                     try
                     {
-                        if (await SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, SMSDetailInvite))
+                        if ( SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, SMSDetailInvite))
                         {
                             return Json("true,");
                         }
@@ -1837,7 +1853,7 @@ Select Count(LenderID)LenderID,'Lender' as Title from LenderInfo";
             {
                 string PhoneNo = resultArray[2];
                 string Message = resultArray[1];
-                if (await new SMSTrueDialogController().SendPushCampaignAsyncbool(PhoneNo, Message))
+                if ( new SMSTrueDialogController().SendPushCampaignAsyncbool(PhoneNo, Message))
                 {
                     return Json("true", JsonRequestBehavior.AllowGet);
                 }
@@ -2128,7 +2144,7 @@ FROM            VendorInfo
                     var SMSTrueDialog = new SMSTrueDialogController();
                     try
                     {
-                        if (await SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, SMSDetailInvite))
+                        if ( SMSTrueDialog.SendPushCampaignAsyncbool(PhoneNo, SMSDetailInvite))
                         {
                             return $@"true,";
                         }
@@ -2279,9 +2295,10 @@ LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
             DataTable dt = General.FetchData(Query);
             return dt;
         }
+        //Generate Link for Invitation 
         public string GenerateLink(int UserID,int UserType,int EntryUserID,int EntryUserType, LinkTypes type)
         {
-            string value = General.Encrypt(UserID.ToString(), General.key);
+            string value = Encryption.StringCipher.Encrypt(UserID.ToString(), General.key);
             string secretKey = General.secretKey;
             // Construct the data to be encrypted
             var dataToEncrypt = new
@@ -2304,12 +2321,18 @@ LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
             var serializer = new JavaScriptSerializer();
             string jsonData = serializer.Serialize(dataToEncrypt);
             string jsonData2 = serializer.Serialize(dataToEncrypt2);
+            string jsonData3 = serializer.Serialize(dataToEncrypt3);
             // Encrypt the data
-            string encryptedData = General.Encrypt(jsonData, secretKey);
-            string encryptedData2 = General.Encrypt(jsonData2, secretKey);
-            // Construct the URL
-            string domainUrl = Request.Url.GetLeftPart(UriPartial.Authority);
 
+            string encryptedData = Encryption.StringCipher.Encrypt(jsonData, secretKey); //General.Encrypt(jsonData, secretKey);
+            string encryptedData2 = Encryption.StringCipher.Encrypt(jsonData2.ToString(), secretKey); //General.Encrypt(jsonData2, secretKey);
+            string encryptedData3 = Encryption.StringCipher.Encrypt(jsonData3.ToString(), secretKey); //General.Encrypt(jsonData2, secretKey);
+
+            // Construct the URL
+            string domainUrl = General.DomainName;//Request.Url.GetLeftPart(UriPartial.Authority);
+            //string Domain = Request.Url.Scheme + System.Uri.SchemeDelimiter + Request.Url.Host + (Request.Url.IsDefaultPort ? "" : ":" + Request.Url.Port);
+            ////if(Domain.Contains(""))
+            //var Host = Request.Url.Host;
             string generatedLink = "";
             //ti = To Invited
             //tuti To Invited User Type
@@ -2318,15 +2341,15 @@ LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
 
             if (type == LinkTypes.Refer)// For SignUp 
             {
-                string tuti = General.Encrypt(UserType.ToString(), General.key);
-                generatedLink = domainUrl + "/InvitationReference/Refer?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + dataToEncrypt3 + "&futy=" + EntryUserType;
+                string tuti = Encryption.StringCipher.Encrypt(UserType.ToString(), General.key); //General.Encrypt(UserType.ToString(), General.key);
+                generatedLink = domainUrl + "/InvitationReference/Refer?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + encryptedData3 + "&futy=" + EntryUserType;
 
             }
             else if (type == LinkTypes.Claim)
             {
-                string tuti = General.Encrypt(UserType.ToString(), General.key);
+                string tuti = Encryption.StringCipher.Encrypt(UserType.ToString(), General.key); //General.Encrypt(UserType.ToString(), General.key);
 
-                generatedLink = domainUrl + "/InvitationReference/CLead?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + dataToEncrypt3 + "&futy=" + EntryUserType;
+                generatedLink = domainUrl + "/InvitationReference/CLead?q=" + encryptedData + "&d=" + UserType + "&ti=" + value + "&fiy=" + EntryUserID + "&s=" + encryptedData2 + "&tuti=" + tuti + "&v=" + encryptedData3 + "&futy=" + EntryUserType;
             }
             return generatedLink;
         }
@@ -2353,13 +2376,13 @@ LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
                 status = 2;
                 return status;
             }
-            else if (dt.Rows[0]["SMSDetail"] == DBNull.Value)
+            else if (dt.Rows[0]["SMSDetail"] == DBNull.Value|| dt.Rows[0]["SMSDetailKey"] == DBNull.Value)
             {
                 status = 2;
                 return status;
             }
             string SMSDetail = dt.Rows[0]["SMSDetail"].ToString();
-
+            string SMSDetailKey = dt.Rows[0]["SMSDetailKey"].ToString();
 
             //Get Lead Information
             DataTable LeadDetail = General.FetchData($@"Select * from LeadInfo Where LeadID ={LeadID}");
@@ -2372,7 +2395,7 @@ LEFT OUTER JOIN ReferTypeInfo ON ReferTypeInfo.TypeID = LeadInfo.TypeID
             obj.LastName = LeadDetail.Rows[0]["LastName"].ToString();
 
             SMSDetail = SMSDetail.Replace("[Name]", obj.FirstName + " " + obj.LastName);
-            SMSDetail = SMSDetail.Replace("[SMSClaimedKey]", generatedLink);
+            SMSDetail = SMSDetail.Replace("[SMSClaimedKey]", SMSDetailKey); //generatedLink
 
             string PhoneNumber = obj.PhoneNo;
             string Message = SMSDetail;

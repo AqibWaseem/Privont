@@ -193,11 +193,11 @@ where Username is not null and Username='{UserName}'");
            ,'{(obj.IsApproved ? 1 : 0)}'
            ,'{(obj.IsEmailVerified)}'
            ,'{obj.UniqueIdentifier}'
-           ,'{obj.SourceID}'
+           ,'{((int)General.SourceTypes.Refer)}'
            ,'{obj.PriceRangeID}'
            ,'{obj.State}'
-           ,'{obj.FirstTimeBuyer}'
-           ,'{obj.IsMilitary}'
+           ,'{(obj.FirstTimeBuyer?1:0)}'
+           ,'{(obj.IsMilitary?1:0)}'
            ,'{obj.TypeID}'
            ,'{obj.BestTimeToCall}')";
             try
@@ -210,6 +210,35 @@ where Username is not null and Username='{UserName}'");
             catch (Exception ex)
             {
                 return RealEstateAgentId;
+            }
+        }
+        public int UpdateRecordsByInviation(RealEstateAgentInfo obj)
+        {
+            int RealEstateAgentId = 0;
+            string Query = $@"
+UPDATE [dbo].[RealEstateAgentInfo]
+SET
+    [FirstName] = '{obj.FirstName}',
+    [LastName] = '{obj.LastName}',
+    [EmailAddress] = '{obj.EmailAddress}',
+    [Contact1] = '{obj.Contact1}',
+    [PriceRangeID] = '{obj.PriceRangeID}',
+    [State] = '{obj.State}',
+    [FirstTimeBuyer] = '{(obj.FirstTimeBuyer ? 1 : 0)}',
+    [IsMilitary] = '{(obj.IsMilitary ? 1 : 0)}',
+    [TypeID] = '{obj.TypeID}',
+    [BestTimeToCall] = '{obj.BestTimeToCall}'
+WHERE
+    [RealEstateAgentId] = '{obj.RealEstateAgentId}'
+";
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.RealEstateAgentId;
+            }
+            catch (Exception ex)
+            {
+                return obj.RealEstateAgentId;
             }
         }
         public List<RealEstateAgentInfo>GetRealEstateAgentRecordsInList(DataTable dt,int UserType)

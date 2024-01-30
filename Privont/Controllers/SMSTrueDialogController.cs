@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Privont.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -112,13 +115,13 @@ namespace Privont.Controllers
             catch (Exception ex)
             {
                 // Handle exceptions (e.g., log the error)
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Unabled to send sms. Please try again later");
                 throw;
             }
         }
 
         [HttpPost]
-        public async Task<bool> SendPushCampaignAsyncbool(string PhoneNo, string message)
+        public bool SendPushCampaignAsyncbool(string PhoneNo, string message)
         {
             try
             {
@@ -126,23 +129,24 @@ namespace Privont.Controllers
                 {
                     PhoneNo = "+1" + PhoneNo;
                 }
+
                 using (var httpClient = new HttpClient { BaseAddress = new Uri(BaseUrl) })
                 {
                     // Set up authorization header
                     var authHeader = Convert.ToBase64String(Encoding.ASCII.GetBytes($"{ApiKey}:{ApiSecret}"));
-                    httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", authHeader);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", authHeader);
 
                     // Define your request payload
                     var requestPayload = new
                     {
                         Channels = new int[] { 22 },
-                        Targets = new string[] { $"{PhoneNo}" },
-                        Message = $"{message}",
+                        Targets = new string[] { PhoneNo },
+                        Message = message,
                         Execute = true
                     };
 
                     // Serialize the request payload to JSON
-                    var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(requestPayload);
+                    var jsonPayload = JsonConvert.SerializeObject(requestPayload);
 
                     // Create StringContent with JSON payload
                     using (var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json"))
@@ -150,19 +154,32 @@ namespace Privont.Controllers
                         // Replace {AccountId} in the URL with the actual account ID
                         var requestUrl = $"account/{AccountID}/action-pushcampaign";
 
-                        // Send the POST request
-                        using (var response = await httpClient.PostAsync(requestUrl, content))
+                        // Set a timeout for the HTTP request (e.g., 30 seconds)
+                        httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+                        // Send the POST request synchronously
+                        using (var response = httpClient.PostAsync(requestUrl, content).Result)
                         {
-                            response.EnsureSuccessStatusCode();
                             if (response.IsSuccessStatusCode)
                             {
-                                string responseData = await response.Content.ReadAsStringAsync();
+                                // Read and log the response data
+                                string responseData = response.Content.ReadAsStringAsync().Result;
+                                Console.WriteLine($"Response: {responseData}");
+                                return true;
                             }
-                            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                            else if (response.StatusCode == HttpStatusCode.BadRequest)
                             {
+                                // Log the error and return false
+                                string errorData = response.Content.ReadAsStringAsync().Result;
+                                Console.WriteLine($"Bad Request Error: {errorData}");
                                 return false;
                             }
-                            return true;
+                            else
+                            {
+                                // Log other errors and return false
+                                Console.WriteLine($"Error: {response.StatusCode}");
+                                return false;
+                            }
                         }
                     }
                 }
@@ -174,6 +191,7 @@ namespace Privont.Controllers
                 throw;
             }
         }
+
         public async Task<string> FetchReceivedMessages()
         {
             string apiUrl = BaseUrl+ $@"account/{AccountID}/callback"; 
@@ -221,7 +239,7 @@ namespace Privont.Controllers
             if (EntryUserID > 0 && EntryUserType > 0)
             {
                 LeadInfo leadInfo = new LeadInfo();
-                leadInfo = General.ConvertDataTable<LeadInfo>(leadInfo.GetAllRecordsVIAPhoneNo(value.PhoneNumber))[0];
+                leadInfo = General.ConvertDataTable<LeadInfo>(leadInfo.GetAllRecordsVIAPhoneNo(value.PhoneNumber, EntryUserID, EntryUserType))[0];
                 General.ExecuteNonQuery($@"update LeadInfo set IsPrivontFamily=1 where LeadID=" + leadInfo.LeadID);
                 var res = new InvitationReferenceController().SendSMSandEmail(leadInfo.LeadID, 4, EntryUserID, EntryUserType);
                 if(res == "true")
@@ -237,7 +255,7 @@ namespace Privont.Controllers
             if (EntryUserID > 0 && EntryUserType > 0)
             {
                 LeadInfo leadInfo = new LeadInfo();
-                leadInfo = General.ConvertDataTable<LeadInfo>(leadInfo.GetAllRecordsVIAPhoneNo(value.PhoneNumber))[0];
+                leadInfo = General.ConvertDataTable<LeadInfo>(leadInfo.GetAllRecordsVIAPhoneNo(value.PhoneNumber, EntryUserID, EntryUserType))[0];
 
                 General.FetchData($@"Update LeadInfo Set isClaimLead=1,OptInSMSStatus=1  Where LeadID = {leadInfo.LeadID}");
 

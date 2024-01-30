@@ -73,6 +73,8 @@ namespace Privont.Controllers
                    
                     WhereClause = "   where VendorInfo.VendorID = " + VendorID;
                 }
+              
+
                 columnTitle = $@"
 (select count(*) from FavouriteVendorInfo where FavouriteVendorInfo.FavouriteVendorID=VendorInfo.VendorID and FavouriteVendorInfo.UserID={UserID} 
                     and FavouriteVendorInfo.UserType={UserTypeID} )";
@@ -80,7 +82,7 @@ namespace Privont.Controllers
 ,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack 
 
 
-from  (select * from VendorInfo where VendorID!={UserID})VendorInfo
+from  (select * from VendorInfo where VendorID!={((UserTypeID == 5?UserID:VendorID))})VendorInfo
 
 left outer join ZipCode on VendorInfo.ZipCodeID = ZipCode.ZipCodeID
 left outer join OrganizationInfo on VendorInfo.OrganizationID = OrganizationInfo.OrganizationID  

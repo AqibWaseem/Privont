@@ -537,7 +537,7 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
         public void FetchingLeadsFromAPIs(int UserID, int APISourceID)
         {
             var NextLink = GetAPIOfFollowUPBoss();
-            string GetingLastAddedLink = new GeneralApisController().LastAddedLink_APILog(LogSource.FollowUpBoss);
+            string GetingLastAddedLink = new GeneralApisController().LastAddedLink_APILog(APISourceID);
             if (!string.IsNullOrEmpty(GetingLastAddedLink))
             {
                 NextLink = GetingLastAddedLink;
@@ -579,7 +579,7 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
                     NextLink = root._metadata.nextLink;
                     // Last Add Leads
                     int ID = LastAddedAPI();
-                    GeneralApisController.InsertAPILogs(LogTypes.APICall, LogSource.FollowUpBoss, ID, "Follow Up Boss API Records", root._metadata.nextLink);
+                    GeneralApisController.InsertAPILogs(LogTypes.APICall, LogSource.FollowUpBoss, ID, APITypeTitle(APISourceID) + " API Records", root._metadata.nextLink);
                 }
                 else
                 {
@@ -587,6 +587,18 @@ select APIConfig from APIConfigInfo where TypeID={SourceID} and RealEstateID={Us
                 }
             }
 
+        }
+        public string APITypeTitle(int APITypeID)
+        {
+            DataTable dt = General.FetchData($@"select APITypeTitle from APITypeInfo where APITypeID={APITypeID}");
+            if(dt.Rows.Count > 0)
+            {
+                if (dt.Rows[0][0] != DBNull.Value)
+                {
+                    return dt.Rows[0][0].ToString();
+                }
+            }
+            return "";
         }
         public int LastAddedAPI()
         {
@@ -666,21 +678,25 @@ DECLARE @PageNumber AS INT = {PageNo}
 SELECT @TotalLenders = COUNT(*) FROM FavouriteLender WHERE LenderID = @LenderID
 
 ;WITH LeadsCTE AS (
-   SELECT
+     SELECT
         CASE WHEN DATEDIFF(MINUTE, EntryDateTime, GETDATE()) <= LeadExpiryTime.ExpiryTime THEN 1 ELSE 0 END AS IsBelowTime,
         LeadInfo.LeadID, LeadInfo.FirstName, LeadInfo.LastName, ISNULL(LeadInfo.OptInSMSStatus, 0) AS OptInSMSStatus,
-        LeadInfo.PhoneNo, LeadInfo.EmailAddress, LeadInfo.EntryDateTime, LeadExpiryTime.ExpiryTime, ISNULL(LeadInfo.ReadytoOptin, 0) AS ReadytoOptin,
+        LeadInfo.Contact1,LeadInfo.PhoneNo, LeadInfo.EmailAddress, LeadInfo.EntryDateTime, LeadExpiryTime.ExpiryTime, ISNULL(LeadInfo.ReadytoOptin, 0) AS ReadytoOptin,
         LeadInfo.UserID, RealEstateAgentInfo.RealEstateAgentId, LeadInfo.isClaimLead, LeadInfo.SMSSent, LeadInfo.IsApproved, LeadInfo.IsEmailVerified,
         LeadInfo.UniqueIdentifier, LeadInfo.PriceRangeID, LeadInfo.State, LeadInfo.FirstTimeBuyer, LeadInfo.IsMilitary, LeadInfo.TypeID,
-        LeadInfo.BestTimeToCall, LeadInfo.IsPrivontFamily, LeadInfo.PricePointID, ZipCode.ZipCode, LeadPricePoint.PricePoint
+        LeadInfo.BestTimeToCall, ISNULL(LeadInfo.IsPrivontFamily,0)IsPrivontFamily, LeadInfo.PricePointID, ZipCode.ZipCode, 
+		LeadPricePoint.PricePoint,ISNULL(LeadClaimInfo.IsClaimedByLender,0)IsClaimedByLender
    FROM
         LeadInfo
         INNER JOIN RealEstateAgentInfo ON RealEstateAgentInfo.RealEstateAgentId = LeadInfo.UserID
         INNER JOIN LeadExpiryTime ON RealEstateAgentInfo.RealEstateAgentId = LeadExpiryTime.UserID and LeadExpiryTime.UserType=2
-        INNER JOIN LeadPricePoint ON LeadInfo.PricePointID = LeadPricePoint.PricePointID AND LeadInfo.PriceRangeID = LeadPricePoint.PricePointID
+		left outer join 
+		(select count(*) as IsClaimedByLender,LEadID from LeadClaimInfo where  ClaimingLender=@LenderID group by LEadID)LeadClaimInfo on
+		LeadClaimInfo.LEadID=LeadInfo.LeadID
+        Left outer JOIN LeadPricePoint ON LeadInfo.PricePointID = LeadPricePoint.PricePointID AND LeadInfo.PriceRangeID = LeadPricePoint.PricePointID
         INNER JOIN ZipCode ON RealEstateAgentInfo.ZipCodeID = ZipCode.ZipCodeID
    WHERE
-           (LeadInfo.LeadID > 0) {whereclause}
+           (LeadInfo.LeadID > 0)   {whereclause}
 )
 
 
@@ -688,8 +704,8 @@ SELECT @TotalLenders = COUNT(*) FROM FavouriteLender WHERE LenderID = @LenderID
 SELECT  *,((SELECT  COUNT(*) FROM LeadsCTE) /  @PageSize )TotalPages,@PageNumber+1 as NextPageNo
 FROM LeadsCTE
 WHERE
-    (@TotalLenders = 0 AND IsBelowTime = 0)
-    OR @TotalLenders > 0
+   ( (@TotalLenders = 0 AND IsBelowTime = 0 and ((select count(*) from LenderInfo where LenderInfo.UserID=LeadsCTE.RealEstateAgentId and LenderInfo.LenderId=@LenderID)) >0)
+    OR @TotalLenders > 0 ) 
 ORDER BY LeadID DESC
 OFFSET (@PageNumber - 1) * @PageSize ROWS
 FETCH NEXT @PageSize ROWS ONLY;
@@ -750,11 +766,32 @@ FETCH NEXT @PageSize ROWS ONLY
         [HttpGet]
         public JsonResult PostClaimedLead(int LeadID, int LenderID)
         {
+            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            JsonResult jr = new JsonResult();
             int ResponseCode = 0;
             string ResponseMessage = "";
             
             string Value = "0";
-            bool Return = bool.Parse(General.FetchData($@"Select Isnull(ReadyToOptin,0)ReadyToOptin from LeadInfo Where LeadID = {LeadID}").Rows[0]["ReadyToOptin"].ToString());
+            bool Return = false;
+            DataTable dtReturn = General.FetchData($@"Select Isnull(ReadyToOptin,0)ReadyToOptin from LeadInfo Where LeadID = {LeadID}");
+            if(dtReturn.Rows.Count == 0)
+            {
+                JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.NotFound);
+                JSResponse.Add("Message", "Lead not Exist.");
+                JSResponse.Add("Data", DBNull.Value);
+
+                jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            Return = bool.Parse(dtReturn.Rows[0]["ReadyToOptin"].ToString());
             string Return1 = "0";
             string AlreadyAdded = "0";
             DataTable dt2 = General.FetchData($@"Select * from LeadClaimInfo Where LeadID = {LeadID} and ClaimingLender = {LenderID}");
@@ -764,6 +801,7 @@ FETCH NEXT @PageSize ROWS ONLY
                 {
                     string sql = $@"Insert Into LeadClaimInfo Values({LeadID},{LenderID},GetDate())";
                     General.ExecuteNonQuery(sql);
+                    ResponseCode = 10;
                     DataTable dt = General.FetchData($@"select Count(LeadID)LeadID from LeadClaimInfo Where LeadID = {LeadID}");
                     if (int.Parse(dt.Rows[0]["LeadID"].ToString()) >= 3)
                     {
@@ -784,9 +822,9 @@ FETCH NEXT @PageSize ROWS ONLY
             {
                 AlreadyAdded = "1";
             }
-            if (ResponseCode == 0)
+            if (ResponseCode == 10)
             {
-                ResponseMessage = "This Lead is already claimed!";
+                ResponseMessage = "Lead claimed Successfully!";
             }
             else if (ResponseCode == 1)
             {
@@ -804,12 +842,12 @@ FETCH NEXT @PageSize ROWS ONLY
             {
                 ResponseMessage = "This Lead is already claimed!";
             }
-            Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+            JSResponse = new Dictionary<string, object>();
             JSResponse.Add("Status", HttpStatusCode.OK);
             JSResponse.Add("Message", ResponseMessage);
             JSResponse.Add("Data", DBNull.Value);
 
-            JsonResult jr = new JsonResult()
+            jr = new JsonResult()
             {
                 Data = JSResponse,
                 ContentType = "application/json",
@@ -958,7 +996,87 @@ insert into LeadExpiryTime values({ExpiryTime},{UserID},{UserType})
                 return jr;
             }
         }
+        [HttpGet]
+        public JsonResult GetMemberProfile(int LeadID,int UserID,int UserType)
+        {
+            try
+            {
+                string Query = $@"";
+                DataTable dt2 =new DataTable();
+                if (UserType == 2)
+                {
+                    Query = $@"
+Select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack
+from LenderInfo 
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID
+ 
+inner join FavouriteLender
+on FavouriteLender.LenderID = LenderInfo.LenderId 
+inner join RealEstateAgentInfo on RealEstateAgentId = FavouriteLender.UserID 
 
+Where RealEstateAgentId ={UserID} and LenderInfo.LenderId in (select ClaimingLender from LeadClaimInfo where  LeadID={LeadID})";
+                    dt2 = General.FetchData(Query);
+                }
+                else if( UserType == 3)
+                {
+                    dt2 = General.FetchData($@"
+
+select LenderInfo.*,OrganizationInfo.OrganizationTitle,ZipCode.ZipCode 
+,ISNULL(AverageRating.AverageRating,0)AverageRating,ISNULL(AverageRating.TotalFeedBack,0)TotalFeedBack  from LenderInfo
+left outer join OrganizationInfo on LenderInfo.OrganizationID = OrganizationInfo.OrganizationID
+left outer join ZipCode on LenderInfo.ZipCodeID = ZipCode.ZipCodeID
+left outer join 
+(
+SELECT UserID, AVG(Rating) AS AverageRating,count(*) as TotalFeedBack
+FROM FeedBackInfo where UserType=3
+GROUP BY UserID
+)AverageRating on LenderInfo.LenderId=AverageRating.UserID
+
+where LenderInfo.LenderId in (select ClaimingLender from LeadClaimInfo where LeadID={LeadID})");
+                }
+  
+                List<Dictionary<string, object>> dbrows = new General().GetAllRowsInDictionary(dt2);
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.OK);
+                JSResponse.Add("Message", "Members Profile Information");
+                JSResponse.Add("Data", dbrows);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+            catch (Exception ex)
+            {
+                Dictionary<string, object> JSResponse = new Dictionary<string, object>();
+                JSResponse.Add("Status", HttpStatusCode.BadRequest);
+                JSResponse.Add("Message", "Error" + ex.Message);
+                JSResponse.Add("Data", DBNull.Value);
+
+                JsonResult jr = new JsonResult()
+                {
+                    Data = JSResponse,
+                    ContentType = "application/json",
+                    ContentEncoding = System.Text.Encoding.UTF8,
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                    MaxJsonLength = Int32.MaxValue
+                };
+                return jr;
+            }
+        }
         #endregion
     }
 }

@@ -59,8 +59,8 @@ namespace Privont.Models
         public int SourceID { get; set; }
         public int PriceRangeID { get; set; }
         public string State { get; set; }
-        public int FirstTimeBuyer { get; set; }
-        public int IsMilitary { get; set; }
+        public bool FirstTimeBuyer { get; set; }
+        public bool IsMilitary { get; set; }
         public int TypeID { get; set; }
         public int BestTimeToCall { get; set; }
         public List<SocialMediaInfo> lstSocialMediaInfo { get;set; }

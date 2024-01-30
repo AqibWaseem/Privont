@@ -90,11 +90,13 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
         {
             try
             {
-                string Query = $@" delete from UserSocialMediaInfo where UserTypeID=" + UserTypeID + " and UserID=" + UserTypeID;
+                string Query = $@" delete from UserSocialMediaInfo where UserTypeID=" + UserTypeID + " and UserID=" + UserID;
                 foreach (SocialMediaInfo item in collection)
                 {
-                    Query = Query + Environment.NewLine;
-                    Query = Query + $@"      INSERT INTO [dbo].[UserSocialMediaInfo]
+                    if(!string.IsNullOrEmpty(item.ProfileLink))
+                    {
+                        Query = Query + Environment.NewLine;
+                        Query = Query + $@"      INSERT INTO [dbo].[UserSocialMediaInfo]
            ([SocialMediaID]
            ,[ProfileName]
            ,[ProfileLink]
@@ -106,7 +108,9 @@ FROM            SocialMediaInfo LEFT OUTER JOIN
            ,'{item.ProfileLink}'
            ,{UserID}
            ,{UserTypeID})";
-                    Query = Query + Environment.NewLine;
+                        Query = Query + Environment.NewLine;
+                    }
+                   
                 }
                 General.ExecuteNonQuery(Query);
                 return true;

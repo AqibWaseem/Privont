@@ -172,15 +172,15 @@ GetDate(),
            ,'{obj.Contact1}'
            ,'{obj.UserID}'
            ,'{obj.UserType}'
-           ,'{obj.IsApproved}'
+           ,'{(obj.IsApproved ? 1 : 0)}'
            ,'{obj.IsEmailVerified}'
            ,'{obj.UniqueIdentifier}'
-           ,'{obj.SourceID}'
+           ,'{((int)General.SourceTypes.Refer)}'
            ,'{obj.PriceRangeID}'
            ,'{obj.PriceRangeID}'
            ,'{obj.State}'
-           ,'{obj.FirstTimeBuyer}'
-           ,'{obj.IsMilitary}'
+           ,'{(obj.FirstTimeBuyer ? 1 : 0)}'
+           ,'{(obj.IsMilitary ? 1 : 0)}'
            ,'{obj.TypeID}'
            ,'{obj.BestTimeToCall}',GETDATE(),
 {obj.UserType},'{obj.ApiSource}'
@@ -198,9 +198,38 @@ GetDate(),
                 return LeadID;
             }
         }
-        public DataTable GetAllRecordsVIAPhoneNo(string PhoneNo)
+        public int UpdateRecordsByInviation(LeadInfo obj)
         {
-            string Query = $@"select * from LeadInfo where Contact1='{PhoneNo}'";
+            int LeadID = 0;
+            string Query = $@"UPDATE [dbo].[LeadInfo]
+SET [FirstName] = '{obj.FirstName}',
+    [LastName] = '{obj.LastName}',
+    [EmailAddress] = '{obj.EmailAddress}',
+    [Contact1] = '{obj.Contact1}',
+    [IsApproved] = '{(obj.IsApproved ? 1 : 0)}',
+    [IsEmailVerified] = '{obj.IsEmailVerified}',
+    [PriceRangeID] = '{obj.PriceRangeID}',
+    [PricePointID] = '{obj.PriceRangeID}', 
+    [State] = '{obj.State}',
+    [FirstTimeBuyer] = '{(obj.FirstTimeBuyer ? 1 : 0)}',
+    [IsMilitary] = '{(obj.IsMilitary ? 1 : 0)}',
+    [TypeID] = '{obj.TypeID}',
+    [BestTimeToCall] = '{obj.BestTimeToCall}'
+WHERE [LeadID] = '{obj.LeadID}';
+";
+            try
+            {
+                General.ExecuteNonQuery(Query);
+                return obj.LeadID;
+            }
+            catch (Exception ex)
+            {
+                return obj.LeadID;
+            }
+        }
+        public DataTable GetAllRecordsVIAPhoneNo(string PhoneNo,int UserID,int UserType)
+        {
+            string Query = $@"select * from LeadInfo where Contact1='{PhoneNo}' and UserID={UserID} and UserType={UserType}";
             DataTable dataTable = General.FetchData(Query);
             return dataTable;
         }

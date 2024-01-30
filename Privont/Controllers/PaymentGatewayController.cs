@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Reflection.Emit;
@@ -20,8 +21,79 @@ namespace Privont.Controllers
         //PaymentGateway
 
 
-        #region Payment
+        #region Easy Pay Direct Payment
+        //var api = new EasyPayDirectAPI();
+        //string validateResponse = api.ValidateCard("4111111111111111", "1225", "123");
+        //string paymentResponse = api.ProcessPayment("4111111111111111", "1225", "123", "10.00");
+        [HttpPost]
+        public JsonResult GetCardValidation(CardInfo collection)
+        {
+            try
+            {
+                string WhereClause = "";
+                JsonResult jr = new JsonResult();
+                string Query = $@"";
+                var api = new EasyPayPaymentIntegreation();
+                var validateResponse = api.ValidateCard(collection.CardNumber, collection.ExpCardDate, collection.CVV.ToString());
+                if (!validateResponse.IsSuccess)
+                {
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Card are not valid", null);
+                    return jr;
+                }
 
+                jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Card are Valid!", null);
+                return jr;
+            }
+            catch (Exception ex)
+            {
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                return jr;
+            }
+        }
+        [HttpPost]
+        public JsonResult PostCardPayment(CardInfo collection)
+        {
+            try
+            {
+                JsonResult jr = new JsonResult();
+                string Query = $@"";
+                var api = new EasyPayPaymentIntegreation();
+                var validateResponse = api.ValidateCard(collection.CardNumber, collection.ExpiryDate.ToString("yyMM"), collection.CVV.ToString());
+                if (!validateResponse.IsSuccess)
+                {
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Card are not valid", null);
+                    return jr;
+                }
+                var paymentResponse = api.ProcessPayment(collection.CardNumber, collection.ExpiryDate.ToString("yyMM"), collection.CVV.ToString(), collection.Amount.ToString());
+                if (!paymentResponse.IsSuccess)
+                {
+                    jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Transaction Failed", null);
+                    return jr;
+                }
+
+                TransactionDetails transactionData = new TransactionDetails {
+                    RefNo = "",
+                    Amount = collection.Amount,
+                    Status = 1,
+                    Remarks = "",
+                    UserID = collection.UserID,
+                    UserType = collection.UserType,
+                    TransactionActionID = collection.TransactionActionID,
+                    APITransactionID = paymentResponse.TransactionId
+
+                };
+
+                transactionData.TransactionID = transactionData.InsertRecords();
+
+                jr = GeneralApisController.ResponseMessage(HttpStatusCode.OK, "Payment Received!", null);
+                return jr;
+            }
+            catch (Exception ex)
+            {
+                JsonResult jr = GeneralApisController.ResponseMessage(HttpStatusCode.BadRequest, "Error: " + ex.Message, null);
+                return jr;
+            }
+        }
         #endregion
 
         #region Maverick Payment Gateway Integration
@@ -291,5 +363,43 @@ namespace Privont.Controllers
         //      }
         //      public Guid GenerateNewGuid() { return Guid.NewGuid(); }
         #endregion
+
+        public RealEstateAgentInfo GetUserInfo(int UserID,int UserType)
+        {
+            string WhereClause = $@"where UserID='{UserID}' and UserType='{UserType}' ";
+            string sql1 = $@"
+select * from 
+
+(
+Select (RealEstateAgentId)UserID,UserName,Password,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,2 as UserType 
+from RealEstateAgentInfo 
+
+union all
+Select (LenderId)UserID,UserName,Password,FirstName,LastName,StreetNo,StreetName,EmailAddress,Contact1,Website,Remarks,Inactive,3 as UserType 
+from LenderInfo  
+union all
+
+SELECT        LeadID,Username,Password, FirstName, LastName,'' as  StreetNo, '' as StreetName, EmailAddress, PhoneNo,'' as Website,'' as Remarks,0 as
+Inactive, 4 AS UserType
+FROM            LeadInfo
+
+union all
+SELECT        VendorID, Username, Password, FirstName, LastName, StreetNo, StreetName, EmailAddress, Contact1, Website, Remarks, Inactive
+, 5 AS UserType
+FROM            VendorInfo
+
+)ProfileLogin
+
+{WhereClause}
+
+";
+            DataTable dt = General.FetchData(sql1);
+            if(dt.Rows.Count > 0)
+            {
+                RealEstateAgentInfo obj = General.ConvertDataTable<RealEstateAgentInfo>(dt)[0];
+                return obj;
+            }
+            return new RealEstateAgentInfo();
+        }
     }
 }
